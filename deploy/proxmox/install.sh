@@ -18,6 +18,10 @@ FILES=(
   "deploy/proxmox/README.md"
   "server.js"
   "package.json"
+  "recipes-international.js"
+  "recipes-open.js"
+  "recipe-data/unitools-recipes.json"
+  "recipe-data/wikibooks-recipes.json"
   "public/index.html"
 )
 log(){ printf '\033[1;36m==>\033[0m %s\n' "$*"; }

@@ -12,12 +12,14 @@ command -v pct >/dev/null || { echo 'pct niet gevonden.' >&2; exit 1; }
 pct status "$CTID" >/dev/null 2>&1 || { echo "Container $CTID bestaat niet." >&2; exit 1; }
 [ "$(pct status "$CTID")" = 'status: running' ] || { echo "Container $CTID draait niet." >&2; exit 1; }
 TMP=$(mktemp -d); trap 'rm -rf "$TMP"' EXIT
-FILES=(server.js package.json public/index.html deploy/proxmox/nginx-voorraadthuis.conf)
+FILES=(server.js package.json recipes-international.js recipes-open.js recipe-data/unitools-recipes.json recipe-data/wikibooks-recipes.json public/index.html deploy/proxmox/nginx-voorraadthuis.conf)
 for f in "${FILES[@]}"; do mkdir -p "$TMP/$(dirname "$f")"; curl -fsSL --retry 3 --max-time 60 "$RAW/$f?cb=$(date +%s)" -o "$TMP/$f" || { echo "Download mislukt: $f" >&2; exit 1; }; done
 grep -q 'VoorraadThuis' "$TMP/public/index.html" || { echo 'Gedownloade pagina niet herkend; niets gewijzigd.' >&2; exit 1; }
 SITE=/var/www/voorraadthuis
 pct exec "$CTID" -- systemctl stop voorraadthuis
-for f in server.js package.json public/index.html; do pct push "$CTID" "$TMP/$f" "$SITE/$f" --perms 644; done
+pct exec "$CTID" -- install -d "$SITE/recipe-data"
+for f in server.js package.json recipes-international.js recipes-open.js public/index.html; do pct push "$CTID" "$TMP/$f" "$SITE/$f" --perms 644; done
+for f in unitools-recipes.json wikibooks-recipes.json; do pct push "$CTID" "$TMP/recipe-data/$f" "$SITE/recipe-data/$f" --perms 644; done
 pct push "$CTID" "$TMP/deploy/proxmox/nginx-voorraadthuis.conf" /etc/nginx/sites-available/voorraadthuis --perms 644
 pct exec "$CTID" -- chown -R voorraadthuis:voorraadthuis "$SITE"
 pct exec "$CTID" -- nginx -t

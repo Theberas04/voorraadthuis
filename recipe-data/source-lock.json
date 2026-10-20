@@ -1,0 +1,12 @@
+{
+  "unitools": {
+    "revision": "2f554073f7e730b18d707fe1164d18308f6ec16c",
+    "url": "https://raw.githubusercontent.com/farcrak/unitools-recipes/2f554073f7e730b18d707fe1164d18308f6ec16c/unitools-recipes-v1.json",
+    "license": "CC BY-SA 4.0"
+  },
+  "wikibooks": {
+    "revision": "49fb73ea07d2a1380c15197db5589934937457ed",
+    "url": "https://huggingface.co/datasets/gossminn/wikibooks-cookbook/resolve/49fb73ea07d2a1380c15197db5589934937457ed/recipes_parsed.mini.json",
+    "license": "CC BY-SA 4.0"
+  }
+}

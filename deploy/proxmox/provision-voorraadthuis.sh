@@ -3,12 +3,13 @@
 set -euo pipefail
 CTID="${1:-${CTID:-}}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+APP_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 SITE_DIR=/var/www/voorraadthuis
 log(){ printf '\033[1;36m==>\033[0m %s\n' "$*"; }
 die(){ printf '\033[1;31m[fout]\033[0m %s\n' "$*" >&2; exit 1; }
 [ "$(id -u)" -eq 0 ] || die "Draai als root op de Proxmox-host."
 [ -n "$CTID" ] || die "Gebruik: $0 <container-id>"
-for f in server.js package.json public/index.html nginx-voorraadthuis.conf; do [ -f "$SCRIPT_DIR/$f" ] || die "$f ontbreekt naast dit script."; done
+for f in "$APP_DIR/server.js" "$APP_DIR/package.json" "$APP_DIR/recipes-international.js" "$APP_DIR/recipes-open.js" "$APP_DIR/recipe-data/unitools-recipes.json" "$APP_DIR/recipe-data/wikibooks-recipes.json" "$APP_DIR/public/index.html" "$SCRIPT_DIR/nginx-voorraadthuis.conf"; do [ -f "$f" ] || die "$f ontbreekt."; done
 command -v pct >/dev/null || die "pct niet gevonden."
 pct status "$CTID" >/dev/null 2>&1 || die "Container $CTID bestaat niet."
 [ "$(pct status "$CTID")" = 'status: running' ] || die "Container $CTID draait niet."
@@ -18,10 +19,9 @@ log "Container-IP: $IP; afhankelijkheden installeren…"
 pct exec "$CTID" -- bash -lc 'export DEBIAN_FRONTEND=noninteractive; apt-get update -qq && apt-get install -y -qq ca-certificates curl gnupg nginx openssl >/dev/null'
 pct exec "$CTID" -- bash -lc 'install -d -m 0755 /etc/apt/keyrings && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && chmod a+r /etc/apt/keyrings/nodesource.gpg && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" > /etc/apt/sources.list.d/nodesource.list && apt-get update -qq && apt-get install -y -qq nodejs >/dev/null'
 pct exec "$CTID" -- useradd --system --home /var/lib/voorraadthuis --shell /usr/sbin/nologin voorraadthuis 2>/dev/null || true
-pct exec "$CTID" -- install -d -o voorraadthuis -g voorraadthuis "$SITE_DIR/public" /var/lib/voorraadthuis /etc/ssl/voorraadthuis
-pct push "$CTID" "$SCRIPT_DIR/server.js" "$SITE_DIR/server.js" --perms 644
-pct push "$CTID" "$SCRIPT_DIR/package.json" "$SITE_DIR/package.json" --perms 644
-pct push "$CTID" "$SCRIPT_DIR/public/index.html" "$SITE_DIR/public/index.html" --perms 644
+pct exec "$CTID" -- install -d -o voorraadthuis -g voorraadthuis "$SITE_DIR/public" "$SITE_DIR/recipe-data" /var/lib/voorraadthuis /etc/ssl/voorraadthuis
+for f in server.js package.json recipes-international.js recipes-open.js public/index.html; do pct push "$CTID" "$APP_DIR/$f" "$SITE_DIR/$f" --perms 644; done
+for f in unitools-recipes.json wikibooks-recipes.json; do pct push "$CTID" "$APP_DIR/recipe-data/$f" "$SITE_DIR/recipe-data/$f" --perms 644; done
 pct push "$CTID" "$SCRIPT_DIR/nginx-voorraadthuis.conf" /etc/nginx/sites-available/voorraadthuis --perms 644
 pct exec "$CTID" -- bash -c "openssl req -x509 -nodes -newkey rsa:2048 -days 825 -keyout /etc/ssl/voorraadthuis/key.pem -out /etc/ssl/voorraadthuis/cert.pem -subj '/CN=$IP' -addext 'subjectAltName=IP:$IP' >/dev/null 2>&1 && chmod 600 /etc/ssl/voorraadthuis/key.pem"
 pct exec "$CTID" -- bash -c 'cat > /usr/local/sbin/voorraadthuis-cert-refresh <<'"'"'SH'"'"'
