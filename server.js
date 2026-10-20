@@ -34,7 +34,10 @@ function shiftsForDate(date){return db.prepare('SELECT name,start_time AS startT
 function planWithShifts(plan){return plan?{...plan,shifts:shiftsForDate(plan.plan_date)}:null;}
 function plansForMonth(month){return db.prepare('SELECT * FROM planner WHERE plan_date LIKE ? ORDER BY plan_date').all(`${month}-%`).map(planWithShifts);}
 function shiftTemplates(){return db.prepare('SELECT id,name,start_time AS startTime,end_time AS endTime,notes FROM shift_templates ORDER BY name COLLATE NOCASE,id').all();}
-function addShoppingItem(item){const name=String(item.name||'').trim(),unit=String(item.unit||'stuks').trim(),quantity=Number(item.quantity??1);if(!name||name.length>120||!Number.isFinite(quantity)||quantity<=0||quantity>100000||unit.length>24)throw Error('Ongeldig boodschappenproduct.');const old=db.prepare('SELECT id FROM shopping WHERE lower(name)=lower(?) AND lower(unit)=lower(?) ORDER BY id LIMIT 1').get(name,unit);if(old)db.prepare('UPDATE shopping SET quantity=quantity+? WHERE id=?').run(quantity,old.id);else db.prepare('INSERT INTO shopping(name,quantity,unit) VALUES(?,?,?)').run(name,quantity,unit);}
+// Ingrediëntregels uit de open bronnen kunnen lange beschrijvingen bevatten (de langste is
+// ruim 300 tekens); daarom is de naamlimiet hier ruimer dan bij zelf ingevoerde producten.
+const MAX_SHOPPING_NAME=400;
+function addShoppingItem(item){const name=String(item.name||'').trim(),unit=String(item.unit||'stuks').trim(),quantity=Number(item.quantity??1);if(!name||name.length>MAX_SHOPPING_NAME||!Number.isFinite(quantity)||quantity<=0||quantity>100000||unit.length>24)throw Error('Ongeldig boodschappenproduct.');const old=db.prepare('SELECT id FROM shopping WHERE lower(name)=lower(?) AND lower(unit)=lower(?) ORDER BY id LIMIT 1').get(name,unit);if(old)db.prepare('UPDATE shopping SET quantity=quantity+? WHERE id=?').run(quantity,old.id);else db.prepare('INSERT INTO shopping(name,quantity,unit) VALUES(?,?,?)').run(name,quantity,unit);}
 
 const server=http.createServer(async(req,res)=>{const url=new URL(req.url,'http://localhost');try{
  if(url.pathname==='/api/products'&&req.method==='GET')return json(res,200,products());
