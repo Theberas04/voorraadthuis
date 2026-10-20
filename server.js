@@ -22,5 +22,5 @@ const server=http.createServer(async(req,res)=>{const url=new URL(req.url,'http:
  if(req.method==='GET'&&(url.pathname==='/'||url.pathname==='/index.html')){res.writeHead(200,{'content-type':'text/html; charset=utf-8'});return fs.createReadStream(path.join(__dirname,'public','index.html')).pipe(res);}
  res.writeHead(404);res.end('Not found');
  }catch(e){json(res,400,{error:e.message||'Fout'});}});
-if(require.main===module)server.listen(Number(process.env.PORT||3000),'0.0.0.0',()=>console.log(`VoorraadThuis luistert op ${process.env.PORT||3000}`));
+if(require.main===module)server.listen(Number(process.env.PORT||3000),process.env.HOST||'0.0.0.0',()=>console.log(`VoorraadThuis luistert op ${process.env.HOST||'0.0.0.0'}:${process.env.PORT||3000}`));
 module.exports={server,db};
