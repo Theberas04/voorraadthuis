@@ -207,4 +207,13 @@ De knop **Verstuur via SMS** op de boodschappenlijst stuurt de hele lijst naar h
 
 Inloggegevens vul je zelf in de app in. Ze worden lokaal in de database bewaard, nooit aan de pagina teruggegeven (je ziet alleen of ze gevuld zijn en de laatste vier tekens) en nooit naar de logboeken geschreven. Met **Wachtwoorden wissen** haal je ze weer weg. Via **Stuur proefbericht** test je het kanaal; de laatste twintig berichten staan in het lokale logboek onderaan de tab.
 
+| ![Profielen op desktop](docs/img/profielen-desktop.png) | ![Profielen op de telefoon](docs/img/profielen-mobiel.jpg) |
+| --- | --- |
+| Profielen met telefoonnummer, standaardontvanger en het sms-kanaal. | Dezelfde tab op de telefoon; hier opent de knop je berichten-app. |
+
+| ![Boodschappen met ontvangerkeuze op desktop](docs/img/boodschappen-sms-desktop.png) | ![Boodschappen met ontvangerkeuze op de telefoon](docs/img/boodschappen-sms-mobiel.jpg) |
+| --- | --- |
+| De boodschappenlijst met de ontvangerkeuze naast de sms-knop. | Op de telefoon opent de knop de berichten-app met nummer en lijst ingevuld. |
+
+
 Zonder eigen kanaal werkt de knop dus altijd, maar op een desktopcomputer gebeurt er niets: daar is geen berichten-app om te openen. Wil je vanaf elke machine echt versturen, kies dan een gateway of Twilio.
