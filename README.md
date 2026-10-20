@@ -13,7 +13,7 @@
 
 Eén Nederlandstalige app voor thuis: voorraad, 1.000 recepten, boodschappenlijst, maaltijd- en werkplanning én je garderobe met combineeradvies. Alles draait rechtstreeks als service in een Proxmox LXC, met de gegevens in SQLite op persistente opslag. De webpagina is gebouwd voor de telefoon en werkt ook als installeerbare app.
 
-🎬 **[Rondleiding door de app (47 s, MP4, 1280×720)](docs/img/voorraadthuis-rondleiding.mp4)** — voorraad, recepten, kledingkast, kalender en boodschappenlijst in één doorloop.
+🎬 **[Rondleiding door de app (74 s, MP4, 1280×720, Nederlandse voice-over)](docs/img/voorraadthuis-rondleiding.mp4)** — voorraad, recepten, kledingkast, kalender en boodschappenlijst in één doorloop, met uitleg per scherm.
 
 ## Op de telefoon
 
