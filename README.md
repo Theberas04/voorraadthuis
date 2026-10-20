@@ -1,12 +1,15 @@
 # VoorraadThuis
 
-Een lichte, Nederlandstalige voorraad-app voor thuis. Draait zelfstandig op een Proxmox LXC/VM met Docker Compose; productdata staat in SQLite op een persistent volume.
+Een lichte, Nederlandstalige voorraad-, recepten- en planningsapp voor thuis. Draait rechtstreeks als service in een Proxmox LXC; productdata staat in SQLite op persistente opslag.
 
 ## Functies
 - Twee lijsten: **In huis** en **Niet meer in huis**.
 - Product handmatig invoeren met naam, aantal, eenheid en optionele barcode.
 - Barcode scannen met de camera (browser `BarcodeDetector`, vereist camera-toestemming en een beveiligde context) of handmatig invoeren.
-- Markeer een product als op: het verhuist naar de boodschappenlijst.
+- Markeer een product als op: het verhuist naar de afzonderlijke boodschappenlijst-knop.
+- Voeg handmatig boodschappen toe of zet ingrediënten van een recept met één druk op de lijst; gelijke ingrediënten worden samengevoegd.
+- Receptenboek met vijf startrecepten, landkeuken, bereidingstijd, ingrediënten en bereidingsstappen.
+- Maandkalender om per dag een recept, landkeuken en werkdienst (begin/eindtijd en notitie) vast te leggen.
 - Herstel of verwijder boodschappen; stuur de lijst door via SMS.
 - SMS opent de berichten-app met tekst ingevuld. Je controleert en verstuurt zelf; er is geen SMS-provider of betaalde API nodig.
 - Data blijft bewaard in SQLite, ook na containerherstart.
