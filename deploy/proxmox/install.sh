@@ -20,6 +20,7 @@ FILES=(
   "package.json"
   "recipes-international.js"
   "recipes-open.js"
+  "wardrobe.js"
   "recipe-data/unitools-recipes.json"
   "recipe-data/wikibooks-recipes.json"
   "recipe-data/translations-nl.json"

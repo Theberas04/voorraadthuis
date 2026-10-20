@@ -1,7 +1,7 @@
 {
   "name": "VoorraadThuis",
   "short_name": "VoorraadThuis",
-  "description": "Voorraad, recepten met 1.000 gerechten, boodschappenlijst en weekplanning op één plek.",
+  "description": "Voorraad, 1.000 recepten, boodschappenlijst, planning én je kledingkast met combineeradvies op één plek.",
   "lang": "nl",
   "dir": "ltr",
   "start_url": "/",
@@ -10,7 +10,7 @@
   "orientation": "portrait-primary",
   "background_color": "#f5f5f0",
   "theme_color": "#173c32",
-  "categories": ["food", "lifestyle", "utilities"],
+  "categories": ["food", "lifestyle", "utilities", "shopping"],
   "icons": [
     { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
