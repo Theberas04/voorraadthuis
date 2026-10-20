@@ -23,6 +23,14 @@ FILES=(
   "recipe-data/unitools-recipes.json"
   "recipe-data/wikibooks-recipes.json"
   "public/index.html"
+  "public/favicon.svg"
+  "public/manifest.webmanifest"
+  "public/sw.js"
+  "public/icon-192.png"
+  "public/icon-512.png"
+  "public/icon-512-maskable.png"
+  "public/apple-touch-icon.png"
+  "public/social-card.png"
 )
 log(){ printf '\033[1;36m==>\033[0m %s\n' "$*"; }
 die(){ printf '\033[1;31m[fout]\033[0m %s\n' "$*" >&2; exit 1; }
@@ -41,6 +49,7 @@ for f in "${FILES[@]}"; do
   log "  $f ($(wc -c <"$out") bytes)"
 done
 grep -q "VoorraadThuis" "$TARGET_DIR/public/index.html" || die "index lijkt geen VoorraadThuis-app."
+grep -q '"display"' "$TARGET_DIR/public/manifest.webmanifest" || die "manifest lijkt geen geldig webapp-manifest."
 grep -q 'pct create' "$TARGET_DIR/deploy/proxmox/create-voorraadthuis-lxc.sh" || die "LXC-script lijkt onvolledig."
 for f in "$TARGET_DIR"/deploy/proxmox/*.sh; do bash -n "$f" || die "Syntaxfout in $f"; done
 chmod +x "$TARGET_DIR"/deploy/proxmox/*.sh
