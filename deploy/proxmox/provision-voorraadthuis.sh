@@ -62,7 +62,7 @@ Environment=PORT=3000
 Environment=HOST=127.0.0.1
 Environment=DB_PATH=/var/lib/voorraadthuis/voorraad.db
 Environment=MEDIA_DIR=/var/lib/voorraadthuis/fotos
-# Optioneel: AI-tagging van kledingfoto's via een OpenAI-compatibele dienst.
+# Optioneel: AI-tagging van kledingfotos via een OpenAI-compatibele dienst.
 #Environment=AI_BASE_URL=http://192.168.1.10:11434/v1
 #Environment=AI_VISION_MODEL=llava
 #Environment=AI_API_KEY=...
