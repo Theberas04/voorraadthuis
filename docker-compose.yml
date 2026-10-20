@@ -1,0 +1,14 @@
+services:
+  voorraadthuis:
+    build: .
+    container_name: voorraadthuis
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    volumes:
+      - voorraad_data:/data
+    environment:
+      - PORT=3000
+      - DB_PATH=/data/voorraad.db
+volumes:
+  voorraad_data:
