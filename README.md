@@ -64,7 +64,7 @@ Open de app op je telefoon en kies **Toevoegen aan startscherm** (iOS/Safari) of
 - Een code met een verkeerd controlecijfer wordt gemeld, maar je kunt hem alsnog opzoeken.
 - Markeer een product als op: het verhuist naar de afzonderlijke boodschappenlijst-knop.
 - Voeg handmatig boodschappen toe of zet ingrediënten van een recept met één druk op de lijst; gelijke ingrediënten worden samengevoegd.
-- Herstel of verwijder boodschappen; stuur de lijst door via SMS.
+- Herstel of verwijder boodschappen; stuur de lijst per sms naar het nummer van een profiel.
 
 ### Receptenboek
 
@@ -195,6 +195,16 @@ De app is geschreven voor Tom Werdens. De receptendata uit UniTools World Recipe
 
 Het garderobe-onderdeel begon als een zelfstandige app (Kledingkast, MIT) en is geïnspireerd op het idee achter [wardrowbee](https://github.com/Anyesh/wardrowbee) (MIT): een self-hosted garderobe-app met AI-tagging. De implementatie is eigen werk — Node.js + SQLite in plaats van FastAPI + PostgreSQL + Redis, één service, Nederlandse interface, en combineeradvies op eigen regels in plaats van een taalmodel. Er is geen code uit dat project overgenomen.
 
-## SMS
+## Profielen en SMS
 
-De SMS-knop gebruikt een `sms:`-link om de standaard berichten-app van je telefoon te openen. Afhankelijk van apparaat/browser verschilt ondersteuning en op sommige desktopcomputers werkt dit niet. Een externe SMS-gateway is niet geconfigureerd.
+In de tab **Profielen** zet je de huisgenoten neer met hun gegevens: naam, telefoonnummer, e-mail, rol en een notitie. Telefoonnummers worden in internationale notatie opgeslagen, dus `06 12345678` en `+31 6 12345678` komen op hetzelfde nummer uit. Eén profiel kan de standaardontvanger zijn; dat nummer staat dan vooraan in de keuzelijst op de boodschappenlijst (andere profielen met een nummer blijven kiesbaar).
+
+De knop **Verstuur via SMS** op de boodschappenlijst stuurt de hele lijst naar het nummer van het gekozen profiel. Er zijn drie kanalen:
+
+- **Berichten-app op dit apparaat** (standaard) — de knop opent je berichten-app met het nummer en de lijst al ingevuld. Werkt direct, zonder instellingen; het versturen zelf doe je daar.
+- **Eigen gateway of webhook** — de server stuurt `{to, from, body}` als JSON naar jouw URL, met een optioneel token als `Authorization: Bearer`. Werkt met onder andere Home Assistant, een eigen SMS-dienst of een provider met een HTTP-API.
+- **Twilio** — vul je Account SID, Auth Token en Twilio-afzendernummer in; de app verstuurt de sms zelf.
+
+Inloggegevens vul je zelf in de app in. Ze worden lokaal in de database bewaard, nooit aan de pagina teruggegeven (je ziet alleen of ze gevuld zijn en de laatste vier tekens) en nooit naar de logboeken geschreven. Met **Wachtwoorden wissen** haal je ze weer weg. Via **Stuur proefbericht** test je het kanaal; de laatste twintig berichten staan in het lokale logboek onderaan de tab.
+
+Zonder eigen kanaal werkt de knop dus altijd, maar op een desktopcomputer gebeurt er niets: daar is geen berichten-app om te openen. Wil je vanaf elke machine echt versturen, kies dan een gateway of Twilio.

@@ -6,6 +6,7 @@ const internationalRecipes = require('./recipes-international');
 const createOpenRecipes = require('./recipes-open');
 const { createWardrobe } = require('./wardrobe');
 const { createBarcodes } = require('./barcodes');
+const { createProfiles } = require('./profiles');
 const { URL } = require('node:url');
 
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'data', 'voorraad.db');
@@ -39,6 +40,9 @@ function shiftsForDate(date){return db.prepare('SELECT name,start_time AS startT
 const wardrobe = createWardrobe({ db, mediaDir: MEDIA_DIR });
 // Barcodeherkenning: gescande codes worden opgezocht en lokaal bewaard.
 const barcodes = createBarcodes({ db });
+// Profielen en sms: huisgenoten met telefoonnummer plus het sms-kanaal waarmee
+// de boodschappenlijst verstuurd wordt.
+const profiles = createProfiles({ db });
 function wardrobePath(url) {
   if (url.pathname.startsWith('/api/kast/')) return new URL(`/api/${url.pathname.slice('/api/kast/'.length)}${url.search}`, 'http://localhost');
   return url;
@@ -73,6 +77,20 @@ const server=http.createServer(async(req,res)=>{const url=new URL(req.url,'http:
  if(url.pathname==='/api/shopping'&&req.method==='POST'){const x=await body(req);try{addShoppingItem(x);return json(res,201,{ok:true});}catch(e){return json(res,400,{error:e.message});}}
  m=url.pathname.match(/^\/api\/planner\/(\d{4}-\d{2}-\d{2})$/);if(m&&req.method==='PUT'){const date=m[1],x=await body(req);if(!validDate(date))return json(res,400,{error:'Ongeldige datum.'});const recipeId=x.recipeId===''||x.recipeId==null?null:Number(x.recipeId);if(recipeId!==null&&!recipeById(recipeId))return json(res,400,{error:'Kies een bestaand recept.'});const cuisine=String(x.cuisine||'').trim(),hasShifts=Object.hasOwn(x,'shifts');let shifts;if(hasShifts){if(!Array.isArray(x.shifts)||x.shifts.length>8)return json(res,400,{error:'Voeg maximaal 8 diensten per dag toe.'});shifts=x.shifts.map(s=>({name:String(s?.name||'').trim(),startTime:String(s?.startTime||''),endTime:String(s?.endTime||''),notes:String(s?.notes||'').trim()}));}else{const startTime=String(x.workStart||''),endTime=String(x.workEnd||''),workNotes=String(x.workNotes||'').trim();shifts=startTime||endTime||workNotes?[{name:workNotes||'Dienst',startTime,endTime,notes:''}]:[];}if(cuisine.length>80||shifts.some(s=>!s.name||s.name.length>80||!s.startTime||!s.endTime||!validTime(s.startTime)||!validTime(s.endTime)||s.notes.length>200))return json(res,400,{error:'Controleer de dienstnaam, notitie en 24-uurs tijden (00:00–23:59).'});const first=shifts[0]||{startTime:'',endTime:'',notes:'',name:''};try{db.exec('BEGIN IMMEDIATE');db.prepare('INSERT INTO planner(plan_date,recipe_id,cuisine,work_start,work_end,work_notes) VALUES(?,?,?,?,?,?) ON CONFLICT(plan_date) DO UPDATE SET recipe_id=excluded.recipe_id,cuisine=excluded.cuisine,work_start=excluded.work_start,work_end=excluded.work_end,work_notes=excluded.work_notes').run(date,recipeId,cuisine,first.startTime,first.endTime,hasShifts?first.notes:(String(x.workNotes||'').trim()));db.prepare('DELETE FROM work_shifts WHERE plan_date=?').run(date);const insertShift=db.prepare('INSERT INTO work_shifts(plan_date,name,start_time,end_time,notes) VALUES(?,?,?,?,?)');for(const s of shifts)insertShift.run(date,s.name,s.startTime,s.endTime,s.notes);db.exec('COMMIT');}catch(error){db.exec('ROLLBACK');throw error;}return json(res,200,planWithShifts(db.prepare('SELECT * FROM planner WHERE plan_date=?').get(date)));}
  if(m&&req.method==='DELETE'){db.prepare('DELETE FROM work_shifts WHERE plan_date=?').run(m[1]);db.prepare('DELETE FROM planner WHERE plan_date=?').run(m[1]);return json(res,200,{ok:true});}
+ // Profielen: huisgenoten met contactgegevens. Het telefoonnummer wordt in
+ // internationale notatie opgeslagen (06 12345678 wordt +31612345678).
+ if(url.pathname==='/api/profielen'&&req.method==='GET')return json(res,200,profiles.listProfiles());
+ if(url.pathname==='/api/profielen'&&req.method==='POST'){try{return json(res,201,profiles.createProfile(await body(req)));}catch(e){return json(res,400,{error:e.message});}}
+ m=url.pathname.match(/^\/api\/profielen\/(\d+)$/);
+ if(m&&req.method==='PATCH'){try{const profiel=profiles.updateProfile(m[1],await body(req));if(!profiel)return json(res,404,{error:'Profiel niet gevonden.'});return json(res,200,profiel);}catch(e){return json(res,400,{error:e.message});}}
+ if(m&&req.method==='DELETE'){return profiles.deleteProfile(m[1])?json(res,200,{ok:true}):json(res,404,{error:'Profiel niet gevonden.'});}
+ // Sms-kanaal: instellingen lezen en bewaren. Geheimen komen nooit terug in het
+ // antwoord, alleen of ze gevuld zijn.
+ if(url.pathname==='/api/instellingen/sms'&&req.method==='GET')return json(res,200,profiles.getSmsSettings());
+ if(url.pathname==='/api/instellingen/sms'&&req.method==='PUT'){try{return json(res,200,profiles.saveSmsSettings(await body(req)));}catch(e){return json(res,400,{error:e.message});}}
+ if(url.pathname==='/api/sms/log'&&req.method==='GET')return json(res,200,profiles.smsHistory(url.searchParams.get('limit')));
+ if(url.pathname==='/api/sms/boodschappen'&&req.method==='POST'){const x=await body(req);try{return json(res,200,await profiles.sendShoppingList({profileId:x.profileId,to:x.to,items:shopping(),notes:x.notes,sender:x.sender}));}catch(e){return json(res,400,{error:e.message});}}
+ if(url.pathname==='/api/sms/proef'&&req.method==='POST'){const x=await body(req);try{const uitkomst=await profiles.sendShoppingList({profileId:x.profileId,to:x.to,items:shopping(),notes:'Proefbericht vanuit VoorraadThuis.',sender:'Proefbericht VoorraadThuis'});return json(res,200,{...uitkomst,proef:true});}catch(e){return json(res,400,{error:e.message});}}
  if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{status:'ok'});
  if(req.method==='GET'){const rel=url.pathname.slice(1);if(rel&&rel!=='index.html'&&!rel.includes('..')&&/^[A-Za-z0-9][A-Za-z0-9._\/-]*$/.test(rel)){const file=path.join(__dirname,'public',rel),publicDir=path.join(__dirname,'public');if(path.dirname(file).startsWith(publicDir)&&fs.existsSync(file)&&fs.statSync(file).isFile()){const types={'.svg':'image/svg+xml','.png':'image/png','.webmanifest':'application/manifest+json','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.ico':'image/x-icon','.txt':'text/plain; charset=utf-8'};const type=types[path.extname(file)];if(type){res.writeHead(200,{'content-type':type,'cache-control':rel==='sw.js'?'no-cache':'public, max-age=3600'});return fs.createReadStream(file).pipe(res);}}}}
  if(req.method==='GET'&&(url.pathname==='/'||url.pathname==='/index.html')){res.writeHead(200,{'content-type':'text/html; charset=utf-8','cache-control':'no-cache'});return fs.createReadStream(path.join(__dirname,'public','index.html')).pipe(res);}
