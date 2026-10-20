@@ -8,10 +8,11 @@
 [![Taal](https://img.shields.io/badge/taal-Nederlands-1f6848)](recipe-data/README.md)
 [![Receptenbron](https://img.shields.io/badge/receptenbron-CC%20BY--SA%204.0-ef9421)](https://creativecommons.org/licenses/by-sa/4.0/)
 [![Kledingkast](https://img.shields.io/badge/kledingkast-garderobe-2a6f7f)](wardrobe.js)
+[![Barcodeherkenning](https://img.shields.io/badge/barcode-herkenning-2a6f7f)](barcodes.js)
 [![PWA](https://img.shields.io/badge/PWA-installeerbaar-1f6848)](public/manifest.webmanifest)
 [![Proxmox](https://img.shields.io/badge/Proxmox-LXC-e57000?logo=proxmox&logoColor=white)](deploy/proxmox/README.md)
 
-Eén Nederlandstalige app voor thuis: voorraad, 1.000 recepten, boodschappenlijst, maaltijd- en werkplanning én je garderobe met combineeradvies. Alles draait rechtstreeks als service in een Proxmox LXC, met de gegevens in SQLite op persistente opslag. De webpagina is gebouwd voor de telefoon en werkt ook als installeerbare app.
+Eén Nederlandstalige app voor thuis: voorraad, 1.000 recepten, boodschappenlijst, maaltijd- en werkplanning én je garderobe met combineeradvies. Alles draait rechtstreeks als service in een Proxmox LXC, met de gegevens in SQLite op persistente opslag. De webpagina is gebouwd voor de telefoon en werkt ook als installeerbare app. Een gescande barcode wordt meteen herkend via Open Food Facts.
 
 🎬 **[Rondleiding door de app (74 s, MP4, 1280×720, Nederlandse voice-over)](docs/img/voorraadthuis-rondleiding.mp4)** — voorraad, recepten, kledingkast, kalender en boodschappenlijst in één doorloop, met uitleg per scherm.
 
@@ -51,9 +52,16 @@ Open de app op je telefoon en kies **Toevoegen aan startscherm** (iOS/Safari) of
 
 ### Voorraad en boodschappen
 
+| Barcode herkend | Op de telefoon |
+| --- | --- |
+| ![Barcodeherkenning op de telefoon](docs/img/mobiel-barcode.jpg) | ![Product toevoegen op mobiel](docs/img/mobiel-voorraad.jpg) |
+
 - Twee lijsten: **In huis** en **Niet meer in huis**.
 - Product handmatig invoeren met naam, aantal, eenheid en optionele barcode.
 - Barcode scannen met de camera (browser `BarcodeDetector`, vereist camera-toestemming en een beveiligde context) of handmatig invoeren.
+- **Barcodeherkenning**: zodra er een volledige code staat (gescand of getypt) zoekt de app het product op in [Open Food Facts](https://world.openfoodfacts.org/) (open data, ODbL 1.0) en vult naam, hoeveelheid en eenheid vast in — bijvoorbeeld `5449000000996` → *Coca-Cola Original · 330 ml*. Wat je zelf invult blijft leidend.
+- De uitkomst wordt lokaal bewaard, dus een tweede scan van hetzelfde product werkt zonder internet; een zelf ingevoerd product wordt bij die code onthouden. Met **Opnieuw zoeken** ververs je de gegevens.
+- Een code met een verkeerd controlecijfer wordt gemeld, maar je kunt hem alsnog opzoeken.
 - Markeer een product als op: het verhuist naar de afzonderlijke boodschappenlijst-knop.
 - Voeg handmatig boodschappen toe of zet ingrediënten van een recept met één druk op de lijst; gelijke ingrediënten worden samengevoegd.
 - Herstel of verwijder boodschappen; stuur de lijst door via SMS.
@@ -101,7 +109,9 @@ Elke uitkomst toont de gebruikte argumenten. Met **Nieuw advies** vraag je een v
 
 Met een OpenAI-compatibele dienst (OpenAI, Ollama, LocalAI) kan de app een kledingfoto zelf lezen en naam, categorie, kleur, patroon, materiaal en seizoen invullen. Zet daarvoor `AI_BASE_URL`, `AI_API_KEY` en `AI_VISION_MODEL`; zonder die instellingen blijft de knop om een foto te lezen verborgen en werkt de app volledig handmatig. Wat je zelf invult is altijd leidend.
 
-> Barcodes worden opgeslagen, maar er is geen productcatalogus/lookup gekoppeld: scan een barcode en vul de productnaam zelf in. Camera-scannen werkt alleen in browsers die BarcodeDetector ondersteunen en doorgaans via HTTPS; handmatig scannen blijft beschikbaar.
+*Barcodeherkenning*: `GET /api/barcode/<code>` (met `?force=1` om bestaande gegevens te verversen). Zonder internet (`BARCODE_OFFLINE=1`) gebruikt de app alleen wat al bekend is; met `BARCODE_API` wijs je een andere productendatabank aan.
+
+> Productgegevens komen van [Open Food Facts](https://world.openfoodfacts.org/), beschikbaar onder de [Open Database License (ODbL) 1.0](https://opendatacommons.org/licenses/odbl/1-0/). Camera-scannen werkt in browsers die `BarcodeDetector` ondersteunen (Chrome op Android, Edge) en doorgaans alleen via HTTPS; op iOS typ je de code — die wordt ook meteen herkend.
 
 ## Proxmox LXC installeren (zoals BeatSync)
 

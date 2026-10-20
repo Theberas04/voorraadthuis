@@ -5,6 +5,7 @@ const sqlite3 = require('node:sqlite');
 const internationalRecipes = require('./recipes-international');
 const createOpenRecipes = require('./recipes-open');
 const { createWardrobe } = require('./wardrobe');
+const { createBarcodes } = require('./barcodes');
 const { URL } = require('node:url');
 
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'data', 'voorraad.db');
@@ -36,6 +37,8 @@ function shiftsForDate(date){return db.prepare('SELECT name,start_time AS startT
 // Kledingkast hoort bij dezelfde app: de garderoberoutes staan onder /api/kast/ en de
 // foto's onder /media/. De module krijgt de bestaande database en fotomap mee.
 const wardrobe = createWardrobe({ db, mediaDir: MEDIA_DIR });
+// Barcodeherkenning: gescande codes worden opgezocht en lokaal bewaard.
+const barcodes = createBarcodes({ db });
 function wardrobePath(url) {
   if (url.pathname.startsWith('/api/kast/')) return new URL(`/api/${url.pathname.slice('/api/kast/'.length)}${url.search}`, 'http://localhost');
   return url;
@@ -51,13 +54,19 @@ function addShoppingItem(item){const name=String(item.name||'').trim(),unit=Stri
 const server=http.createServer(async(req,res)=>{const url=new URL(req.url,'http://localhost');try{
  if(url.pathname.startsWith('/api/kast/')||url.pathname.startsWith('/media/'))return wardrobe.handle(req,res,wardrobePath(url));
  if(url.pathname==='/api/products'&&req.method==='GET')return json(res,200,products());
+ // Barcode opzoeken: /api/barcode/<code> (optioneel ?force=1 voor een nieuwe opzoeking).
+ const barcodeMatch=url.pathname.match(/^\/api\/barcode\/([0-9A-Za-z]{4,20})$/);if(barcodeMatch&&req.method==='GET'){const uitkomst=await barcodes.lookup(barcodeMatch[1],{force:url.searchParams.get('force')==='1'});return json(res,200,uitkomst);}
+ if(url.pathname==='/api/barcode'&&req.method==='GET'){const code=url.searchParams.get('code')||'';return json(res,200,await barcodes.lookup(code,{force:url.searchParams.get('force')==='1'}));}
  if(url.pathname==='/api/shopping'&&req.method==='GET')return json(res,200,shopping());
  if(url.pathname==='/api/recipes'&&req.method==='GET'){const country=(url.searchParams.get('country')||'').trim();return json(res,200,country?RECIPES.filter(r=>r.cuisine===country):RECIPES);}
  if(url.pathname==='/api/shift-templates'&&req.method==='GET')return json(res,200,shiftTemplates());
  if(url.pathname==='/api/shift-templates'&&req.method==='POST'){const x=await body(req),name=String(x.name||'').trim(),startTime=String(x.startTime||''),endTime=String(x.endTime||''),notes=String(x.notes||'').trim();if(!name||name.length>80||!validTime(startTime)||!validTime(endTime)||notes.length>200)return json(res,400,{error:'Vul een naam en geldige tijden in 24-uursnotatie (00:00–23:59) in.'});const result=db.prepare('INSERT INTO shift_templates(name,start_time,end_time,notes) VALUES(?,?,?,?)').run(name,startTime,endTime,notes);return json(res,201,db.prepare('SELECT id,name,start_time AS startTime,end_time AS endTime,notes FROM shift_templates WHERE id=?').get(Number(result.lastInsertRowid)));}
  const templateMatch=url.pathname.match(/^\/api\/shift-templates\/(\d+)$/);if(templateMatch&&req.method==='DELETE'){const result=db.prepare('DELETE FROM shift_templates WHERE id=?').run(Number(templateMatch[1]));if(!result.changes)return json(res,404,{error:'Opgeslagen dienst niet gevonden.'});return json(res,200,{ok:true});}
  if(url.pathname==='/api/planner'&&req.method==='GET'){const month=url.searchParams.get('month')||'';if(!/^\d{4}-(0[1-9]|1[0-2])$/.test(month))return json(res,400,{error:'Geef een geldige maand op (YYYY-MM).'});return json(res,200,plansForMonth(month));}
- if(url.pathname==='/api/products'&&req.method==='POST'){const x=await body(req);const name=String(x.name||'').trim();const barcode=String(x.barcode||'').trim()||null;const quantity=Number(x.quantity??1);const unit=String(x.unit||'stuks').trim();if(!name||name.length>120||!Number.isFinite(quantity)||quantity<=0||quantity>100000||unit.length>24)return json(res,400,{error:'Controleer naam, hoeveelheid en eenheid.'});try{const result=db.prepare('INSERT INTO products(name,barcode,quantity,unit) VALUES(?,?,?,?) ON CONFLICT(barcode) DO UPDATE SET name=excluded.name, quantity=products.quantity+excluded.quantity, updated_at=CURRENT_TIMESTAMP').run(name,barcode,quantity,unit);return json(res,201,db.prepare('SELECT * FROM products WHERE id=? OR barcode=?').get(Number(result.lastInsertRowid),barcode));}catch(e){return json(res,409,{error:'Barcode is al gekoppeld aan een ander product.'});}}
+ if(url.pathname==='/api/products'&&req.method==='POST'){const x=await body(req);const name=String(x.name||'').trim();const barcode=String(x.barcode||'').trim()||null;const quantity=Number(x.quantity??1);const unit=String(x.unit||'stuks').trim();if(!name||name.length>120||!Number.isFinite(quantity)||quantity<=0||quantity>100000||unit.length>24)return json(res,400,{error:'Controleer naam, hoeveelheid en eenheid.'});try{const result=db.prepare('INSERT INTO products(name,barcode,quantity,unit) VALUES(?,?,?,?) ON CONFLICT(barcode) DO UPDATE SET name=excluded.name, quantity=products.quantity+excluded.quantity, updated_at=CURRENT_TIMESTAMP').run(name,barcode,quantity,unit);
+ // Wat de gebruiker zelf invult onthoudt de app bij die barcode, zodat een volgende scan meteen goed gaat.
+ if(barcode)barcodes.onthoud(barcode,{name,quantity:Number.isFinite(quantity)?quantity:null,unit});
+ return json(res,201,db.prepare('SELECT * FROM products WHERE id=? OR barcode=?').get(Number(result.lastInsertRowid),barcode));}catch(e){return json(res,409,{error:'Barcode is al gekoppeld aan een ander product.'});}}
  let m=url.pathname.match(/^\/api\/products\/(\d+)$/);if(m&&req.method==='PATCH'){const id=Number(m[1]),x=await body(req);if(x.action==='consume'){const p=db.prepare('SELECT * FROM products WHERE id=?').get(id);if(!p)return json(res,404,{error:'Product niet gevonden.'});db.prepare('DELETE FROM products WHERE id=?').run(id);addShoppingItem(p);return json(res,200,{ok:true});}if(x.action==='restore'){const p=db.prepare('SELECT * FROM shopping WHERE id=?').get(id);if(!p)return json(res,404,{error:'Product niet gevonden.'});db.prepare('INSERT INTO products(name,quantity,unit) VALUES(?,?,?)').run(p.name,p.quantity,p.unit);db.prepare('DELETE FROM shopping WHERE id=?').run(id);return json(res,200,{ok:true});}}
  m=url.pathname.match(/^\/api\/shopping\/recipes\/(\d+)$/);if(m&&req.method==='POST'){const recipe=recipeById(m[1]);if(!recipe)return json(res,404,{error:'Recept niet gevonden.'});for(const ingredient of recipe.ingredients)addShoppingItem(ingredient);return json(res,201,{ok:true,added:recipe.ingredients.length});}
  m=url.pathname.match(/^\/api\/shopping\/(\d+)$/);if(m&&req.method==='DELETE'){db.prepare('DELETE FROM shopping WHERE id=?').run(Number(m[1]));return json(res,200,{ok:true});}
