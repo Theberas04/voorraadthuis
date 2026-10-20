@@ -2,6 +2,7 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const sqlite3 = require('node:sqlite');
+const internationalRecipes = require('./recipes-international');
 const { URL } = require('node:url');
 
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'data', 'voorraad.db');
@@ -11,13 +12,14 @@ db.exec(`CREATE TABLE IF NOT EXISTS products(id INTEGER PRIMARY KEY, name TEXT N
 // Migrate saved legacy single-shift plans once; subsequent saves replace both forms.
 db.exec(`INSERT INTO work_shifts(plan_date,name,start_time,end_time,notes) SELECT plan_date,CASE WHEN trim(work_notes)='' THEN 'Dienst' ELSE trim(work_notes) END,work_start,work_end,'' FROM planner WHERE work_start<>'' AND work_end<>'' AND NOT EXISTS(SELECT 1 FROM work_shifts WHERE work_shifts.plan_date=planner.plan_date)`);
 
-const RECIPES = [
+const BUILTIN_RECIPES = [
   {id:1,name:'Pasta pesto',cuisine:'Italië',time:25,servings:4,description:'Een snelle pasta met basilicumpesto, tomaat en Parmezaan.',ingredients:[{name:'Pasta',quantity:350,unit:'gram'},{name:'Groene pesto',quantity:1,unit:'potje'},{name:'Cherrytomaten',quantity:250,unit:'gram'},{name:'Parmezaanse kaas',quantity:60,unit:'gram'}],steps:['Kook de pasta beetgaar en bewaar een kopje kookwater.','Halveer de tomaten en meng met pesto en een scheut kookwater.','Schep door de pasta en rasp Parmezaan erover.']},
   {id:2,name:'Shakshuka',cuisine:'Tunesië',time:30,servings:3,description:'Eieren in kruidige tomatensaus, met warm brood.',ingredients:[{name:'Eieren',quantity:4,unit:'stuks'},{name:'Tomatenblokjes',quantity:400,unit:'gram'},{name:'Rode paprika',quantity:1,unit:'stuk'},{name:'Ui',quantity:1,unit:'stuk'},{name:'Pitabrood',quantity:3,unit:'stuks'}],steps:['Snipper ui en paprika en bak ze zacht.','Voeg tomaten en specerijen toe en laat 12 minuten pruttelen.','Maak kuiltjes, breek de eieren erin en laat met deksel garen.']},
   {id:3,name:'Kikkererwtencurry',cuisine:'India',time:35,servings:4,description:'Milde curry met kokosmelk, spinazie en rijst.',ingredients:[{name:'Kikkererwten',quantity:2,unit:'blikken'},{name:'Kokosmelk',quantity:1,unit:'blik'},{name:'Spinazie',quantity:200,unit:'gram'},{name:'Currypasta',quantity:2,unit:'eetlepels'},{name:'Basmatirijst',quantity:300,unit:'gram'}],steps:['Kook de rijst volgens de verpakking.','Bak de currypasta kort en roer de kokosmelk en kikkererwten erdoor.','Laat 15 minuten sudderen, roer de spinazie erdoor en serveer met rijst.']},
   {id:4,name:'Taco’s met zwarte bonen',cuisine:'Mexico',time:25,servings:4,description:'Krokante taco’s met bonen, mais en frisse limoen.',ingredients:[{name:'Tacoschelpen',quantity:8,unit:'stuks'},{name:'Zwarte bonen',quantity:1,unit:'blik'},{name:'Mais',quantity:1,unit:'blik'},{name:'Avocado',quantity:2,unit:'stuks'},{name:'Limoen',quantity:1,unit:'stuk'}],steps:['Verwarm de tacoschelpen.','Spoel bonen en mais af en verwarm ze met paprikapoeder.','Vul de schelpen en serveer met avocado en limoen.']},
   {id:5,name:'Boerenkoolstamppot',cuisine:'Nederland',time:40,servings:4,description:'Hollandse stamppot met rookworst en mosterd.',ingredients:[{name:'Boerenkool',quantity:500,unit:'gram'},{name:'Kruimige aardappelen',quantity:1,unit:'kilogram'},{name:'Rookworst',quantity:1,unit:'stuk'},{name:'Melk',quantity:100,unit:'ml'},{name:'Mosterd',quantity:1,unit:'potje'}],steps:['Schil de aardappelen en kook met de boerenkool in 25 minuten gaar.','Verwarm de rookworst volgens de verpakking.','Stamp met melk, breng op smaak en serveer met mosterd.']}
 ];
+const RECIPES = [...BUILTIN_RECIPES, ...internationalRecipes].sort((a,b)=>a.cuisine.localeCompare(b.cuisine,'nl')||a.name.localeCompare(b.name,'nl'));
 const recipeById = id => RECIPES.find(r=>r.id===Number(id));
 function json(res,status,data){res.writeHead(status,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});res.end(JSON.stringify(data));}
 function body(req){return new Promise((resolve,reject)=>{let s='';req.on('data',c=>{s+=c;if(s.length>100000)reject(Error('payload too large'));});req.on('end',()=>{try{resolve(JSON.parse(s||'{}'));}catch{reject(Error('invalid JSON'));}});});}
@@ -34,7 +36,7 @@ function addShoppingItem(item){const name=String(item.name||'').trim(),unit=Stri
 const server=http.createServer(async(req,res)=>{const url=new URL(req.url,'http://localhost');try{
  if(url.pathname==='/api/products'&&req.method==='GET')return json(res,200,products());
  if(url.pathname==='/api/shopping'&&req.method==='GET')return json(res,200,shopping());
- if(url.pathname==='/api/recipes'&&req.method==='GET')return json(res,200,RECIPES);
+ if(url.pathname==='/api/recipes'&&req.method==='GET'){const country=(url.searchParams.get('country')||'').trim();return json(res,200,country?RECIPES.filter(r=>r.cuisine===country):RECIPES);}
  if(url.pathname==='/api/shift-templates'&&req.method==='GET')return json(res,200,shiftTemplates());
  if(url.pathname==='/api/shift-templates'&&req.method==='POST'){const x=await body(req),name=String(x.name||'').trim(),startTime=String(x.startTime||''),endTime=String(x.endTime||''),notes=String(x.notes||'').trim();if(!name||name.length>80||!validTime(startTime)||!validTime(endTime)||notes.length>200)return json(res,400,{error:'Vul een naam en geldige tijden in 24-uursnotatie (00:00–23:59) in.'});const result=db.prepare('INSERT INTO shift_templates(name,start_time,end_time,notes) VALUES(?,?,?,?)').run(name,startTime,endTime,notes);return json(res,201,db.prepare('SELECT id,name,start_time AS startTime,end_time AS endTime,notes FROM shift_templates WHERE id=?').get(Number(result.lastInsertRowid)));}
  const templateMatch=url.pathname.match(/^\/api\/shift-templates\/(\d+)$/);if(templateMatch&&req.method==='DELETE'){const result=db.prepare('DELETE FROM shift_templates WHERE id=?').run(Number(templateMatch[1]));if(!result.changes)return json(res,404,{error:'Opgeslagen dienst niet gevonden.'});return json(res,200,{ok:true});}
