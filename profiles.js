@@ -5,11 +5,13 @@
 // telefoonnummer hangen; de knop "Verstuur via SMS" op de boodschappenlijst
 // stuurt de lijst naar dat nummer.
 //
-// Er zijn drie kanalen:
+// Er zijn vier kanalen:
 //   link    - de app opent de berichten-app van de telefoon met het nummer en de
 //             tekst al ingevuld (werkt zonder instellingen, verstuurt zelf niets)
 //   webhook - de server POST {to,from,body} naar een door de gebruiker opgegeven
 //             URL (bijv. Home Assistant, een eigen gateway of een SMS-dienst)
+//   cheapconnect - de server verstuurt via de SMS-API van CheapConnect
+//             (Nederlandse aanbieder, eigen API-sleutel uit het klantenpaneel)
 //   twilio  - de server verstuurt via de Twilio API met eigen inloggegevens
 //
 // Inloggegevens worden door de gebruiker in de app ingevuld, lokaal in de
@@ -20,11 +22,14 @@ const MAX_NAME = 80;
 const MAX_NOTE = 300;
 const MAX_PHONE = 24;
 const DEFAULT_COUNTRY = '+31';
-const PROVIDERS = ['link', 'webhook', 'twilio'];
-const SETTING_KEYS = ['sms.provider', 'sms.from', 'sms.sender', 'sms.webhookUrl', 'sms.webhookToken', 'sms.twilioSid', 'sms.twilioToken', 'sms.twilioFrom'];
+const PROVIDERS = ['link', 'webhook', 'cheapconnect', 'twilio'];
+const SETTING_KEYS = ['sms.provider', 'sms.from', 'sms.sender', 'sms.webhookUrl', 'sms.webhookToken', 'sms.cheapconnectKey', 'sms.twilioSid', 'sms.twilioToken', 'sms.twilioFrom'];
+// De SMS-API van CheapConnect; overschrijfbaar zodat de tests tegen een eigen
+// ontvanger kunnen draaien in plaats van tegen de echte dienst.
+const CHEAPCONNECT_URL = 'https://account.cheapconnect.net/API/v1/sms/SendSMS';
 // Geheimen komen nooit de deur uit: de pagina ziet alleen of ze gevuld zijn en
 // de laatste vier tekens, zodat je kunt controleren dat je de juiste hebt.
-const SECRET_KEYS = ['sms.webhookToken', 'sms.twilioSid', 'sms.twilioToken'];
+const SECRET_KEYS = ['sms.webhookToken', 'sms.cheapconnectKey', 'sms.twilioSid', 'sms.twilioToken'];
 
 function cleanString(value, max) {
   return String(value ?? '').replace(/\s+/g, ' ').trim().slice(0, max);
@@ -77,7 +82,7 @@ function buildShoppingMessage(items, options = {}) {
   return regels.join('\n');
 }
 
-function createProfiles({ db, fetchImpl = globalThis.fetch } = {}) {
+function createProfiles({ db, fetchImpl = globalThis.fetch, cheapconnectUrl = CHEAPCONNECT_URL } = {}) {
   if (!db) throw new TypeError('Een database is verplicht voor de profielen.');
   db.exec(`CREATE TABLE IF NOT EXISTS profiles(
     id INTEGER PRIMARY KEY,
@@ -170,6 +175,8 @@ function createProfiles({ db, fetchImpl = globalThis.fetch } = {}) {
       webhookUrl: readSetting('sms.webhookUrl'),
       webhookTokenSet: Boolean(readSetting('sms.webhookToken')),
       webhookTokenMask: maskSecret(readSetting('sms.webhookToken')),
+      cheapconnectKeySet: Boolean(readSetting('sms.cheapconnectKey')),
+      cheapconnectKeyMask: maskSecret(readSetting('sms.cheapconnectKey')),
       twilioSidSet: Boolean(readSetting('sms.twilioSid')),
       twilioSidMask: maskSecret(readSetting('sms.twilioSid')),
       twilioTokenSet: Boolean(readSetting('sms.twilioToken')),
@@ -179,6 +186,7 @@ function createProfiles({ db, fetchImpl = globalThis.fetch } = {}) {
       providers: [
         { id: 'link', name: 'Berichten-app op dit apparaat', hint: 'De knop opent je berichten-app met het nummer en de lijst ingevuld. Werkt direct, zonder instellingen.' },
         { id: 'webhook', name: 'Eigen gateway of webhook', hint: 'De server stuurt {to, from, body} als JSON naar jouw URL. Werkt met onder andere Home Assistant of een eigen SMS-dienst.' },
+        { id: 'cheapconnect', name: 'CheapConnect', hint: 'Vul je API-sleutel uit het CheapConnect-paneel in en een afzender (je eigen nummer of maximaal 11 letters). Elke sms kost ongeveer 7 cent.' },
         { id: 'twilio', name: 'Twilio', hint: 'Vul je Account SID, Auth Token en Twilio-nummer in; de app verstuurt de sms zelf.' },
       ],
     };
@@ -193,6 +201,11 @@ function createProfiles({ db, fetchImpl = globalThis.fetch } = {}) {
       if (!readSetting('sms.twilioFrom')) return 'Vul eerst het Twilio-afzendernummer in.';
       return '';
     }
+    if (provider === 'cheapconnect') {
+      if (!readSetting('sms.cheapconnectKey')) return 'Vul eerst je CheapConnect API-sleutel in (aan te maken in het klantenpaneel onder API).';
+      if (!readSetting('sms.from')) return 'Vul eerst een afzender in: je eigen nummer of maximaal 11 letters.';
+      return '';
+    }
     return 'Onbekend sms-kanaal.';
   }
 
@@ -201,14 +214,22 @@ function createProfiles({ db, fetchImpl = globalThis.fetch } = {}) {
     if (!PROVIDERS.includes(provider)) throw Error('Kies een geldig sms-kanaal.');
     saveSetting('sms.provider', provider);
     if (input.sender !== undefined) saveSetting('sms.sender', cleanString(input.sender, 40));
-    if (input.from !== undefined) saveSetting('sms.from', cleanString(input.from, 40));
+    if (input.from !== undefined) {
+      const afzender = cleanString(input.from, 40);
+      // Bij CheapConnect mag een afzender in tekst maximaal 11 tekens hebben;
+      // andere kanalen accepteren een langere naam.
+      if (provider === 'cheapconnect' && afzender && !/^\+?\d[\d\s()-]*$/.test(afzender) && afzender.replace(/\s+/g, '').length > 11) {
+        throw Error('Een afzender in tekst mag maximaal 11 tekens hebben (of vul een telefoonnummer in).');
+      }
+      saveSetting('sms.from', afzender);
+    }
     if (input.webhookUrl !== undefined) {
       const url = cleanString(input.webhookUrl, 300);
       if (url && !/^https?:\/\/\S+$/i.test(url)) throw Error('De webhook-URL moet met http:// of https:// beginnen.');
       saveSetting('sms.webhookUrl', url);
     }
     // Een leeg tekstveld betekent "laat staan"; met 'clear:true' wis je een geheim.
-    for (const [veld, sleutel] of [['webhookToken', 'sms.webhookToken'], ['twilioSid', 'sms.twilioSid'], ['twilioToken', 'sms.twilioToken']]) {
+    for (const [veld, sleutel] of [['webhookToken', 'sms.webhookToken'], ['cheapconnectKey', 'sms.cheapconnectKey'], ['twilioSid', 'sms.twilioSid'], ['twilioToken', 'sms.twilioToken']]) {
       if (input[veld] !== undefined && String(input[veld]).trim() !== '') saveSetting(sleutel, String(input[veld]).trim().slice(0, 200));
     }
     if (Array.isArray(input.clear)) {
@@ -250,6 +271,39 @@ function createProfiles({ db, fetchImpl = globalThis.fetch } = {}) {
       const antwoord = await fetchImpl(url, { method: 'POST', headers, body: JSON.stringify({ to, from: readSetting('sms.from') || 'VoorraadThuis', body }) });
       if (!antwoord.ok) throw Error(`De gateway antwoordde met status ${antwoord.status}.`);
       return 'Verzonden via de eigen gateway.';
+    }
+    if (provider === 'cheapconnect') {
+      // CheapConnect antwoordt altijd met HTTP 200; een fout zit in het veld
+      // 'error' van de JSON (bijv. {"error":"2001: No API Key provided"}). Het
+      // nummer gaat zonder plusteken: 31612345678 (zoals in hun eigen SDK).
+      const sleutel = readSetting('sms.cheapconnectKey');
+      const afzenderInstelling = readSetting('sms.from');
+      // Een afzender die een nummer is, gaat er internationaal uit (31612345678);
+      // een afzender in tekst blijft staan (maximaal 11 tekens).
+      let afzender = afzenderInstelling;
+      if (afzenderInstelling && /^\+?\d[\d\s()-]*$/.test(afzenderInstelling)) {
+        try { afzender = normalizePhone(afzenderInstelling).replace(/^\+/, ''); } catch { afzender = afzenderInstelling.replace(/\D/g, ''); }
+      }
+      const antwoord = await fetchImpl(cheapconnectUrl, {
+        method: 'POST',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          apikey: sleutel,
+          from: afzender,
+          to: String(to).replace(/^\+/, ''),
+          msg: body,
+        }),
+      });
+      const uitleg = await antwoord.text();
+      if (!antwoord.ok) throw Error(`CheapConnect antwoordde met status ${antwoord.status}: ${zonderGeheimen(uitleg)}`);
+      let gegevens = null;
+      try { gegevens = JSON.parse(uitleg); } catch { gegevens = null; }
+      // Foutcodes beginnen met een nummer: 0 betekent geen fout.
+      const fout = gegevens && gegevens.error !== undefined ? String(gegevens.error) : '';
+      if (fout && !/^0\s*:/.test(fout)) throw Error(`CheapConnect weigerde het bericht: ${zonderGeheimen(fout)}`);
+      if (!gegevens && !/success/i.test(uitleg)) throw Error(`Onverwacht antwoord van CheapConnect: ${zonderGeheimen(uitleg)}`);
+      const kenmerk = gegevens && (gegevens.messageid || gegevens.messageId || gegevens.id || gegevens.msgid);
+      return kenmerk ? `Verzonden via CheapConnect (${kenmerk}).` : 'Verzonden via CheapConnect.';
     }
     if (provider === 'twilio') {
       const sid = readSetting('sms.twilioSid');

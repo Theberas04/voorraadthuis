@@ -65,7 +65,7 @@ test('het sms-kanaal bewaart inloggegevens zonder ze terug te geven',async()=>{
   assert.equal(r.status,200);
   const begin=await r.json();
   assert.equal(begin.provider,'link');
-  assert.deepEqual(begin.providers.map(p=>p.id),['link','webhook','twilio']);
+  assert.deepEqual(begin.providers.map(p=>p.id),['link','webhook','cheapconnect','twilio']);
   r=await call('/api/instellingen/sms','PUT',{provider:'rooksignalen'});
   assert.equal(r.status,400);
   r=await call('/api/instellingen/sms','PUT',{provider:'twilio',twilioSid:'AC1234567890abcd',twilioToken:'geheim-token-1234',twilioFrom:'06 12345678',sender:'Boodschappen'});
@@ -80,6 +80,21 @@ test('het sms-kanaal bewaart inloggegevens zonder ze terug te geven',async()=>{
   assert.equal(gewist.twilioTokenSet,false);
   assert.equal(gewist.webhookUrl,'https://voorbeeld.nl/sms');
   assert.equal((await call('/api/instellingen/sms','PUT',{provider:'webhook',webhookUrl:'niet-een-url'})).status,400);
+  // CheapConnect: sleutel bewaren, nooit teruggeven, en pas compleet met een afzender.
+  r=await call('/api/instellingen/sms','PUT',{provider:'cheapconnect',cheapconnectKey:'cc-sleutel-1234',from:'06 12345678'});
+  assert.equal(r.status,200);
+  const cc=await r.json();
+  assert.equal(cc.provider,'cheapconnect');
+  assert.equal(cc.cheapconnectKeySet,true);
+  assert.equal(cc.cheapconnectKeyMask,'••••1234');
+  assert.equal(cc.canSend,true,'met sleutel en afzender kan de app zelf versturen');
+  assert.equal(JSON.stringify(cc).includes('cc-sleutel-1234'),false,'de API-sleutel mag nooit in het antwoord staan');
+  const ccLeeg=await(await call('/api/instellingen/sms','PUT',{provider:'cheapconnect',clear:['sms.cheapconnectKey']})).json();
+  assert.equal(ccLeeg.cheapconnectKeySet,false);
+  assert.equal(ccLeeg.canSend,false);
+  assert.match(ccLeeg.providerHint,/API-sleutel/);
+  assert.equal((await call('/api/instellingen/sms','PUT',{provider:'cheapconnect',from:'Boodschappenlijst van Tom'})).status,400);
+  await call('/api/instellingen/sms','PUT',{provider:'link',from:'',clear:['sms.cheapconnectKey']});
 });
 
 test('de sms-knop verstuurt de lijst naar het nummer van het profiel',async()=>{

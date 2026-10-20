@@ -199,13 +199,26 @@ Het garderobe-onderdeel begon als een zelfstandige app (Kledingkast, MIT) en is 
 
 In de tab **Profielen** zet je de huisgenoten neer met hun gegevens: naam, telefoonnummer, e-mail, rol en een notitie. Telefoonnummers worden in internationale notatie opgeslagen, dus `06 12345678` en `+31 6 12345678` komen op hetzelfde nummer uit. Eén profiel kan de standaardontvanger zijn; dat nummer staat dan vooraan in de keuzelijst op de boodschappenlijst (andere profielen met een nummer blijven kiesbaar).
 
-De knop **Verstuur via SMS** op de boodschappenlijst stuurt de hele lijst naar het nummer van het gekozen profiel. Er zijn drie kanalen:
+De knop **Verstuur via SMS** op de boodschappenlijst stuurt de hele lijst naar het nummer van het gekozen profiel. Er zijn vier kanalen:
 
 - **Berichten-app op dit apparaat** (standaard) — de knop opent je berichten-app met het nummer en de lijst al ingevuld. Werkt direct, zonder instellingen; het versturen zelf doe je daar.
-- **Eigen gateway of webhook** — de server stuurt `{to, from, body}` als JSON naar jouw URL, met een optioneel token als `Authorization: Bearer`. Werkt met onder andere Home Assistant, een eigen SMS-dienst of een provider met een HTTP-API.
+- **Eigen gateway of webhook** — de server stuurt `{to, from, body}` als JSON naar jouw URL, met een optioneel token als `Authorization: *** Werkt met onder andere Home Assistant, een eigen SMS-dienst of een provider met een HTTP-API.
+- **CheapConnect** — de server verstuurt de sms zelf via de SMS-API van CheapConnect (Nederlandse aanbieder, ongeveer € 0,07 per sms). Zie hieronder.
 - **Twilio** — vul je Account SID, Auth Token en Twilio-afzendernummer in; de app verstuurt de sms zelf.
 
 Inloggegevens vul je zelf in de app in. Ze worden lokaal in de database bewaard, nooit aan de pagina teruggegeven (je ziet alleen of ze gevuld zijn en de laatste vier tekens) en nooit naar de logboeken geschreven. Met **Wachtwoorden wissen** haal je ze weer weg. Via **Stuur proefbericht** test je het kanaal; de laatste twintig berichten staan in het lokale logboek onderaan de tab.
+
+### CheapConnect instellen
+
+1. Maak in het klantenpaneel ([account.cheapconnect.net](https://account.cheapconnect.net/)) onder **API** een API-sleutel aan.
+2. Kies bij **Sms-kanaal** voor *CheapConnect*, vul de sleutel in en vul een **afzender** in: je eigen nummer (bijvoorbeeld `06 12345678`) of maximaal 11 letters (bijvoorbeeld `VoorraadTh`).
+3. Klik op **Kanaal opslaan** en daarna op **Stuur proefbericht**.
+
+De app roept `https://account.cheapconnect.net/API/v1/sms/SendSMS` aan met `apikey`, `from`, `to` en `msg`; nummers gaan zonder plusteken (`31612345678`). Een weigering van CheapConnect (bijvoorbeeld `2021: No access to this client`) wordt als Nederlandse foutmelding getoond en in het logboek gezet, met de API-sleutel eruit gefilterd.
+
+| ![CheapConnect als sms-kanaal op desktop](docs/img/sms-cheapconnect-desktop.png) | ![CheapConnect als sms-kanaal op de telefoon](docs/img/sms-cheapconnect-mobiel.jpg) |
+| --- | --- |
+| Het kanaal CheapConnect met API-sleutel (alleen de laatste vier tekens zichtbaar) en afzender. | Dezelfde instellingen op de telefoon. |
 
 | ![Profielen op desktop](docs/img/profielen-desktop.png) | ![Profielen op de telefoon](docs/img/profielen-mobiel.jpg) |
 | --- | --- |

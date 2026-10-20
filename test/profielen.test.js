@@ -69,7 +69,7 @@ test('het bericht bevat de hele boodschappenlijst',()=>{
 test('het sms-kanaal wordt bewaard zonder geheimen terug te geven',()=>{
   const begin=profiles.getSmsSettings();
   assert.equal(begin.provider,'link');
-  assert.deepEqual(begin.providers.map(p=>p.id),['link','webhook','twilio']);
+  assert.deepEqual(begin.providers.map(p=>p.id),['link','webhook','cheapconnect','twilio']);
   assert.throws(()=>profiles.saveSmsSettings({provider:'rooksignalen'}),/geldig sms-kanaal/);
   // Een kanaal kiezen mag ook als het nog niet is ingevuld; de app meldt dan wat er mist.
   const onvolledig=profiles.saveSmsSettings({provider:'webhook'});
@@ -158,4 +158,68 @@ test('een los nummer mag ook, zonder profiel',async()=>{
   assert.equal(uitkomst.to,'+31612345678');
   assert.match(uitkomst.link,/^sms:\+31612345678/);
   assert.equal(uitkomst.body.startsWith('Lijst:'),true);
+});
+test('CheapConnect verstuurt de lijst via zijn eigen API',async()=>{
+  profiles.saveSmsSettings({provider:'cheapconnect',cheapconnectKey:'cc-sleutel-1234',from:'06 12345678'});
+  const ontvangen=[];
+  const api=http.createServer((req,res)=>{let data='';req.on('data',c=>data+=c);req.on('end',()=>{ontvangen.push({url:req.url,type:req.headers['content-type'],velden:Object.fromEntries(new URLSearchParams(data))});res.writeHead(200,{'content-type':'application/json'});res.end(JSON.stringify({success:true,messageid:'abc123'}));});});
+  await new Promise(r=>api.listen(0,'127.0.0.1',r));
+  const metApi=createProfiles({db,cheapconnectUrl:`http://127.0.0.1:${api.address().port}/API/v1/sms/SendSMS`});
+  const tom=profiles.listProfiles()[0];
+  try{
+    const uitkomst=await metApi.sendShoppingList({profileId:tom.id,items:boodschappen});
+    assert.equal(uitkomst.sent,true);
+    assert.equal(uitkomst.provider,'cheapconnect');
+    assert.equal(ontvangen.length,1);
+    // Het nummer gaat zonder plusteken naar CheapConnect, de sleutel als apikey.
+    assert.equal(ontvangen[0].velden.apikey,'cc-sleutel-1234');
+    assert.equal(ontvangen[0].velden.to,'31612345678');
+    assert.equal(ontvangen[0].velden.from,'31612345678','ook de afzender gaat zonder plusteken en zonder spaties');
+    assert.match(ontvangen[0].velden.msg,/- Melk \(2 pakken\)/);
+    assert.match(uitkomst.detail,/abc123/);
+    assert.equal(metApi.smsHistory(1)[0].status,'verzonden');
+    assert.equal(metApi.smsHistory(1)[0].provider,'cheapconnect');
+  }finally{
+    await new Promise(r=>api.close(r));
+  }
+});
+
+test('CheapConnect-fouten komen netjes door zonder de sleutel te lekken',async()=>{
+  const api=http.createServer((req,res)=>{res.writeHead(200,{'content-type':'application/json'});res.end(JSON.stringify({error:'2021: No access to this client, key cc-sleutel-1234'}));});
+  await new Promise(r=>api.listen(0,'127.0.0.1',r));
+  const metApi=createProfiles({db,cheapconnectUrl:`http://127.0.0.1:${api.address().port}/API/v1/sms/SendSMS`});
+  try{
+    profiles.saveSmsSettings({provider:'cheapconnect',cheapconnectKey:'cc-sleutel-1234',from:'06 12345678'});
+    const fout=await metApi.sendShoppingList({profileId:profiles.listProfiles()[0].id,items:boodschappen}).then(()=>null,e=>e);
+    assert.ok(fout,'een fout antwoord van CheapConnect moet een foutmelding geven');
+    assert.match(fout.message,/CheapConnect weigerde het bericht: 2021/);
+    assert.equal(fout.message.includes('cc-sleutel-1234'),false,'de API-sleutel mag niet in de foutmelding staan');
+    assert.equal(metApi.smsHistory(1)[0].status,'mislukt');
+  }finally{
+    await new Promise(r=>api.close(r));
+  }
+});
+
+test('CheapConnect vraagt eerst om sleutel en afzender',async()=>{
+  // Deze test deelt de database met de vorige: eerst alles leegmaken.
+  profiles.saveSmsSettings({provider:'cheapconnect',from:'',clear:['sms.cheapconnectKey']});
+  const onvolledig=profiles.getSmsSettings();
+  assert.equal(onvolledig.canSend,false);
+  assert.equal(onvolledig.providerHint,'Vul eerst je CheapConnect API-sleutel in (aan te maken in het klantenpaneel onder API).');
+  const metSleutel=profiles.saveSmsSettings({provider:'cheapconnect',cheapconnectKey:'cc-sleutel-1234'});
+  assert.equal(metSleutel.canSend,false);
+  assert.equal(metSleutel.providerHint,'Vul eerst een afzender in: je eigen nummer of maximaal 11 letters.');
+  assert.equal(metSleutel.cheapconnectKeySet,true);
+  assert.equal(metSleutel.cheapconnectKeyMask,'••••1234');
+  assert.equal(JSON.stringify(metSleutel).includes('cc-sleutel-1234'),false,'de sleutel mag niet terugkomen');
+  // Een afzender in tekst mag maximaal 11 tekens hebben.
+  assert.throws(()=>profiles.saveSmsSettings({provider:'cheapconnect',from:'Boodschappenlijst van Tom'}),/maximaal 11 tekens/);
+  const metAfzender=profiles.saveSmsSettings({provider:'cheapconnect',from:'06 12345678'});
+  assert.equal(metAfzender.canSend,true);
+  assert.equal(metAfzender.providerHint,'');
+  // Wissen kan met clear.
+  const gewist=profiles.saveSmsSettings({provider:'cheapconnect',clear:['sms.cheapconnectKey']});
+  assert.equal(gewist.cheapconnectKeySet,false);
+  await assert.rejects(()=>profiles.sendShoppingList({to:'0612345678',items:boodschappen}),/API-sleutel/);
+  profiles.saveSmsSettings({provider:'link'});
 });
