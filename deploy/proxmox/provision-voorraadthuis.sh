@@ -85,7 +85,8 @@ log "Wachten op app en nginx…"
 for _ in $(seq 1 20); do
   if curl -kfsS --max-time 3 "https://$IP/healthz" 2>/dev/null | grep -q '^ok$'; then
     curl -kfsS --max-time 5 "https://$IP/" 2>/dev/null | grep -qi 'VoorraadThuis' || die "Healthcheck ok, maar app-pagina niet gevonden."
-    log "VoorraadThuis reageert op https://$IP/ (self-signed TLS)."
+    curl -kfsS --max-time 5 "https://$IP/api/products" 2>/dev/null | grep -q '^\[' || die "API-test mislukt."
+    log "VoorraadThuis reageert op https://$IP/ (self-signed TLS); API is bereikbaar."
     exit 0
   fi
   sleep 1
