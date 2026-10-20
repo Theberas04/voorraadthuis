@@ -16,13 +16,14 @@ DISK="${DISK:-4}"
 ENABLE_TLS="${ENABLE_TLS:-1}"
 DEBIAN_MAJOR="${DEBIAN_MAJOR:-12}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+APP_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 log(){ printf '\033[1;36m==>\033[0m %s\n' "$*"; }
 warn(){ printf '\033[1;33m[!]\033[0m %s\n' "$*" >&2; }
 die(){ printf '\033[1;31m[fout]\033[0m %s\n' "$*" >&2; exit 1; }
 [ "$(id -u)" -eq 0 ] || die "Draai dit als root op de Proxmox-host."
 command -v pct >/dev/null || die "pct niet gevonden: dit is geen Proxmox VE-host."
 command -v pveam >/dev/null || die "pveam niet gevonden."
-for f in server.js package.json public/index.html nginx-voorraadthuis.conf provision-voorraadthuis.sh; do [ -f "$SCRIPT_DIR/$f" ] || die "$f ontbreekt naast dit script."; done
+for f in "$APP_DIR/server.js" "$APP_DIR/package.json" "$APP_DIR/recipes-international.js" "$APP_DIR/recipes-open.js" "$APP_DIR/recipe-data/unitools-recipes.json" "$APP_DIR/recipe-data/wikibooks-recipes.json" "$APP_DIR/public/index.html" "$SCRIPT_DIR/nginx-voorraadthuis.conf" "$SCRIPT_DIR/provision-voorraadthuis.sh"; do [ -f "$f" ] || die "$f ontbreekt."; done
 ip link show "$BRIDGE" >/dev/null 2>&1 || die "Bridge '$BRIDGE' bestaat niet."
 if [ -n "$STATIC_IP" ]; then [ -n "$GATEWAY" ] || die "Geef GATEWAY op bij STATIC_IP."; NET0="name=eth0,bridge=$BRIDGE,ip=$STATIC_IP,gw=$GATEWAY,type=veth"; else NET0="name=eth0,bridge=$BRIDGE,ip=dhcp,type=veth"; fi
 if [ -z "$CTID" ]; then CTID="$(pvesh get /cluster/nextid 2>/dev/null || true)"; fi

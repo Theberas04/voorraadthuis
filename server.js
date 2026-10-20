@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const sqlite3 = require('node:sqlite');
 const internationalRecipes = require('./recipes-international');
+const createOpenRecipes = require('./recipes-open');
 const { URL } = require('node:url');
 
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'data', 'voorraad.db');
@@ -19,7 +20,9 @@ const BUILTIN_RECIPES = [
   {id:4,name:'Taco’s met zwarte bonen',cuisine:'Mexico',time:25,servings:4,description:'Krokante taco’s met bonen, mais en frisse limoen.',ingredients:[{name:'Tacoschelpen',quantity:8,unit:'stuks'},{name:'Zwarte bonen',quantity:1,unit:'blik'},{name:'Mais',quantity:1,unit:'blik'},{name:'Avocado',quantity:2,unit:'stuks'},{name:'Limoen',quantity:1,unit:'stuk'}],steps:['Verwarm de tacoschelpen.','Spoel bonen en mais af en verwarm ze met paprikapoeder.','Vul de schelpen en serveer met avocado en limoen.']},
   {id:5,name:'Boerenkoolstamppot',cuisine:'Nederland',time:40,servings:4,description:'Hollandse stamppot met rookworst en mosterd.',ingredients:[{name:'Boerenkool',quantity:500,unit:'gram'},{name:'Kruimige aardappelen',quantity:1,unit:'kilogram'},{name:'Rookworst',quantity:1,unit:'stuk'},{name:'Melk',quantity:100,unit:'ml'},{name:'Mosterd',quantity:1,unit:'potje'}],steps:['Schil de aardappelen en kook met de boerenkool in 25 minuten gaar.','Verwarm de rookworst volgens de verpakking.','Stamp met melk, breng op smaak en serveer met mosterd.']}
 ];
-const RECIPES = [...BUILTIN_RECIPES, ...internationalRecipes].sort((a,b)=>a.cuisine.localeCompare(b.cuisine,'nl')||a.name.localeCompare(b.name,'nl'));
+const CURATED_RECIPES = [...BUILTIN_RECIPES, ...internationalRecipes];
+const openRecipes = createOpenRecipes(CURATED_RECIPES);
+const RECIPES = [...CURATED_RECIPES, ...openRecipes].sort((a,b)=>a.cuisine.localeCompare(b.cuisine,'nl')||a.name.localeCompare(b.name,'nl'));
 const recipeById = id => RECIPES.find(r=>r.id===Number(id));
 function json(res,status,data){res.writeHead(status,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});res.end(JSON.stringify(data));}
 function body(req){return new Promise((resolve,reject)=>{let s='';req.on('data',c=>{s+=c;if(s.length>100000)reject(Error('payload too large'));});req.on('end',()=>{try{resolve(JSON.parse(s||'{}'));}catch{reject(Error('invalid JSON'));}});});}
