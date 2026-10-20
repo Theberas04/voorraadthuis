@@ -13,24 +13,24 @@ Een lichte, Nederlandstalige voorraad-app voor thuis. Draait zelfstandig op een 
 
 > Barcodes worden opgeslagen, maar er is geen productcatalogus/lookup gekoppeld: scan een barcode en vul de productnaam zelf in. Camera-scannen werkt alleen in browsers die BarcodeDetector ondersteunen en doorgaans via HTTPS; handmatig scannen blijft beschikbaar.
 
-## Snel starten (Proxmox)
-Aanbevolen: Debian 12 LXC of VM met Docker Engine + Compose plugin. Maak de container privileged? **Nee**, een gewone unprivileged LXC volstaat wanneer nesting/keyctl voor Docker aan staan. Alternatief is Docker op een VM.
+## Proxmox LXC installeren
 
-1. Clone de repository in de Debian guest:
-   ```sh
-   git clone https://github.com/Theberas04/voorraadthuis.git
-   cd voorraadthuis
-   ```
-2. Start de app:
-   ```sh
-   docker compose up -d --build
-   ```
-3. Open `http://<IP-van-je-guest>:3000` op je thuisnetwerk.
+De app draait als Node.js-service rechtstreeks in een **unprivileged Debian 12 LXC** (dus geen Docker-in-LXC nodig). De provisioningscript moet op de Proxmox-host als root draaien en maakt de container aan, installeert Node.js 22 en stelt een systemd-service in.
 
-Stel een ander poortnummer in met `APP_PORT=8080 docker compose up -d --build`. Gegevens staan in Docker volume `voorraadthuis_voorraad_data`; back-up bijvoorbeeld met `docker run --rm -v voorraadthuis_voorraad_data:/data -v "$PWD":/backup alpine tar czf /backup/voorraad-data.tar.gz -C /data .`.
+1. Zet een kopie van deze repository op de Proxmox-host in een map (bijvoorbeeld `/root/voorraadthuis`). Omdat deze GitHub-repository privé is, haal je die via een ingelogde GitHub-client op of upload je de bronbestanden zelf. De scripts kopiëren alleen `server.js`, `package.json` en `public/index.html` in de LXC.
+2. Op de Proxmox-host:
+   ```sh
+   cd /root/voorraadthuis
+   chmod +x scripts/create-lxc.sh
+   scripts/create-lxc.sh /root/voorraadthuis 120
+   ```
+   Pas `120` aan als CTID al in gebruik is. Instelbare variabelen zijn `BRIDGE` (standaard `vmbr0`), `STORAGE` (standaard `local-lvm`), `TEMPLATE_STORAGE` (standaard `local`), `IP` (standaard DHCP), `GATEWAY`, `DNS`, `PORT`, `MEMORY`, `CORES` en `DISK`. Bijvoorbeeld `IP=192.168.1.50/24 GATEWAY=192.168.1.1 scripts/create-lxc.sh /root/voorraadthuis 120`.
+3. Open de getoonde URL, standaard `http://<LXC-IP>:3000`.
+
+Script vereist Proxmox VE-tools (`pct`, `pveam`) en netwerktoegang van de LXC naar Debian/NodeSource. De Debian 12 template wordt opgehaald indien nodig. De appdata staat persistent in `/var/lib/voorraadthuis/voorraad.db`; maak daarvan een back-up vanuit Proxmox. Beheer: `pct exec 120 -- systemctl status voorraadthuis`, `pct exec 120 -- systemctl restart voorraadthuis`.
 
 ### HTTPS voor camera-scannen
-De browser vereist meestal HTTPS voor cameratoegang (localhost is uitzondering). Zet desgewenst een reverse proxy met TLS (bijv. Caddy/Nginx Proxy Manager) vóór poort 3000. Anders kun je de barcode handmatig invoeren. Stel de app niet onbeveiligd bloot aan internet: er is geen login/authenticatie ingebouwd en dit is bedoeld voor je vertrouwde LAN.
+De browser vereist meestal HTTPS voor cameratoegang (localhost is uitzondering). Zet desgewenst een reverse proxy met TLS vóór poort 3000. Anders kun je de barcode handmatig invoeren. Stel de app niet onbeveiligd bloot aan internet: er is geen login/authenticatie ingebouwd en dit is bedoeld voor je vertrouwde LAN.
 
 ## Lokaal ontwikkelen/testen
 Node.js 22.5+ is vereist (gebruikt ingebouwde `node:sqlite`, geen npm dependencies).
