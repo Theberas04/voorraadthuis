@@ -8,7 +8,8 @@ Een lichte, Nederlandstalige voorraad-, recepten- en planningsapp voor thuis. Dr
 - Barcode scannen met de camera (browser `BarcodeDetector`, vereist camera-toestemming en een beveiligde context) of handmatig invoeren.
 - Markeer een product als op: het verhuist naar de afzonderlijke boodschappenlijst-knop.
 - Voeg handmatig boodschappen toe of zet ingrediënten van een recept met één druk op de lijst; gelijke ingrediënten worden samengevoegd.
-- Receptenboek met vijf startrecepten, landkeuken, bereidingstijd, ingrediënten en bereidingsstappen.
+- Receptenboek met 115 praktische, zelfgeschreven thuisvarianten uit 55 landen (waaronder de vijf oorspronkelijke recepten); recepten worden alfabetisch per land gegroepeerd en zijn te filteren op land of zoekterm. Elk recept bevat ingrediënten, bereidingstijd, porties en bereidingsstappen; de ingrediënten kunnen aan de boodschappenlijst worden toegevoegd.
+- De internationale recepten zijn een groeiende selectie en geen volledige inventaris van alle gerechten uit die landen. Ze zijn eigen thuisversies, niet overgenomen van Albert Heijn, Picnic of andere receptensites; traditionele bereidingswijzen kunnen per regio en huishouden verschillen.
 - Maandkalender om per dag een recept en landkeuken te plannen, plus meerdere benoemde diensten met start-/eindtijden in 24-uursnotatie. Sla diensten op als herbruikbare sjablonen en zet ze met één druk op een gekozen dag; de dagplanning en diensten blijven bewaard in SQLite.
 - Herstel of verwijder boodschappen; stuur de lijst door via SMS.
 - SMS opent de berichten-app met tekst ingevuld. Je controleert en verstuurt zelf; er is geen SMS-provider of betaalde API nodig.
