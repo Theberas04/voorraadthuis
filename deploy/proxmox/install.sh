@@ -21,7 +21,7 @@ FILES=(
   "recipes-international.js"
   "recipes-open.js"
   "wardrobe.js"
-  "barcodes.js"
+  "barcodes.js" "profiles.js"
   "recipe-data/unitools-recipes.json"
   "recipe-data/wikibooks-recipes.json"
   "recipe-data/translations-nl.json"
