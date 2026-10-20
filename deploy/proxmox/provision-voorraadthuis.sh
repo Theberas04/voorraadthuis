@@ -87,11 +87,23 @@ pct exec "$CTID" -- systemctl enable --now nginx
 pct exec "$CTID" -- systemctl enable voorraadthuis-cert.service
 pct exec "$CTID" -- systemctl restart nginx
 log "Wachten op app en nginx…"
+# Bij een mislukte controle meteen laten zien wat er wél staat, zodat de oorzaak
+# zichtbaar is in plaats van alleen "mislukt".
+diagnose(){
+  printf '\033[1;33m--- diagnose ---\033[0m\n' >&2
+  printf 'pagina /: ' >&2
+  curl -kfsS --max-time 5 -o /dev/null -w 'HTTP %{http_code}\n' "https://$IP/" 2>/dev/null || printf 'niet bereikbaar\n' >&2
+  printf 'bestanden:\n' >&2
+  pct exec "$CTID" -- ls -la "$SITE_DIR" "$SITE_DIR/public" 2>/dev/null | sed 's/^/    /' >&2 || true
+  printf 'dienst voorraadthuis: ' >&2
+  pct exec "$CTID" -- systemctl is-active voorraadthuis 2>/dev/null >&2 || true
+  pct exec "$CTID" -- journalctl -u voorraadthuis -n 8 --no-pager 2>/dev/null | sed 's/^/    /' >&2 || true
+}
 for _ in $(seq 1 20); do
   if curl -kfsS --max-time 3 "https://$IP/healthz" 2>/dev/null | grep -q '^ok$'; then
-    curl -kfsS --max-time 5 "https://$IP/" 2>/dev/null | grep -qi 'VoorraadThuis' || die "Healthcheck ok, maar app-pagina niet gevonden."
-    curl -kfsS --max-time 5 "https://$IP/api/products" 2>/dev/null | grep -q '^\[' || die "API-test mislukt."
-    curl -kfsS --max-time 5 "https://$IP/api/kast/config" 2>/dev/null | grep -q '"schoenen"' || die "Garderobe-API (Kledingkast) antwoordt niet."
+    curl -kfsS --max-time 5 "https://$IP/" 2>/dev/null | grep -qi 'VoorraadThuis' || { diagnose; die "Healthcheck ok, maar app-pagina niet gevonden."; }
+    curl -kfsS --max-time 5 "https://$IP/api/products" 2>/dev/null | grep -q '^\[' || { diagnose; die "API-test mislukt."; }
+    curl -kfsS --max-time 5 "https://$IP/api/kast/config" 2>/dev/null | grep -q '"schoenen"' || { diagnose; die "Garderobe-API (Kledingkast) antwoordt niet."; }
     log "VoorraadThuis reageert op https://$IP/ (self-signed TLS); API is bereikbaar."
     exit 0
   fi
