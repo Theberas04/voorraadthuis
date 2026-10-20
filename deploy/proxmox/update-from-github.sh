@@ -28,6 +28,7 @@ if [ -n "$IP" ]; then
   pct exec "$CTID" -- /usr/local/sbin/voorraadthuis-cert-refresh
   pct exec "$CTID" -- systemctl reload nginx
   curl -kfsS --max-time 10 "https://$IP/healthz" | grep -q '^ok$' || { echo 'App-healthcheck mislukt.' >&2; exit 1; }
+  curl -kfsS --max-time 10 "https://$IP/api/products" | grep -q '^\[' || { echo 'API-test mislukt.' >&2; exit 1; }
   echo "VoorraadThuis bijgewerkt; controle: https://$IP/"
 else
   echo 'Bestanden bijgewerkt. IP niet gevonden; controleer service met pct exec <CTID> -- systemctl status voorraadthuis.'
