@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="VoorraadThuis">
+  <rect width="64" height="64" rx="15" fill="#173c32"/>
+  <path d="M32 12 11 30.5h6.5V51h29V30.5H53Z" fill="#b9d2a3"/>
+  <path d="M32 21 21 30.8V46h22V30.8Z" fill="#f5f5f0"/>
+  <path d="M29 46V36h6v10Z" fill="#1f6848"/>
+  <circle cx="32" cy="29" r="3.2" fill="#1f6848"/>
+</svg>
