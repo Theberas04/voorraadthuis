@@ -1,5 +1,5 @@
 /* VoorraadThuis service worker: houdt de app installeerbaar en offline bruikbaar op de telefoon. */
-const CACHE = 'voorraadthuis-v3';
+const CACHE = 'voorraadthuis-v4';
 const SHELL = ['/', '/index.html', '/favicon.svg', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', event => {
@@ -19,8 +19,8 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
-  // Voorraad en lijsten komen altijd vers van de server.
-  if (url.pathname.startsWith('/api/') || url.pathname === '/health') return;
+  // Voorraad, lijsten en kledingfoto's komen altijd vers van de server.
+  if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/media/') || url.pathname === '/health' || url.pathname === '/healthz') return;
 
   // Pagina's: eerst netwerk, bij storing de laatst bewaarde versie.
   if (request.mode === 'navigate' || url.pathname === '/' || url.pathname === '/index.html') {

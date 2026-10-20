@@ -4,9 +4,11 @@ const path = require('node:path');
 const sqlite3 = require('node:sqlite');
 const internationalRecipes = require('./recipes-international');
 const createOpenRecipes = require('./recipes-open');
+const { createWardrobe } = require('./wardrobe');
 const { URL } = require('node:url');
 
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'data', 'voorraad.db');
+const MEDIA_DIR = process.env.MEDIA_DIR || path.join(path.dirname(DB_PATH), 'fotos');
 fs.mkdirSync(path.dirname(DB_PATH), {recursive:true});
 const db = new sqlite3.DatabaseSync(DB_PATH);
 db.exec(`CREATE TABLE IF NOT EXISTS products(id INTEGER PRIMARY KEY, name TEXT NOT NULL, barcode TEXT UNIQUE, quantity REAL NOT NULL DEFAULT 1, unit TEXT NOT NULL DEFAULT 'stuks', updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP); CREATE TABLE IF NOT EXISTS shopping(id INTEGER PRIMARY KEY, product_id INTEGER UNIQUE, name TEXT NOT NULL, quantity REAL NOT NULL DEFAULT 1, unit TEXT NOT NULL DEFAULT 'stuks'); CREATE TABLE IF NOT EXISTS planner(plan_date TEXT PRIMARY KEY, recipe_id INTEGER, cuisine TEXT NOT NULL DEFAULT '', work_start TEXT NOT NULL DEFAULT '', work_end TEXT NOT NULL DEFAULT '', work_notes TEXT NOT NULL DEFAULT ''); CREATE TABLE IF NOT EXISTS work_shifts(id INTEGER PRIMARY KEY, plan_date TEXT NOT NULL, name TEXT NOT NULL, start_time TEXT NOT NULL, end_time TEXT NOT NULL, notes TEXT NOT NULL DEFAULT ''); CREATE TABLE IF NOT EXISTS shift_templates(id INTEGER PRIMARY KEY, name TEXT NOT NULL, start_time TEXT NOT NULL, end_time TEXT NOT NULL, notes TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)`);
@@ -31,6 +33,13 @@ function shopping(){return db.prepare('SELECT * FROM shopping ORDER BY name COLL
 function validDate(s){if(!/^\d{4}-\d{2}-\d{2}$/.test(s))return false;const d=new Date(`${s}T00:00:00.000Z`);return Number.isFinite(d.getTime())&&d.toISOString().slice(0,10)===s;}
 function validTime(s){return typeof s==='string'&&/^([01]\d|2[0-3]):[0-5]\d$/.test(s);}
 function shiftsForDate(date){return db.prepare('SELECT name,start_time AS startTime,end_time AS endTime,notes FROM work_shifts WHERE plan_date=? ORDER BY id').all(date);}
+// Kledingkast hoort bij dezelfde app: de garderoberoutes staan onder /api/kast/ en de
+// foto's onder /media/. De module krijgt de bestaande database en fotomap mee.
+const wardrobe = createWardrobe({ db, mediaDir: MEDIA_DIR });
+function wardrobePath(url) {
+  if (url.pathname.startsWith('/api/kast/')) return new URL(`/api/${url.pathname.slice('/api/kast/'.length)}${url.search}`, 'http://localhost');
+  return url;
+}
 function planWithShifts(plan){return plan?{...plan,shifts:shiftsForDate(plan.plan_date)}:null;}
 function plansForMonth(month){return db.prepare('SELECT * FROM planner WHERE plan_date LIKE ? ORDER BY plan_date').all(`${month}-%`).map(planWithShifts);}
 function shiftTemplates(){return db.prepare('SELECT id,name,start_time AS startTime,end_time AS endTime,notes FROM shift_templates ORDER BY name COLLATE NOCASE,id').all();}
@@ -40,6 +49,7 @@ const MAX_SHOPPING_NAME=400;
 function addShoppingItem(item){const name=String(item.name||'').trim(),unit=String(item.unit||'stuks').trim(),quantity=Number(item.quantity??1);if(!name||name.length>MAX_SHOPPING_NAME||!Number.isFinite(quantity)||quantity<=0||quantity>100000||unit.length>24)throw Error('Ongeldig boodschappenproduct.');const old=db.prepare('SELECT id FROM shopping WHERE lower(name)=lower(?) AND lower(unit)=lower(?) ORDER BY id LIMIT 1').get(name,unit);if(old)db.prepare('UPDATE shopping SET quantity=quantity+? WHERE id=?').run(quantity,old.id);else db.prepare('INSERT INTO shopping(name,quantity,unit) VALUES(?,?,?)').run(name,quantity,unit);}
 
 const server=http.createServer(async(req,res)=>{const url=new URL(req.url,'http://localhost');try{
+ if(url.pathname.startsWith('/api/kast/')||url.pathname.startsWith('/media/'))return wardrobe.handle(req,res,wardrobePath(url));
  if(url.pathname==='/api/products'&&req.method==='GET')return json(res,200,products());
  if(url.pathname==='/api/shopping'&&req.method==='GET')return json(res,200,shopping());
  if(url.pathname==='/api/recipes'&&req.method==='GET'){const country=(url.searchParams.get('country')||'').trim();return json(res,200,country?RECIPES.filter(r=>r.cuisine===country):RECIPES);}

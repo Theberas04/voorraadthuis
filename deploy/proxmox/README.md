@@ -1,6 +1,6 @@
 # VoorraadThuis op Proxmox
 
-Dit pakket installeert VoorraadThuis als een **unprivileged Debian LXC**, vergelijkbaar met BeatSync Studio. De app draait als systemd-service achter nginx; Docker is niet nodig. Standaard wordt DHCP gebruikt, met optioneel een vast IP. HTTPS wordt ingericht met een self-signed certificaat.
+VoorraadThuis is één app: voorraad, recepten, boodschappen, kalender én de garderobe (Kledingkast). Dit pakket installeert die app als een **unprivileged Debian LXC**, vergelijkbaar met BeatSync Studio. De app draait als systemd-service achter nginx; Docker is niet nodig. Standaard wordt DHCP gebruikt, met optioneel een vast IP. HTTPS wordt ingericht met een self-signed certificaat.
 
 ## Installeren vanaf GitHub met één commando
 
@@ -60,3 +60,16 @@ pct exec 120 -- systemctl status nginx
 ```
 
 De voorraad staat in `/var/lib/voorraadthuis/voorraad.db` binnen de container. Neem een Proxmox-containerback-up of kopieer die database apart. De app heeft geen login en is bedoeld voor het vertrouwde thuisnetwerk; stel hem niet rechtstreeks bloot aan internet.
+
+De garderobe zit in dezelfde database en gebruikt daarnaast de fotomap `/var/lib/voorraadthuis/fotos` (via `MEDIA_DIR`). Neem die map mee in je back-up, anders raak je de kledingfoto's kwijt. Kledingstukken zijn zelf in te vullen; AI-tagging van een foto is optioneel en werkt met een OpenAI-compatibele dienst:
+
+```bash
+pct exec 120 -- systemctl edit voorraadthuis   # voeg toe:
+# [Service]
+# Environment=AI_BASE_URL=http://192.168.1.10:11434/v1
+# Environment=AI_VISION_MODEL=llava
+# Environment=AI_API_KEY=...
+pct exec 120 -- systemctl restart voorraadthuis
+```
+
+Zonder die instellingen blijft de knop om een foto te laten lezen verborgen en werkt de app volledig handmatig.
