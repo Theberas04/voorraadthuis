@@ -42,6 +42,7 @@ if [ -n "$IP" ]; then
   pct exec "$CTID" -- /usr/local/sbin/voorraadthuis-cert-refresh
   pct exec "$CTID" -- systemctl reload nginx
   curl -kfsS --max-time 10 "https://$IP/healthz" | grep -q '^ok$' || { echo 'App-healthcheck mislukt.' >&2; rollback; }
+  curl -kfsS --max-time 10 "https://$IP/" | grep -qi 'VoorraadThuis' || { echo 'App-pagina niet gevonden op / (staat index.html in /var/www/voorraadthuis/public?).' >&2; rollback; }
   curl -kfsS --max-time 10 "https://$IP/api/products" | grep -q '^\[' || { echo 'API-test mislukt.' >&2; rollback; }
   curl -kfsS --max-time 10 "https://$IP/favicon.svg" | grep -qi '<svg' || { echo 'App-pictogram niet bereikbaar.' >&2; rollback; }
   curl -kfsS --max-time 10 "https://$IP/manifest.webmanifest" | grep -q '"display"' || { echo 'Webapp-manifest niet bereikbaar.' >&2; rollback; }
