@@ -22,6 +22,7 @@ FILES=(
   "recipes-open.js"
   "recipe-data/unitools-recipes.json"
   "recipe-data/wikibooks-recipes.json"
+  "recipe-data/translations-nl.json"
   "public/index.html"
   "public/favicon.svg"
   "public/manifest.webmanifest"

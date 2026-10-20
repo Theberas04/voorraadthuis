@@ -1,5 +1,33 @@
 const unitoolsData = require('./recipe-data/unitools-recipes.json');
 const wikibooksData = require('./recipe-data/wikibooks-recipes.json');
+const translationsData = require(process.env.TRANSLATIONS_FILE||'./recipe-data/translations-nl.json');
+const dutchTranslations = new Map(Object.entries(translationsData.items||{}));
+
+/* Vervang de tekst van een geïmporteerd recept door de Nederlandse vertaling.
+   Id, hoeveelheid, eenheid, bron en licentie blijven ongewijzigd. */
+function dutchRecipe(recipe) {
+  const translation = dutchTranslations.get(String(recipe.id));
+  if(!translation)return recipe;
+  const ingredients = recipe.ingredients.map((ingredient,index)=>{
+    const translated = (translation.ingredients||[])[index];
+    if(!translated||!translated.name)return ingredient;
+    return {
+      ...ingredient,
+      name:translated.name,
+      ...(ingredient.display!=null&&translated.display?{display:translated.display}:{}),
+    };
+  });
+  return {
+    ...recipe,
+    name:translation.name||recipe.name,
+    cuisine:translation.cuisine||recipe.cuisine,
+    description:translation.description||recipe.description,
+    ingredients,
+    steps:Array.isArray(translation.steps)&&translation.steps.length===recipe.steps.length?translation.steps:recipe.steps,
+    language:'nl',
+    translatedFrom:recipe.language,
+  };
+}
 
 const regionNames = new Intl.DisplayNames(['nl'], {type:'region'});
 const countryNames = new Map(unitoolsData.countries.map(country => [country.code, regionNames.of(country.code)]));
@@ -114,9 +142,24 @@ function createOpenRecipes(existingRecipes) {
     used.add(key);
     imported.push(converted);
   });
+  // Selectie en ontdubbeling gebeuren op de brontekst, zodat de vertaling de keuze
+  // van de 885 recepten nooit kan veranderen.
   if(imported.length!==885)throw new Error(`Expected 885 licensed recipe imports, found ${imported.length}`);
-  return imported;
+  const withoutTranslation=imported.filter(recipe=>!dutchTranslations.has(String(recipe.id)));
+  if(withoutTranslation.length)throw new Error(`Ontbrekende Nederlandse vertaling voor ${withoutTranslation.length} geïmporteerde recepten (bijvoorbeeld id ${withoutTranslation[0].id}). Draai scripts/merge-recipe-translations.py.`);
+  // Een vertaalde naam mag niet samenvallen met een bestaand recept; in dat geval
+  // blijft de bronnaam staan, zodat elk recept een eigen naam houdt.
+  const taken=new Set(existingRecipes.map(recipe=>normalizedName(recipe.name)));
+  return imported.map(recipe=>{
+    const translated=dutchRecipe(recipe);
+    const key=normalizedName(translated.name);
+    if(taken.has(key))return {...translated,name:recipe.name,translatedNameKept:recipe.name};
+    taken.add(key);
+    return translated;
+  });
 }
 
 module.exports=createOpenRecipes;
+module.exports.dutchRecipe=dutchRecipe;
+module.exports.translationCount=dutchTranslations.size;
 module.exports.wikibooksIngredient=wikibooksIngredient;

@@ -1,6 +1,6 @@
 # Recipe data, attribution and licences
 
-This directory contains only recipe text and structured source data; the app does not redistribute recipe photographs. Imported recipes remain in English. The application adapts source fields for display and shopping-list use; per-recipe source and licence links are rendered in the recipe card.
+This directory contains only recipe text and structured source data; the app does not redistribute recipe photographs. Imported recipes are translated into Dutch for display (see *Dutch translation* below); the English source text stays with the linked upstream page, and per-recipe source and licence links are rendered in the recipe card.
 
 ## UniTools World Recipes
 
@@ -17,6 +17,15 @@ This directory contains only recipe text and structured source data; the app doe
 - Licence stated by the dataset: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/); Wikibooks' [copyright policy](https://en.wikibooks.org/wiki/Wikibooks:Copyrights) explains attribution and share-alike requirements.
 - 385 entries were selected from pages with at least three ingredient lines, three procedure steps, a published time and a published serving count. Existing and duplicate recipe titles were excluded. Country-specific source categories are used when they match a UniTools country-cuisine label; other entries are grouped as “Internationaal”.
 - Every imported record links directly to its Wikibooks recipe page; adapted field mappings and selection are made available under the same CC BY-SA 4.0 terms. Ranged quantities remain verbatim in the shopping list rather than being averaged; unquantified amounts are labelled as not stated.
+
+## Dutch translation
+
+All 885 imported recipes are available in Dutch: name, summary, ingredient names and procedure steps. The translation lives in `translations-nl.json` and is applied at load time by `recipes-open.js`. It never replaces identifiers, quantities, units, cooking times, servings, source URLs or licence fields — every imported recipe still points at its English original and stays attributed.
+
+- Method: block-wise translation of 45 recipes per block (Chunk `input-NN.json` → `output-NN.json`). Each block is validated for record count, ids, order and ingredient/step counts before it is accepted.
+- Verify without writing: `python3 scripts/merge-recipe-translations.py --report`. Without `--report` the script writes `translations-nl.json` and refuses to write anything unless all 885 recipes are present.
+- The application refuses to start when even one imported recipe has no translation, so a partial merge can never be deployed silently.
+- Wikibooks ingredient lines that carry a ranged quantity keep that range verbatim as a single display line (unit `bronregel`); the quantity is never averaged.
 
 ## Rebuilding the selected data
 

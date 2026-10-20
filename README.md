@@ -5,6 +5,7 @@
 [![Node.js](https://img.shields.io/badge/Node.js-22.5%2B-5fa04e?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![Tests](https://img.shields.io/badge/tests-node%3Atest-1f6848)](test/app.test.js)
 [![Recepten](https://img.shields.io/badge/recepten-1.000-1f6848)](recipe-data/README.md)
+[![Taal](https://img.shields.io/badge/taal-Nederlands-1f6848)](recipe-data/README.md)
 [![Receptenbron](https://img.shields.io/badge/receptenbron-CC%20BY--SA%204.0-ef9421)](https://creativecommons.org/licenses/by-sa/4.0/)
 [![PWA](https://img.shields.io/badge/PWA-installeerbaar-1f6848)](public/manifest.webmanifest)
 [![Proxmox](https://img.shields.io/badge/Proxmox-LXC-e57000?logo=proxmox&logoColor=white)](deploy/proxmox/README.md)
@@ -43,7 +44,8 @@ Open de app op je telefoon en kies **Toevoegen aan startscherm** (iOS/Safari) of
 - Markeer een product als op: het verhuist naar de afzonderlijke boodschappenlijst-knop.
 - Voeg handmatig boodschappen toe of zet ingrediënten van een recept met één druk op de lijst; gelijke ingrediënten worden samengevoegd.
 - Receptenboek met exact **1.000 recepten**: 115 Nederlandstalige, zelfgeschreven thuisvarianten uit 55 landen, aangevuld met 500 recepten uit UniTools World Recipes en 385 recepten uit Wikibooks Cookbook. De collectie is per land gegroepeerd waar de bron dat aangeeft; overige Wikibooks-gerechten staan onder **Internationaal**. Je kunt filteren op land en zoeken op gerecht of ingrediënt; ingrediënten gaan rechtstreeks naar de boodschappenlijst.
-- De 885 geïmporteerde recepten tonen per recept de bron en CC BY-SA 4.0-licentie. Het is een groeiende, niet-uitputtende selectie; de inhoud is niet afkomstig van Albert Heijn of Picnic. Zie [`recipe-data/README.md`](recipe-data/README.md) voor bronvermelding, licenties en de reproduceerbare import.
+- Alle 885 geïmporteerde recepten zijn naar het Nederlands vertaald: naam, omschrijving, ingrediënten en bereidingsstappen. Hoeveelheden, eenheden, bereidingstijden en porties blijven exact zoals de bron ze geeft, en id, bron-URL en licentie blijven ongewijzigd — een recept in de app verwijst dus nog steeds naar zijn Engelse origineel. Zulke recepten dragen het label **Vertaald** en de regel *vertaald uit het Engels* bij de bronvermelding.
+- De 885 geïmporteerde recepten tonen per recept de bron en CC BY-SA 4.0-licentie. Het is een groeiende, niet-uitputtende selectie; de inhoud is niet afkomstig van Albert Heijn of Picnic. Zie [`recipe-data/README.md`](recipe-data/README.md) voor bronvermelding, licenties, de reproduceerbare import en de vertaalmethode.
 - De 115 eigen thuisvarianten zijn geen volledige inventaris van alle gerechten uit de genoemde landen; traditionele bereidingswijzen kunnen per regio en huishouden verschillen.
 - Maandkalender om per dag een recept en landkeuken te plannen, plus meerdere benoemde diensten met start-/eindtijden in 24-uursnotatie. Sla diensten op als herbruikbare sjablonen en zet ze met één druk op een gekozen dag; de dagplanning en diensten blijven bewaard in SQLite.
 - Herstel of verwijder boodschappen; stuur de lijst door via SMS.
@@ -94,8 +96,10 @@ Open `http://localhost:3000`.
 | `public/index.html` | De hele webpagina: opmaak, mobiele indeling en app-logica. |
 | `public/manifest.webmanifest`, `public/sw.js`, `public/favicon.svg`, `public/icon-*.png` | Pictogrammen en webapp-manifest voor installatie op de telefoon. |
 | `recipes-international.js` | 110 eigen Nederlandstalige thuisvarianten. |
-| `recipes-open.js` | Normalisatie van de 885 geïmporteerde recepten met bron en licentie. |
-| `recipe-data/` | Brondata, gepinde revisies en bronvermelding van de datasets. |
+| `recipes-open.js` | Normalisatie én Nederlandse vertaling van de 885 geïmporteerde recepten, met bron en licentie. |
+| `recipe-data/` | Brondata, gepinde revisies, bronvermelding en de Nederlandse vertaling (`translations-nl.json`). |
+| `scripts/build-open-recipe-data.py` | Reproduceerbare import van de gelicentieerde datasets. |
+| `scripts/merge-recipe-translations.py` | Controleert de vertaalblokken en bundelt ze tot `recipe-data/translations-nl.json`. |
 | `docs/img/` | Beeldmateriaal voor deze README en de deelkaart. |
 | `deploy/proxmox/` | Installer, updater en nginx-configuratie voor de LXC. |
 
