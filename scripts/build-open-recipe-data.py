@@ -86,6 +86,8 @@ def main() -> None:
             distinct_unitools.append(recipe)
             seen_unitools.add(key)
     wanted_wikibooks = TARGET_TOTAL - len(base_names) - len(distinct_unitools)
+    if len(distinct_unitools) != 500 or wanted_wikibooks != 385:
+        raise RuntimeError(f"Expected 500 unique UniTools imports and 385 Wikibooks imports; got {len(distinct_unitools)} and {wanted_wikibooks}")
     cuisine_codes = {
         country["cuisine"]["en"].removesuffix(" cuisine").casefold(): country["code"]
         for country in unitools["countries"]

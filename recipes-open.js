@@ -54,8 +54,8 @@ function wikibooksIngredient(line) {
   const original=String(line||'').trim();
   const match=original.match(amountPattern);
   if(!match)return{name:original,quantity:1,unit:'niet vermeld',display:original};
-  const low=numericAmount(match[1]),high=match[2]?numericAmount(match[2]):low;
-  const quantity=Number(((low+high)/2).toFixed(3));
+  if(match[2])return{name:original,quantity:1,unit:'bronregel',display:original};
+  const quantity=Number(numericAmount(match[1]).toFixed(3));
   let rest=match[3].trim(),unit='stuks';
   const unitMatch=rest.match(unitPattern);
   if(unitMatch){const key=unitMatch[1].toLowerCase().replace(/\.$/,'');unit=unitAliases[key]||key;rest=unitMatch[2].trim();}
@@ -98,7 +98,8 @@ function wikibooksRecipe(row, index, metadata) {
   };
 }
 
-function createOpenRecipes(existingRecipes=[]) {
+function createOpenRecipes(existingRecipes) {
+  if(!Array.isArray(existingRecipes))throw new TypeError('An existing curated recipe list is required for deduplication.');
   const used=new Set(existingRecipes.map(recipe=>normalizedName(recipe.name)));
   const imported=[];
   unitoolsData.recipes.forEach((recipe,index)=>{
@@ -118,3 +119,4 @@ function createOpenRecipes(existingRecipes=[]) {
 }
 
 module.exports=createOpenRecipes;
+module.exports.wikibooksIngredient=wikibooksIngredient;

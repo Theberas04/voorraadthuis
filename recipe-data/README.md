@@ -16,7 +16,7 @@ This directory contains only recipe text and structured source data; the app doe
 - Upstream book: [Wikibooks Cookbook](https://en.wikibooks.org/wiki/Cookbook:Table_of_Contents); each imported entry retains its exact recipe-page URL for contributor attribution and history.
 - Licence stated by the dataset: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/); Wikibooks' [copyright policy](https://en.wikibooks.org/wiki/Wikibooks:Copyrights) explains attribution and share-alike requirements.
 - 385 entries were selected from pages with at least three ingredient lines, three procedure steps, a published time and a published serving count. Existing and duplicate recipe titles were excluded. Country-specific source categories are used when they match a UniTools country-cuisine label; other entries are grouped as “Internationaal”.
-- Every imported record links directly to its Wikibooks recipe page; adapted field mappings and selection are made available under the same CC BY-SA 4.0 terms.
+- Every imported record links directly to its Wikibooks recipe page; adapted field mappings and selection are made available under the same CC BY-SA 4.0 terms. Ranged quantities remain verbatim in the shopping list rather than being averaged; unquantified amounts are labelled as not stated.
 
 ## Rebuilding the selected data
 
