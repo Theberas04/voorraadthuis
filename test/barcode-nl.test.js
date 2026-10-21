@@ -12,6 +12,9 @@ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'voorraadthuis-barcode-nl-'));
 process.env.DB_PATH=path.join(dir,'test.db');
 process.env.MEDIA_DIR=path.join(dir,'fotos');
 process.env.BARCODE_OFFLINE='';
+// De echte huismerktabel doet niet mee: deze tests gaan over de databanken online.
+process.env.HUISMERK_BESTAND=path.join(dir,'geen-huismerken.json');
+process.env.WINKELPREFIX_BESTAND=path.join(dir,'geen-prefixen.json');
 
 const maakEan=(twaalf)=>{let som=0;for(let i=twaalf.length-1,gewicht=3;i>=0;i-=1,gewicht=gewicht===3?1:3)som+=Number(twaalf[i])*gewicht;return twaalf+String((10-(som%10))%10)};
 const VOEDING=maakEan('871234500001');

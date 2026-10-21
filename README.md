@@ -65,7 +65,9 @@ Open de app op je telefoon en kies **Toevoegen aan startscherm** (iOS/Safari) of
 - De opzoeking gaat langs vier open databanken: **Open Food Facts** (voeding), **Open Products Facts** (huishoud- en schoonmaakproducten), **Open Beauty Facts** (verzorging) en **Open Pet Food Facts** (dierenvoeding). Zo worden ook Nederlandse schoonmaak- en verzorgingsproducten herkend die in de voedingsdatabank niet staan.
 - **Nederlands eerst**: de app vraagt de databanken om Nederlandse gegevens (`lc=nl` en de `product_name_nl`-velden) en kiest de Nederlandse naam als die er is. Heeft de databank alleen een buitenlandse naam, dan staat erbij in welke taal die is, zodat je weet waarom de naam afwijkt.
 - **Opnieuw proberen bij drukte**: de databanken geven bij veel verkeer status `429` of `503`. De app probeert het dan nog twee keer met korte tussenpozen, en zegt het pas als het echt niet lukt.
-- Staat een product er niet in, dan zegt de app dat — huismerk-, verse en nieuwe producten ontbreken in de open databank. De naam die je zelf invult wordt bij die barcode bewaard, dus een volgende keer is het product meteen bekend.
+- **Huismerken van Nederlandse supermarkten** (Albert Heijn, Jumbo, Lidl, Aldi, PLUS, Dirk, Coop, Vomar, Spar, Hoogvliet, DekaMarkt, Poiesz, Jan Linders, Boni en meer) staan in een eigen tabel in de app: ruim duizenden producten die uit Open Food Facts zijn gehaald. Een scan van een huismerk wordt daardoor meteen herkend — zonder opzoeking, zonder wachttijd en ook zonder internet. De tabel staat in [`product-data/`](product-data/README.md) en is met `python3 scripts/fetch-huismerken.py` opnieuw op te bouwen.
+- **Onbekend huismerk?** Aan de barcode-reeks is te zien bij welke winkel het hoort (elke keten heeft eigen GS1-prefixen). De app zegt dan bijvoorbeeld *"deze barcode staat nog niet in de open databank, maar hij hoort bij Albert Heijn"* en zet de winkelnemer alvast in het naamveld. Wat je daarna invult, wordt bij die barcode bewaard: de volgende scan is meteen goed.
+- Staat een product nergens in, dan zegt de app dat — verse en gloednieuwe producten ontbreken in de open databank. De naam die je zelf invult wordt bij die barcode bewaard, dus een volgende keer is het product meteen bekend.
 - De uitkomst wordt lokaal bewaard, dus een tweede scan van hetzelfde product werkt zonder internet; een zelf ingevoerd product wordt bij die code onthouden. Met **Opnieuw zoeken** ververs je de gegevens.
 - Een code met een verkeerd controlecijfer wordt gemeld, maar je kunt hem alsnog opzoeken.
 - Markeer een product als op: het verhuist naar de afzonderlijke boodschappenlijst-knop.
@@ -170,7 +172,7 @@ Neem beide mee in je back-up. Lokaal staan ze standaard in `data/`.
 Node.js 22.5+ is vereist (gebruikt de ingebouwde `node:sqlite`; er zijn geen npm-dependencies).
 
 ```sh
-npm test     # 68 tests: voorraad, boodschappen, recepten, vertaling, planning, garderobe en kledingkasten
+npm test     # 77 tests: voorraad, boodschappen, recepten, vertaling, planning, garderobe, kledingkasten en barcodeherkenning
 npm start    # http://localhost:3000
 ```
 
@@ -185,6 +187,9 @@ npm start    # http://localhost:3000
 | `recipes-international.js` | 110 eigen Nederlandstalige thuisvarianten. |
 | `recipes-open.js` | Normalisatie én Nederlandse vertaling van de 9.435 geïmporteerde recepten, met bron en licentie. |
 | `recipe-data/` | Brondata, gepinde revisies, bronvermelding en de Nederlandse vertaling (`translations-nl.json`). |
+| `barcodes.js` | Barcodeherkenning: vier open databanken, de huismerktabel, winkelherkenning aan de barcode en de lokale opslag. |
+| `product-data/` | Huismerken van Nederlandse supermarkten en de barcode-reeksen per winkel (uit Open Food Facts, ODbL 1.0). |
+| `scripts/fetch-huismerken.py` | Bouwt de huismerktabel en de winkeltabel opnieuw op uit Open Food Facts. |
 | `scripts/build-open-recipe-data.py` | Reproduceerbare import van de gelicentieerde datasets. |
 | `scripts/merge-recipe-translations.py` | Controleert de vertaalblokken en bundelt ze tot `recipe-data/translations-nl.json`. |
 | `test/app.test.js`, `test/wardrobe.test.js` | Tests voor de app en voor de garderobe. |
@@ -213,6 +218,8 @@ npm start    # http://localhost:3000
 ## Herkomst en licentie
 
 De app is geschreven voor Tom Werdens. De receptendata uit UniTools World Recipes en Wikibooks Cookbook vallen onder [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/); per recept staat de bron- en licentielink in de kaart (zie [`recipe-data/README.md`](recipe-data/README.md)).
+
+De productgegevens voor de barcodeherkenning komen van [Open Food Facts](https://world.openfoodfacts.org/) (en de zusterdatabanken Open Products Facts, Open Beauty Facts en Open Pet Food Facts), beschikbaar onder de [ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/). De huismerktabel in `product-data/` is een selectie daaruit; zie [`product-data/README.md`](product-data/README.md).
 
 Het garderobe-onderdeel begon als een zelfstandige app (Kledingkast, MIT) en is geïnspireerd op het idee achter [wardrowbee](https://github.com/Anyesh/wardrowbee) (MIT): een self-hosted garderobe-app met AI-tagging. De implementatie is eigen werk — Node.js + SQLite in plaats van FastAPI + PostgreSQL + Redis, één service, Nederlandse interface, en combineeradvies op eigen regels in plaats van een taalmodel. Er is geen code uit dat project overgenomen.
 

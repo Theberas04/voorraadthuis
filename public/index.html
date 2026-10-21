@@ -362,12 +362,17 @@ async function zoekBarcode(force){
   barcodeLaatst=code;barcodeBezig=true;toonBarcode('<strong>Product opzoeken…</strong>');
   try{
     const data=await api(`/api/barcode/${code}${force?'?force=1':''}`);
-    if(!data.found){toonBarcode(`<strong>Geen product gevonden bij deze barcode</strong><span class="mutedlink">${esc(data.message||'Vul de naam zelf in; de app onthoudt hem bij deze code.')}</span>${data.reason==='onbekend'?'<span class="mutedlink">Vul de naam hieronder in: de app bewaart hem bij deze code, dus de volgende keer wordt het product meteen herkend.</span>':''}${data.reason==='storing'?'<span class="mutedlink">Dit is tijdelijk; probeer het zo nog eens met <em>Opnieuw zoeken</em>.</span>':''}`);return}
+    if(!data.found){
+      toonBarcode(`<strong>Geen product gevonden bij deze barcode</strong><span class="mutedlink">${esc(data.message||'Vul de naam zelf in; de app onthoudt hem bij deze code.')}</span>${data.reason==='onbekend'?'<span class="mutedlink">Vul de naam hieronder in: de app bewaart hem bij deze code, dus de volgende keer wordt het product meteen herkend.</span>':''}${data.reason==='storing'?'<span class="mutedlink">Dit is tijdelijk; probeer het zo nog eens met <em>Opnieuw zoeken</em>.</span>':''}`);
+      const naamvak=$('#name');
+      if(data.suggestedBrand&&!naamvak.value.trim()){naamvak.value=data.suggestedBrand+' ';naamvak.focus();naamvak.setSelectionRange(naamvak.value.length,naamvak.value.length)}
+      return;
+    }
     const naam=$('#name'),q=$('#quantity'),u=$('#unit');
     if(!naam.value.trim())naam.value=data.name;
     if(data.quantity&&(q.value===''||Number(q.value)===1))q.value=data.quantity;
     if(data.unit&&(u.value===''||u.value==='stuks'))u.value=data.unit;
-    const herkomst=data.source==='eigen invoer'?'eerder door jou ingevoerd':`${esc(data.source)} · ${esc(data.license)}`;
+    const herkomst=data.source==='eigen invoer'?'eerder door jou ingevoerd':`${esc(data.source)} · ${esc(data.license)}${data.winkel?' · huismerk '+esc(data.winkel):''}${data.huismerk?' (huismerktabel)':''}`;
     const taalhint=data.nameLanguageName&&data.nameLanguage!=='nl'?`<span class="mutedlink">De databank kent alleen een naam in het ${esc(data.nameLanguageName)}; pas hem gerust aan.</span>`:'';
     toonBarcode(`<strong>Herkend: ${esc(data.name)}</strong><span class="mutedlink">${data.brand?esc(data.brand)+' · ':''}${data.quantityText?esc(data.quantityText)+' · ':''}${herkomst}</span>${taalhint}<div class="scanAgain"><button class="btn" type="button" id="barcodeAgain">Opnieuw zoeken</button></div>`);
     const again=$('#barcodeAgain');if(again)again.onclick=()=>zoekBarcode(true);

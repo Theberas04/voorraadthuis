@@ -12,6 +12,9 @@
 // juist de Nederlandse velden op (`lc=nl`), proberen we meerdere databanken en
 // vertellen we in welke taal de gevonden naam staat.
 
+const fs = require('node:fs');
+const path = require('node:path');
+
 const DATABANKEN = [
   { naam: 'Open Food Facts', basis: 'https://world.openfoodfacts.org', licentie: 'ODbL 1.0' },
   { naam: 'Open Products Facts', basis: 'https://world.openproductsfacts.org', licentie: 'ODbL 1.0' },
@@ -132,6 +135,16 @@ function kiesNaam(product) {
   return { naam: '', taal: null };
 }
 
+// Huismerken van Nederlandse supermarkten: een lokale tabel uit Open Food Facts
+// (open data, ODbL 1.0). Daarmee worden huismerken meteen herkend — zonder internet,
+// zonder wachttijd en zonder dat een drukke databank roet in het eten gooit.
+const HUISMERK_PAD = () => process.env.HUISMERK_BESTAND || path.join(__dirname, 'product-data', 'nl-huismerken.json');
+const PREFIX_PAD = () => process.env.WINKELPREFIX_BESTAND || path.join(__dirname, 'product-data', 'winkelprefixen.json');
+
+function leesJson(pad) {
+  try { return JSON.parse(fs.readFileSync(pad, 'utf8')); } catch { return null }
+}
+
 function createBarcodes({ db, now = () => new Date(), fetchImpl = fetch, wacht = (ms) => new Promise((r) => setTimeout(r, ms)) }) {
   db.exec(`CREATE TABLE IF NOT EXISTS barcode_cache(barcode TEXT PRIMARY KEY, name TEXT NOT NULL, brand TEXT NOT NULL DEFAULT '', quantity REAL, unit TEXT NOT NULL DEFAULT '', quantity_text TEXT NOT NULL DEFAULT '', image_url TEXT NOT NULL DEFAULT '', categories TEXT NOT NULL DEFAULT '', source TEXT NOT NULL DEFAULT '', fetched_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)`);
   // Kolommen die later zijn toegevoegd (bron-URL, taal van de naam) voor bestaande databases.
@@ -169,6 +182,29 @@ function createBarcodes({ db, now = () => new Date(), fetchImpl = fetch, wacht =
     const basis = databank.sjabloon.replace('{code}', encodeURIComponent(code));
     const teken = basis.includes('?') ? '&' : '?';
     return `${basis}${teken}fields=${VELDEN}&lc=nl`;
+  }
+
+  let huismerkTabel; // pas lezen als er echt een barcode opgezocht wordt
+  function huismerken() {
+    if (process.env.HUISMERK_TABEL === '0') return {};
+    if (huismerkTabel === undefined) huismerkTabel = leesJson(HUISMERK_PAD()) || {};
+    return huismerkTabel;
+  }
+  let prefixTabel;
+  function winkels() {
+    if (prefixTabel === undefined) prefixTabel = leesJson(PREFIX_PAD()) || {};
+    return prefixTabel;
+  }
+
+  // Welke winkel hoort bij deze barcode? GS1 geeft elke winkelketen eigen reeksen
+  // barcodes; de tabel is afgeleid uit de huismerkproducten in Open Food Facts.
+  function winkelVoor(code) {
+    const tabel = winkels();
+    for (const lengte of [7, 6, 5]) {
+      const winkel = tabel[code.slice(0, lengte)];
+      if (winkel) return winkel;
+    }
+    return '';
   }
 
   function uitCache(code) {
@@ -296,6 +332,17 @@ function createBarcodes({ db, now = () => new Date(), fetchImpl = fetch, wacht =
         ? alsAntwoord(bewaard, { cached: true })
         : { found: false, reason: 'offline', barcode: code, message: 'Geen verbinding met de productendatabank; vul de naam zelf in.' };
     }
+    // Eerst de eigen huismerktabel: die is direct en werkt ook zonder internet.
+    const huismerk = !force && huismerken()[code];
+    if (huismerk) {
+      bewaar(code, {
+        name: huismerk.n, brand: huismerk.m || '', quantity: hoeveelheidEnEenheid(huismerk.h).quantity,
+        unit: hoeveelheidEnEenheid(huismerk.h).unit, quantityText: huismerk.h || '',
+        imageUrl: '', categories: huismerk.k || '', source: 'Open Food Facts',
+        sourceUrl: `https://world.openfoodfacts.org/product/${code}`, lang: huismerk.t || '', license: 'ODbL 1.0',
+      });
+      return alsAntwoord(uitCache(code), { cached: false, huismerk: true, winkel: huismerk.w || winkelVoor(code) });
+    }
     try {
       const { gevonden, fouten } = await zoekInDatabanken(code);
       if (!gevonden) {
@@ -307,10 +354,14 @@ function createBarcodes({ db, now = () => new Date(), fetchImpl = fetch, wacht =
             tried: fouten,
           };
         }
+        const winkel = winkelVoor(code);
         return {
           found: false, reason: 'onbekend', barcode: code,
-          message: 'Deze barcode staat niet in de open productendatabank; vul de naam zelf in — de app onthoudt hem bij deze code. Huismerk-, verse en nieuwe producten ontbreken er vaak.',
+          message: winkel
+            ? `Deze barcode staat nog niet in de open databank, maar hij hoort bij ${winkel} (huismerk). Vul de naam in; de app onthoudt hem bij deze code en herkent hem daarna meteen.`
+            : 'Deze barcode staat niet in de open productendatabank; vul de naam zelf in — de app onthoudt hem bij deze code. Huismerk-, verse en nieuwe producten ontbreken er vaak.',
           source: 'Open Food Facts',
+          suggestedBrand: winkel || '',
         };
       }
       bewaar(code, gevonden);
@@ -323,7 +374,7 @@ function createBarcodes({ db, now = () => new Date(), fetchImpl = fetch, wacht =
     }
   }
 
-  return { lookup, onthoud, geldigeBarcode, controlecijferKlopt, hoeveelheidEnEenheid, databanken, kiesNaam };
+  return { lookup, onthoud, geldigeBarcode, controlecijferKlopt, hoeveelheidEnEenheid, databanken, kiesNaam, winkelVoor, huismerken };
 }
 
-module.exports = { createBarcodes, hoeveelheidEnEenheid, geldigeBarcode, controlecijferKlopt, kiesNaam, DATABANKEN };
+module.exports = { createBarcodes, hoeveelheidEnEenheid, geldigeBarcode, controlecijferKlopt, kiesNaam, DATABANKEN, leesJson };
