@@ -14,7 +14,7 @@
 
 Eén Nederlandstalige app voor thuis: voorraad, 9.550 recepten in het Nederlands, boodschappenlijst, maaltijd- en werkplanning én je garderobe met combineeradvies. Alles draait rechtstreeks als service in een Proxmox LXC, met de gegevens in SQLite op persistente opslag. De webpagina is gebouwd voor de telefoon en werkt ook als installeerbare app. Een gescande barcode wordt meteen herkend via Open Food Facts.
 
-🎬 **[Rondleiding door de app (74 s, MP4, 1280×720, Nederlandse voice-over)](docs/img/voorraadthuis-rondleiding.mp4)** — voorraad, recepten, kledingkast, kalender en boodschappenlijst in één doorloop, met uitleg per scherm.
+🎬 **[Rondleiding door de app (106 s, MP4, 1280×720, Nederlandse voice-over)](docs/img/voorraadthuis-rondleiding.mp4)** — voorraad, boodschappenlijst, receptenboek, kledingkasten, was, combineeradvies, kalender met werkrooster en de profielen met sms-kanaal in één doorloop, met uitleg per scherm.
 
 ## Op de telefoon
 
@@ -28,12 +28,12 @@ Eén Nederlandstalige app voor thuis: voorraad, 9.550 recepten in het Nederlands
 
 - Vijf navigatieknoppen op één rij, ook op een scherm van 360 px breed (op smalle schermen heet de lijstknop **Lijst**).
 - Invoervelden op 16 px, zodat iOS niet inzoomt bij het typen; knoppen en velden zijn minimaal 44 px hoog.
-- Recepten worden in delen van 24 geladen met **Nog … recepten laden**, zodat de pagina ook met 9.550 recepten vlot blijft.
+- Recepten komen in delen van 48 van de server, met **Nog … recepten laden**; zoeken en filteren gebeurt op de server en ingrediënten worden pas bij het openklappen opgehaald, zodat de pagina ook met 9.550 recepten vlot blijft.
 - Veilige marges voor toestellen met een inkeping (`viewport-fit=cover` en `env(safe-area-inset-bottom)`).
 
 ### Installeren als app (PWA)
 
-Open de app op je telefoon en kies **Toevoegen aan startscherm** (iOS/Safari) of **App installeren** (Android/Chrome). De app opent dan zonder adresbalk en houdt de laatst geladen pagina bij tot de server bereikbaar is. Voor installatie, camera-scannen en het maken van kledingfoto's is een beveiligde verbinding (HTTPS) nodig; de Proxmox-installatie zet die zelf op.
+Open de app op je telefoon en kies **Toevoegen aan startscherm** (iOS/Safari) of **App installeren** (Android/Chrome). De app opent dan zonder adresbalk en houdt de laatst geladen pagina bij tot de server bereikbaar is. De app draait in je eigen netwerk op een gewoon `http`-adres. Een barcode intypen werkt daar meteen; de camera gebruiken (barcode scannen of een kledingfoto maken) blokkeren browsers op een onbeveiligde verbinding — daarvoor is `https` nodig, bijvoorbeeld via een omgekeerde proxy met een certificaat.
 
 <details>
 <summary>Schermafbeeldingen op desktop</summary>
