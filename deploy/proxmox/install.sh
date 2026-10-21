@@ -23,7 +23,7 @@ FILES=(
   "wardrobe.js"
   "barcodes.js" "profiles.js"
   "recipe-data/unitools-recipes.json"
-  "recipe-data/wikibooks-recipes.json"
+  "recipe-data/wikibooks-en-recipes.json wikibooks-es-recipes.json wikibooks-de-recipes.json wikibooks-nl-recipes.json wikibooks-fr-recipes.json wikibooks-it-recipes.json wikibooks-ca-recipes.json wikibooks-pt-recipes.json wikibooks-ja-recipes.json wikibooks-pl-recipes.json wikibooks-sv-recipes.json wikibooks-nb-recipes.json wikibooks-fi-recipes.json"
   "recipe-data/translations-nl.json"
   "public/index.html"
   "public/favicon.svg"
