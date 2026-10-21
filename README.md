@@ -121,10 +121,17 @@ Open de app op je telefoon en kies **Toevoegen aan startscherm** (iOS/Safari) of
 | --- | --- |
 | Het receptenboek met 9.807 recepten, filters en bronvermelding per recept. | Dezelfde tab op de telefoon; recepten komen per land binnen. |
 
+| ![Werkagenda op desktop](docs/img/werkagenda-desktop.png) | ![Werkagenda op de telefoon](docs/img/werkagenda-mobiel.png) |
+| --- | --- |
+| De werkagenda: per dag alle diensten met hun tijden, plus het totaal van de maand. | Op de telefoon staan de tijden per dienst onder elkaar, zodat ze ook in een smalle dagcel leesbaar blijven. |
+
 ### Kalender en werkrooster
 
 - Maandkalender om per dag een recept en landkeuken te plannen.
 - Meerdere benoemde diensten per dag met start- en eindtijd in 24-uursnotatie; `1930` wordt `19:30`.
+- **Werkagenda onder de kalender**: elke dag met diensten op een rij, met de naam, de tijden en de notitie, plus het totaal aantal uren van de maand. Een dag aanklikken in de agenda opent die dag in het formulier.
+- In de dagcellen staan **alle** diensten met hun tijden (tot drie; daarna `+N`), en de tooltip toont de namen en notities.
+- Tijden zonder dubbele punt worden goed gezet: `830` wordt `08:30`, `8` wordt `08:00`. Echt onmogelijke tijden zoals `24:00` blijven een foutmelding.
 - Sla diensten op als herbruikbare sjablonen en zet ze met één druk op een gekozen dag. Dagplanning, diensten en sjablonen blijven bewaard in SQLite.
 
 | ![Werkrooster op desktop](docs/img/werkrooster-desktop.png) | ![Werkrooster op de telefoon](docs/img/werkrooster-mobiel.png) |
