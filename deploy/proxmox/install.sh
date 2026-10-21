@@ -46,7 +46,9 @@ mkdir -p "$TARGET_DIR/deploy/proxmox" "$TARGET_DIR/public"
 log "Bestanden ophalen uit GitHub ($REPO, $BRANCH)…"
 for f in "${FILES[@]}"; do
   out="$TARGET_DIR/$f"; mkdir -p "$(dirname "$out")"
-  curl -fsSL --retry 3 --max-time 60 "$RAW_BASE/$f" -o "$out" || die "Download mislukt: $f. Is de repository openbaar?"
+  # Cache-buster: zo levert GitHub ook kort na een push de nieuwste versie in
+  # plaats van een kopie uit de cache van de CDN.
+  curl -fsSL --retry 3 --max-time 60 "$RAW_BASE/$f?cb=$(date +%s)" -o "$out" || die "Download mislukt: $f. Is de repository openbaar?"
   [ -s "$out" ] || die "Leeg bestand ontvangen: $f"
   log "  $f ($(wc -c <"$out") bytes)"
 done
