@@ -355,7 +355,7 @@ $('#calendarGrid').addEventListener('click',async e=>{const b=e.target.closest('
 $('#planForm').addEventListener('submit',async e=>{e.preventDefault();try{await savePlan()}catch(err){$('#planNotice').textContent=err.message}});$('#clearPlan').onclick=async()=>{await api('/api/planner/'+state.selectedDate,{method:'DELETE'});$('#planNotice').textContent='Planning gewist.';await loadPlans(true)};
 // Barcode herkennen: zodra er een volledige code staat (gescand of getypt), zoekt de app het
 // product op en vult naam, hoeveelheid en eenheid vast in. Wat jij zelf invult blijft leidend.
-let barcodeTimer=null,barcodeLaatst='',barcodeBezig=false;
+let barcodeTimer=null,barcodeLaatst='',barcodeBezig=false,scanVulling={hoeveelheid:'',eenheid:''};
 function toonBarcode(html){const vak=$('#barcodeResult');vak.hidden=false;vak.innerHTML=html}
 async function zoekBarcode(force){
   const code=$('#barcode').value.replace(/\D/g,'');const vak=$('#barcodeResult');
@@ -372,7 +372,10 @@ async function zoekBarcode(force){
     }
     const naam=$('#name'),q=$('#quantity'),u=$('#unit');
     if(!naam.value.trim())naam.value=data.name;
-    if(data.quantity&&(q.value===''||Number(q.value)===1))q.value=data.quantity;
+    // De vorige scan mag overschreven worden; wat je zelf hebt getypt blijft staan.
+    if(data.quantity&&(q.value===''||Number(q.value)===1||q.value===scanVulling.hoeveelheid))q.value=data.quantity;
+    if(data.unit&&(u.value==='stuks'||u.value===scanVulling.eenheid))u.value=data.unit;
+    scanVulling={hoeveelheid:String(q.value),eenheid:String(u.value)};
     if(data.unit&&(u.value===''||u.value==='stuks'))u.value=data.unit;
     const herkomst=data.source==='eigen invoer'?'eerder door jou ingevoerd':`${esc(data.source)} · ${esc(data.license)}${data.winkel?' · huismerk '+esc(data.winkel):''}${data.huismerk?' (huismerktabel)':''}`;
     const taalhint=data.nameLanguageName&&data.nameLanguage!=='nl'?`<span class="mutedlink">De databank kent alleen een naam in het ${esc(data.nameLanguageName)}; pas hem gerust aan.</span>`:'';
@@ -383,6 +386,9 @@ async function zoekBarcode(force){
   }finally{barcodeBezig=false}
 }
 $('#barcode').addEventListener('input',()=>{clearTimeout(barcodeTimer);const code=$('#barcode').value.replace(/\D/g,'');if(code.length>=8)barcodeTimer=setTimeout(()=>zoekBarcode(false),400);else{$('#barcodeResult').hidden=true;$('#barcodeResult').innerHTML=''}});
+// Zelf een hoeveelheid of eenheid intypen betekent: die waarde is van jou, een volgende scan mag hem niet overschrijven.
+$('#quantity').addEventListener('input',()=>{scanVulling.hoeveelheid=''});
+$('#unit').addEventListener('input',()=>{scanVulling.eenheid=''});
 $('#barcode').addEventListener('blur',()=>{if($('#barcode').value.replace(/\D/g,'').length>=8)zoekBarcode(false)});
 let stream;$('#scanBtn').onclick=async()=>{const video=$('#camera');if(!window.isSecureContext){$('#stockNotice').textContent='Camera scannen werkt alleen op een beveiligde verbinding (https). Typ de barcode in het veld; die wordt meteen herkend.';return}if(!('BarcodeDetector'in window)){$('#stockNotice').textContent='Deze browser ondersteunt geen barcodescanner. Typ de barcode handmatig; hij wordt meteen herkend.';return}try{if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;video.hidden=true;return}const detector=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128','itf']});stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});video.srcObject=stream;video.hidden=false;await video.play();const scan=async()=>{if(!stream)return;try{const codes=await detector.detect(video);if(codes.length){$('#barcode').value=codes[0].rawValue;stream.getTracks().forEach(t=>t.stop());stream=null;video.hidden=true;barcodeLaatst='';$('#stockNotice').textContent='Barcode gescand.';zoekBarcode(false);return}}catch{}requestAnimationFrame(scan)};scan()}catch{$('#stockNotice').textContent=window.isSecureContext?'Camera niet beschikbaar. Controleer de toestemming of typ de barcode in het veld.':'Camera scannen werkt alleen op een beveiligde verbinding (https). Typ de barcode in het veld.'}};
 
