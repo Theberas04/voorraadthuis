@@ -11,6 +11,9 @@ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'voorraadthuis-barcode-'));
 process.env.DB_PATH=path.join(dir,'test.db');
 process.env.MEDIA_DIR=path.join(dir,'fotos');
 process.env.BARCODE_OFFLINE='';
+// De echte huismerktabel doet niet mee: deze tests gaan over de databanken online.
+process.env.HUISMERK_BESTAND=path.join(dir,'geen-huismerken.json');
+process.env.WINKELPREFIX_BESTAND=path.join(dir,'geen-prefixen.json');
 
 let stub,server,db,base,opzoekingen=0,storing=false;
 // Geldige EAN-13 maken: twaalf cijfers plus het juiste controlecijfer.

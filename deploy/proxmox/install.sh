@@ -24,6 +24,7 @@ FILES=(
   "recipe-data/unitools-recipes.json"
   "recipe-data/wikibooks-en-recipes.json" "recipe-data/wikibooks-es-recipes.json" "recipe-data/wikibooks-de-recipes.json" "recipe-data/wikibooks-nl-recipes.json" "recipe-data/wikibooks-fr-recipes.json" "recipe-data/wikibooks-it-recipes.json" "recipe-data/wikibooks-ca-recipes.json" "recipe-data/wikibooks-pt-recipes.json" "recipe-data/wikibooks-ja-recipes.json" "recipe-data/wikibooks-pl-recipes.json" "recipe-data/wikibooks-sv-recipes.json" "recipe-data/wikibooks-nb-recipes.json" "recipe-data/wikibooks-fi-recipes.json"
   "recipe-data/translations-nl.json"
+  "product-data/nl-huismerken.json" "product-data/winkelprefixen.json"
   "public/index.html"
   "public/favicon.svg"
   "public/manifest.webmanifest"
