@@ -325,14 +325,11 @@ function createBarcodes({ db, now = () => new Date(), fetchImpl = fetch, wacht =
     if (!code) return { found: false, reason: 'ongeldig', barcode: String(rawCode ?? ''), message: 'Een barcode bestaat uit 8, 12, 13 of 14 cijfers.' };
     if (!controlecijferKlopt(code) && !force) return { found: false, reason: 'controlecijfer', barcode: code, message: 'Dit lijkt geen geldige barcode: het controlecijfer klopt niet. Zoek toch om het alsnog op te zoeken.' };
     const bewaard = uitCache(code);
-    if (bewaard && !force) return alsAntwoord(bewaard, { cached: true });
+    // Wat je zelf hebt ingevuld is altijd leidend, ook boven de huismerktabel.
     if (bewaard?.source === 'eigen invoer' && !force) return alsAntwoord(bewaard, { cached: true });
-    if (process.env.BARCODE_OFFLINE === '1') {
-      return bewaard
-        ? alsAntwoord(bewaard, { cached: true })
-        : { found: false, reason: 'offline', barcode: code, message: 'Geen verbinding met de productendatabank; vul de naam zelf in.' };
-    }
-    // Eerst de eigen huismerktabel: die is direct en werkt ook zonder internet.
+    // Daarna de eigen huismerktabel: die is direct, werkt zonder internet en houdt de
+    // winkel erbij. Belangrijker dan een eerder bewaarde opzoeking, want een oude
+    // bewaarde uitkomst weet niet meer bij welke keten het huismerk hoort.
     const huismerk = !force && huismerken()[code];
     if (huismerk) {
       bewaar(code, {
@@ -342,6 +339,10 @@ function createBarcodes({ db, now = () => new Date(), fetchImpl = fetch, wacht =
         sourceUrl: `https://world.openfoodfacts.org/product/${code}`, lang: huismerk.t || '', license: 'ODbL 1.0',
       });
       return alsAntwoord(uitCache(code), { cached: false, huismerk: true, winkel: huismerk.w || winkelVoor(code) });
+    }
+    if (bewaard && !force) return alsAntwoord(bewaard, { cached: true });
+    if (process.env.BARCODE_OFFLINE === '1') {
+      return { found: false, reason: 'offline', barcode: code, message: 'Geen verbinding met de productendatabank; vul de naam zelf in.' };
     }
     try {
       const { gevonden, fouten } = await zoekInDatabanken(code);
