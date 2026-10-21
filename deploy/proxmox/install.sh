@@ -54,6 +54,8 @@ done
 grep -q "VoorraadThuis" "$TARGET_DIR/public/index.html" || die "index lijkt geen VoorraadThuis-app."
 grep -q '"display"' "$TARGET_DIR/public/manifest.webmanifest" || die "manifest lijkt geen geldig webapp-manifest."
 grep -q 'pct create' "$TARGET_DIR/deploy/proxmox/create-voorraadthuis-lxc.sh" || die "LXC-script lijkt onvolledig."
+grep -q 'root /var/www/voorraadthuis/public;' "$TARGET_DIR/deploy/proxmox/nginx-voorraadthuis.conf" || die "GitHub leverde een verouderde nginx-configuratie (zonder public/). Wacht een paar minuten en probeer opnieuw."
+grep -q 'wikibooks-fi-recipes.json' "$TARGET_DIR/deploy/proxmox/provision-voorraadthuis.sh" || die "GitHub leverde een verouderd inrichtingsscript (zonder de dertien receptdatabestanden). Wacht een paar minuten en probeer opnieuw."
 for f in "$TARGET_DIR"/deploy/proxmox/*.sh; do bash -n "$f" || die "Syntaxfout in $f"; done
 chmod +x "$TARGET_DIR"/deploy/proxmox/*.sh
 if [ "$FETCH_ONLY" = 1 ]; then log "FETCH_ONLY=1: bestanden staan in $TARGET_DIR; er is niets geïnstalleerd."; exit 0; fi
