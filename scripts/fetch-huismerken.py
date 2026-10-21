@@ -104,7 +104,8 @@ def wegschrijven(producten):
     per_winkel = collections.Counter(rij['w'] for rij in producten.values())
     tellers = {7: collections.defaultdict(collections.Counter), 6: collections.defaultdict(collections.Counter)}
     for code, rij in producten.items():
-        if len(code) != 13 or not code.isdigit():
+        # Naast gewone EAN-13 gebruiken supermarkten ook EAN-8 voor kleine artikelen.
+        if not (code.isdigit() and 8 <= len(code) <= 14):
             continue
         for lengte in (7, 6):
             tellers[lengte][code[:lengte]][rij['w']] += 1

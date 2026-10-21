@@ -19,11 +19,13 @@ const ONBEKEND_HUISMERK=maakEan('871040000456'); // niet in de tabel, wel AH-ree
 const VREEMD=maakEan('999999000111');     // geen huismerk
 const NETWERK=maakEan('544900000099');    // niet lokaal, wel online
 const HUISMERK2=maakEan('871234500999');  // wel in de tabel, maar nog niet in de eigen opslag
+const DUBBEL=maakEan('871234500777');    // in de tabel én online te vinden
 
 // Lokale tabellen zoals de app ze meelevert.
 fs.writeFileSync(path.join(dir,'nl-huismerken.json'),JSON.stringify({
   [HUISMERK]:{n:'AH Halfvolle melk',m:'AH',h:'1,5 l',t:'nl',k:'en:dairies',w:'albert-heijn'},
   [HUISMERK2]:{n:'Jumbo Griekse yoghurt',m:'Jumbo',h:'500 g',t:'nl',k:'en:yogurts',w:'jumbo'},
+  [DUBBEL]:{n:'Jumbo Halfvolle melk',m:'Jumbo',h:'1 l',t:'nl',k:'en:dairies',w:'jumbo'},
 }));
 fs.writeFileSync(path.join(dir,'winkelprefixen.json'),JSON.stringify({'8710400':'Albert Heijn','8712345':'Jumbo'}));
 process.env.HUISMERK_BESTAND=path.join(dir,'nl-huismerken.json');
@@ -35,6 +37,7 @@ test.before(async()=>{
     opzoekingen+=1;
     const code=(req.url.match(/product\/(\d+)/)||[])[1]||'';
     res.writeHead(200,{'content-type':'application/json'});
+    if(code===DUBBEL)return res.end(JSON.stringify({status:1,product:{code,lang:'nl',product_name:'Jumbo Halfvolle melk uit de databank',brands:'Jumbo',quantity:'1 l'}}));
     if(code!==NETWERK)return res.end(JSON.stringify({status:1}));
     res.end(JSON.stringify({status:1,product:{code,lang:'nl',product_name:'Coca-Cola Original',brands:'Coca-Cola',quantity:'330 ml'}}));
   });
@@ -101,6 +104,22 @@ test('producten die niet in de tabel staan worden gewoon online opgezocht',async
   const tweede=await zoek(NETWERK);
   assert.equal(tweede.cached,true);
   assert.equal(opzoekingen,voor+1,'de tweede keer komt uit de eigen opslag');
+});
+
+test('de huismerktabel gaat boven een eerder bewaarde opzoeking',async()=>{
+  // Zonder tabel wordt dit product online opgezocht en bewaard.
+  process.env.HUISMERK_TABEL='0';
+  let uitkomst;
+  try{
+    uitkomst=await zoek(DUBBEL,'?force=1');
+    assert.equal(uitkomst.name,'Jumbo Halfvolle melk uit de databank');
+  }finally{process.env.HUISMERK_TABEL=''}
+  // Met tabel hoort het product uit de tabel te komen, mét huismerk en winkel.
+  uitkomst=await zoek(DUBBEL);
+  assert.equal(uitkomst.name,'Jumbo Halfvolle melk');
+  assert.equal(uitkomst.huismerk,true);
+  assert.equal(uitkomst.winkel,'jumbo');
+  assert.equal(uitkomst.cached,false);
 });
 
 test('de huismerktabel kan worden uitgezet',async()=>{
