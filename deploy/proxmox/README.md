@@ -1,6 +1,6 @@
 # VoorraadThuis op Proxmox
 
-VoorraadThuis is één app: voorraad, recepten, boodschappen, kalender én de garderobe (Kledingkast). Dit pakket installeert die app als een **unprivileged Debian LXC**, vergelijkbaar met BeatSync Studio. De app draait als systemd-service achter nginx; Docker is niet nodig. Standaard wordt DHCP gebruikt, met optioneel een vast IP. HTTPS wordt ingericht met een self-signed certificaat.
+VoorraadThuis is één app: voorraad, recepten, boodschappen, kalender én de garderobe (Kledingkast). Dit pakket installeert die app als een **unprivileged Debian LXC**, vergelijkbaar met BeatSync Studio. De app draait als systemd-service en **serveert de pagina zelf op poort 80**; Docker en nginx zijn niet nodig. Standaard wordt DHCP gebruikt, met optioneel een vast IP.
 
 ## Installeren vanaf GitHub met één commando
 
@@ -36,9 +36,9 @@ CTID=120 STATIC_IP=192.168.1.50/24 GATEWAY=192.168.1.1 \
 
 `TEMPLATE_STORAGE` staat standaard op `local`; gebruik `ROOTFS_STORAGE=local` als je Proxmox geen `local-lvm` heeft. Overige variabelen: `CT_HOSTNAME`, `DNS_SERVER`, `CORES`, `MEMORY`, `SWAP`, `DISK`, `DEBIAN_MAJOR` (standaard 12), `TARGET_DIR`, `BRANCH`.
 
-## Toegang en HTTPS
+## Toegang
 
-Na installatie toont het script de URL: `https://<LXC-IP>/`. HTTPS gebruikt een self-signed certificaat, dus accepteer de browserwaarschuwing eenmalig. Dit is nodig voor camera-scannen; sommige browsers vragen daarna alsnog om cameratoestemming. HTTP blijft ook beschikbaar op poort 80.
+Na installatie toont het script de URL: `http://<LXC-IP>/`. De app luistert zelf op poort 80 (systemd geeft de dienst alleen `CAP_NET_BIND_SERVICE`, de app draait niet als root). Er is geen nginx en geen certificaat meer. Camera-scannen voor barcodes werkt op een gewone `http://`-pagina niet in elke browser; typ de code dan handmatig, of gebruik een browser die camera's op een LAN-adres toestaat.
 
 ## Bijwerken
 
@@ -48,7 +48,7 @@ Haal de nieuwste appbestanden op en update de bestaande container zonder de SQLi
 bash <(curl -fsSL https://raw.githubusercontent.com/Theberas04/voorraadthuis/main/deploy/proxmox/update-from-github.sh) 120
 ```
 
-Vervang `120` door het CTID van je container. De updater downloadt eerst de bestanden en controleert daarna de app-healthcheck.
+Vervang `120` door het CTID van je container. De updater downloadt eerst de bestanden en controleert daarna `/healthz`, de pagina en de API's.
 
 ## Beheer en back-up
 
@@ -56,7 +56,6 @@ Vervang `120` door het CTID van je container. De updater downloadt eerst de best
 pct exec 120 -- systemctl status voorraadthuis
 pct exec 120 -- journalctl -u voorraadthuis -f
 pct exec 120 -- systemctl restart voorraadthuis
-pct exec 120 -- systemctl status nginx
 ```
 
 De voorraad staat in `/var/lib/voorraadthuis/voorraad.db` binnen de container. Neem een Proxmox-containerback-up of kopieer die database apart. De app heeft geen login en is bedoeld voor het vertrouwde thuisnetwerk; stel hem niet rechtstreeks bloot aan internet.

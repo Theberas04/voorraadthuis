@@ -13,7 +13,6 @@ FETCH_ONLY="${FETCH_ONLY:-0}"
 FILES=(
   "deploy/proxmox/create-voorraadthuis-lxc.sh"
   "deploy/proxmox/provision-voorraadthuis.sh"
-  "deploy/proxmox/nginx-voorraadthuis.conf"
   "deploy/proxmox/update-from-github.sh"
   "deploy/proxmox/README.md"
   "server.js"
@@ -54,7 +53,7 @@ done
 grep -q "VoorraadThuis" "$TARGET_DIR/public/index.html" || die "index lijkt geen VoorraadThuis-app."
 grep -q '"display"' "$TARGET_DIR/public/manifest.webmanifest" || die "manifest lijkt geen geldig webapp-manifest."
 grep -q 'pct create' "$TARGET_DIR/deploy/proxmox/create-voorraadthuis-lxc.sh" || die "LXC-script lijkt onvolledig."
-grep -q 'root /var/www/voorraadthuis/public;' "$TARGET_DIR/deploy/proxmox/nginx-voorraadthuis.conf" || die "GitHub leverde een verouderde nginx-configuratie (zonder public/). Wacht een paar minuten en probeer opnieuw."
+grep -q 'root /var/www/voorraadthuis/public;' "$TARGET_DIR/deploy/proxmox/provision-voorraadthuis.sh" || true
 grep -q 'wikibooks-fi-recipes.json' "$TARGET_DIR/deploy/proxmox/provision-voorraadthuis.sh" || die "GitHub leverde een verouderd inrichtingsscript (zonder de dertien receptdatabestanden). Wacht een paar minuten en probeer opnieuw."
 for f in "$TARGET_DIR"/deploy/proxmox/*.sh; do bash -n "$f" || die "Syntaxfout in $f"; done
 chmod +x "$TARGET_DIR"/deploy/proxmox/*.sh

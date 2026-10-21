@@ -125,14 +125,14 @@ VoorraadThuis installeer je op dezelfde manier als BeatSync: voer op de Proxmox-
 bash <(curl -fsSL https://raw.githubusercontent.com/Theberas04/voorraadthuis/main/deploy/proxmox/install.sh)
 ```
 
-Het script haalt de installerbestanden rechtstreeks van GitHub, maakt een Debian 12 LXC aan, zet nginx + HTTPS op en start de app als systemd-service. `FETCH_ONLY=1` haalt de bestanden op en controleert ze zonder een container te maken.
+Het script haalt de installerbestanden rechtstreeks van GitHub, maakt een Debian 12 LXC aan en start de app als systemd-service. **De app serveert de pagina zelf op poort 80** — er zit geen nginx en geen certificaat tussen, zodat er ook niets meer mis kan gaan met een verkeerde webroot. `FETCH_ONLY=1` haalt de bestanden op en controleert ze zonder een container te maken.
 
 Standaard gebruikt de LXC `vmbr0` en DHCP. Vast IP kan bijvoorbeeld zo:
 ```bash
 CTID=120 STATIC_IP=192.168.1.50/24 GATEWAY=192.168.1.1 \
   bash <(curl -fsSL https://raw.githubusercontent.com/Theberas04/voorraadthuis/main/deploy/proxmox/install.sh)
 ```
-Na afloop opent de app op `https://<LXC-IP>/` (self-signed certificaat: accepteer de waarschuwing). Bijwerken zonder je gegevens te wissen:
+Na afloop opent de app op `http://<LXC-IP>/`. Bijwerken zonder je gegevens te wissen:
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/Theberas04/voorraadthuis/main/deploy/proxmox/update-from-github.sh) 120
 ```
@@ -173,7 +173,7 @@ npm start    # http://localhost:3000
 | `scripts/merge-recipe-translations.py` | Controleert de vertaalblokken en bundelt ze tot `recipe-data/translations-nl.json`. |
 | `test/app.test.js`, `test/wardrobe.test.js` | Tests voor de app en voor de garderobe. |
 | `docs/img/` | Beeldmateriaal voor deze README en de deelkaart. |
-| `deploy/proxmox/` | Installer, updater en nginx-configuratie voor de LXC. |
+| `deploy/proxmox/` | Installer en updater voor de LXC (de app luistert zelf op poort 80). |
 
 ## API in het kort
 
