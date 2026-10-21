@@ -65,6 +65,12 @@ UNIT'
 pct exec "$CTID" -- systemctl daemon-reload
 pct exec "$CTID" -- systemctl enable --now voorraadthuis
 log "Wachten op de app…"
+# Controlehulpje: het antwoord eerst volledig wegschrijven en daarna zoeken. Zo kan
+# curl niet struikelen over een pijp die grep te vroeg sluit (onder pipefail gaf dat
+# 'curl: (23) Failure writing output to destination' en dus een valse mislukking).
+PROEF=$(mktemp); KOPPEN=$(mktemp); trap 'rm -f "$PROEF" "$KOPPEN"' EXIT
+proef(){ curl -fsS --max-time 10 "$1" -o "$PROEF" 2>/dev/null || return 1; grep -Eqi "$2" "$PROEF"; }
+koppen(){ curl -fsS --max-time 5 -D "$KOPPEN" -o /dev/null "$1" 2>/dev/null || return 1; grep -Eqi "$2" "$KOPPEN"; }
 # Bij een mislukte controle meteen laten zien wat er wél staat, zodat de oorzaak
 # zichtbaar is in plaats van alleen "mislukt".
 diagnose(){
@@ -80,24 +86,24 @@ diagnose(){
   printf 'dienst voorraadthuis: ' >&2
   pct exec "$CTID" -- systemctl is-active voorraadthuis 2>/dev/null >&2 || true
   pct exec "$CTID" -- journalctl -u voorraadthuis -n 8 --no-pager 2>/dev/null | sed 's/^/    /' >&2 || true
-  if pct exec "$CTID" -- journalctl -u voorraadthuis -n 50 --no-pager 2>/dev/null | grep -q 'EACCES'; then
+  journaal=$(pct exec "$CTID" -- journalctl -u voorraadthuis -n 50 --no-pager 2>/dev/null || true)
+  if printf '%s' "$journaal" | grep -q 'EACCES'; then
     printf '    tip: de app mocht poort 80 niet openen (EACCES); controleer AmbientCapabilities=CAP_NET_BIND_SERVICE in /etc/systemd/system/voorraadthuis.service\n' >&2
   fi
 }
 # Antwoordt er iets anders dan de app op poort 80 (een achtergebleven webserver),
 # dan meteen stoppen met een duidelijke melding in plaats van door te blijven proberen.
-even=$(curl -fsS -D - -o /dev/null --max-time 3 "http://$IP/healthz" 2>/dev/null || true)
-if [ -n "$even" ] && ! printf '%s' "$even" | grep -qi '^x-voorraadthuis: app'; then
+if curl -fsS --max-time 3 -o /dev/null "http://$IP/healthz" 2>/dev/null && ! koppen "http://$IP/healthz" '^x-voorraadthuis: app'; then
   diagnose
   die "Op poort 80 antwoordt iets anders dan de app; verwijder die webserver en probeer opnieuw."
 fi
 for _ in $(seq 1 20); do
-  antwoord=$(curl -fsS -D - --max-time 3 "http://$IP/healthz" 2>/dev/null || true)
-  if printf '%s' "$antwoord" | grep -qi '^x-voorraadthuis: app' && printf '%s' "$antwoord" | grep -q '^ok$'; then
-    pct exec "$CTID" -- bash -c 'ss -ltnpH "sport = :80" 2>/dev/null | grep -q node' || { diagnose; die "Poort 80 wordt niet door de app bediend; er luistert nog iets anders op poort 80."; }
-    curl -fsS --max-time 5 "http://$IP/" 2>/dev/null | grep -qi 'VoorraadThuis' || { diagnose; die "Healthcheck ok, maar app-pagina niet gevonden."; }
-    curl -fsS --max-time 5 "http://$IP/api/products" 2>/dev/null | grep -q '^\[' || { diagnose; die "API-test mislukt."; }
-    curl -fsS --max-time 5 "http://$IP/api/kast/config" 2>/dev/null | grep -q '"schoenen"' || { diagnose; die "Garderobe-API (Kledingkast) antwoordt niet."; }
+  if koppen "http://$IP/healthz" '^x-voorraadthuis: app' && proef "http://$IP/healthz" '^ok$'; then
+    poort80=$(pct exec "$CTID" -- bash -c 'ss -ltnpH "sport = :80" 2>/dev/null' || true)
+    case "$poort80" in *node*) ;; *) diagnose; die "Poort 80 wordt niet door de app bediend; er luistert nog iets anders op poort 80.";; esac
+    proef "http://$IP/" 'VoorraadThuis' || { diagnose; die "Healthcheck ok, maar app-pagina niet gevonden."; }
+    proef "http://$IP/api/products" '^\[' || { diagnose; die "API-test mislukt."; }
+    proef "http://$IP/api/kast/config" '"schoenen"' || { diagnose; die "Garderobe-API (Kledingkast) antwoordt niet."; }
     log "VoorraadThuis reageert op http://$IP/ (geen nginx; de app luistert zelf op poort 80)."
     exit 0
   fi
