@@ -61,7 +61,11 @@ Open de app op je telefoon en kies **Toevoegen aan startscherm** (iOS/Safari) of
 - Twee lijsten: **In huis** en **Niet meer in huis**.
 - Product handmatig invoeren met naam, aantal, eenheid en optionele barcode.
 - Barcode scannen met de camera (browser `BarcodeDetector`, vereist camera-toestemming en een beveiligde context) of handmatig invoeren.
-- **Barcodeherkenning**: zodra er een volledige code staat (gescand of getypt) zoekt de app het product op in [Open Food Facts](https://world.openfoodfacts.org/) (open data, ODbL 1.0) en vult naam, hoeveelheid en eenheid vast in — bijvoorbeeld `5449000000996` → *Coca-Cola Original · 330 ml*. Wat je zelf invult blijft leidend.
+- **Barcodeherkenning**: zodra er een volledige code staat (gescand of getypt) zoekt de app het product op en vult naam, hoeveelheid en eenheid vast in — bijvoorbeeld `5449000000996` → *Coca-Cola Original · 330 ml*. Wat je zelf invult blijft leidend.
+- De opzoeking gaat langs vier open databanken: **Open Food Facts** (voeding), **Open Products Facts** (huishoud- en schoonmaakproducten), **Open Beauty Facts** (verzorging) en **Open Pet Food Facts** (dierenvoeding). Zo worden ook Nederlandse schoonmaak- en verzorgingsproducten herkend die in de voedingsdatabank niet staan.
+- **Nederlands eerst**: de app vraagt de databanken om Nederlandse gegevens (`lc=nl` en de `product_name_nl`-velden) en kiest de Nederlandse naam als die er is. Heeft de databank alleen een buitenlandse naam, dan staat erbij in welke taal die is, zodat je weet waarom de naam afwijkt.
+- **Opnieuw proberen bij drukte**: de databanken geven bij veel verkeer status `429` of `503`. De app probeert het dan nog twee keer met korte tussenpozen, en zegt het pas als het echt niet lukt.
+- Staat een product er niet in, dan zegt de app dat — huismerk-, verse en nieuwe producten ontbreken in de open databank. De naam die je zelf invult wordt bij die barcode bewaard, dus een volgende keer is het product meteen bekend.
 - De uitkomst wordt lokaal bewaard, dus een tweede scan van hetzelfde product werkt zonder internet; een zelf ingevoerd product wordt bij die code onthouden. Met **Opnieuw zoeken** ververs je de gegevens.
 - Een code met een verkeerd controlecijfer wordt gemeld, maar je kunt hem alsnog opzoeken.
 - Markeer een product als op: het verhuist naar de afzonderlijke boodschappenlijst-knop.
@@ -125,7 +129,7 @@ Elke uitkomst toont de gebruikte argumenten. Met **Nieuw advies** vraag je een v
 
 Met een OpenAI-compatibele dienst (OpenAI, Ollama, LocalAI) kan de app een kledingfoto zelf lezen en naam, categorie, kleur, patroon, materiaal en seizoen invullen. Zet daarvoor `AI_BASE_URL`, `AI_API_KEY` en `AI_VISION_MODEL`; zonder die instellingen blijft de knop om een foto te lezen verborgen en werkt de app volledig handmatig. Wat je zelf invult is altijd leidend.
 
-*Barcodeherkenning*: `GET /api/barcode/<code>` (met `?force=1` om bestaande gegevens te verversen). Zonder internet (`BARCODE_OFFLINE=1`) gebruikt de app alleen wat al bekend is; met `BARCODE_API` wijs je een andere productendatabank aan.
+*Barcodeherkenning*: `GET /api/barcode/<code>` (met `?force=1` om bestaande gegevens te verversen). Zonder internet (`BARCODE_OFFLINE=1`) gebruikt de app alleen wat al bekend is; met `BARCODE_DATABANKEN` wijs je eigen databanken aan (kommagescheiden, bijvoorbeeld `Open Food Facts=https://mijn.databank,Open Products Facts=https://…`); `BARCODE_API` zet één adres en blijft werken zoals het was.
 
 > Productgegevens komen van [Open Food Facts](https://world.openfoodfacts.org/), beschikbaar onder de [Open Database License (ODbL) 1.0](https://opendatacommons.org/licenses/odbl/1-0/). Camera-scannen werkt in browsers die `BarcodeDetector` ondersteunen (Chrome op Android, Edge) en doorgaans alleen via HTTPS; op iOS typ je de code — die wordt ook meteen herkend.
 
