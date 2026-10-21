@@ -14,6 +14,8 @@
 
 Eén Nederlandstalige app voor thuis: voorraad, 9.550 recepten in het Nederlands, boodschappenlijst, maaltijd- en werkplanning én je garderobe met combineeradvies. Alles draait rechtstreeks als service in een Proxmox LXC, met de gegevens in SQLite op persistente opslag. De webpagina is gebouwd voor de telefoon en werkt ook als installeerbare app. Een gescande barcode wordt meteen herkend via Open Food Facts.
 
+[![Rondleiding door VoorraadThuis: klik om de video te openen](docs/img/rondleiding-poster.jpg)](docs/img/voorraadthuis-rondleiding.mp4)
+
 🎬 **[Rondleiding door de app (106 s, MP4, 1280×720, Nederlandse voice-over)](docs/img/voorraadthuis-rondleiding.mp4)** — voorraad, boodschappenlijst, receptenboek, kledingkasten, was, combineeradvies, kalender met werkrooster en de profielen met sms-kanaal in één doorloop, met uitleg per scherm.
 
 ## Op de telefoon
@@ -52,9 +54,9 @@ Open de app op je telefoon en kies **Toevoegen aan startscherm** (iOS/Safari) of
 
 ### Voorraad en boodschappen
 
-| Barcode herkend | Op de telefoon |
-| --- | --- |
-| ![Barcodeherkenning op de telefoon](docs/img/mobiel-barcode.jpg) | ![Product toevoegen op mobiel](docs/img/mobiel-voorraad.jpg) |
+| Barcode op de telefoon | Product toevoegen | Barcode op desktop |
+| --- | --- | --- |
+| ![Barcodeherkenning op de telefoon](docs/img/mobiel-barcode.jpg) | ![Product toevoegen op mobiel](docs/img/mobiel-voorraad.jpg) | ![Barcodeherkenning op desktop](docs/img/desktop-barcode.jpg) |
 
 - Twee lijsten: **In huis** en **Niet meer in huis**.
 - Product handmatig invoeren met naam, aantal, eenheid en optionele barcode.
@@ -83,6 +85,10 @@ Open de app op je telefoon en kies **Toevoegen aan startscherm** (iOS/Safari) of
 - Maandkalender om per dag een recept en landkeuken te plannen.
 - Meerdere benoemde diensten per dag met start- en eindtijd in 24-uursnotatie; `1930` wordt `19:30`.
 - Sla diensten op als herbruikbare sjablonen en zet ze met één druk op een gekozen dag. Dagplanning, diensten en sjablonen blijven bewaard in SQLite.
+
+| ![Werkrooster op desktop](docs/img/werkrooster-desktop.png) | ![Werkrooster op de telefoon](docs/img/werkrooster-mobiel.png) |
+| --- | --- |
+| Diensten per dag met 24-uursklok en de sjablonen eronder. | Dezelfde kalender op de telefoon. |
 
 ### Kleding (Kledingkast)
 
@@ -230,6 +236,10 @@ De app roept `https://account.cheapconnect.net/API/v1/sms/SendSMS` aan met `apik
 | ![CheapConnect als sms-kanaal op desktop](docs/img/sms-cheapconnect-desktop.png) | ![CheapConnect als sms-kanaal op de telefoon](docs/img/sms-cheapconnect-mobiel.jpg) |
 | --- | --- |
 | Het kanaal CheapConnect met API-sleutel (alleen de laatste vier tekens zichtbaar) en afzender. | Dezelfde instellingen op de telefoon. |
+
+![CheapConnect kiezen als sms-kanaal](docs/img/sms-cheapconnect-kiezen.png)
+
+*Het kanaal kiezen in de lijst: CheapConnect staat naast de berichten-app, een webhook en Twilio.*
 
 | ![Profielen op desktop](docs/img/profielen-desktop.png) | ![Profielen op de telefoon](docs/img/profielen-mobiel.jpg) |
 | --- | --- |
