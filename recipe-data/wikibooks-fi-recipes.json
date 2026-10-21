@@ -1,0 +1,372 @@
+{
+  "taal": "fi",
+  "source": {
+    "name": "Wikibooks Keittokirja (Fins)",
+    "dataset": "https://fi.wikibooks.org/wiki/Keittokirja",
+    "revision": "per-pagina revisies 101972–158346",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "fetchedAt": "2025-05-07T06:42:11Z",
+    "language": "fi"
+  },
+  "selection": {
+    "count": 11,
+    "criteria": "Every unique page with at least three ingredient lines and two preparation steps; titles deduplicated against all earlier imports. Deterministic order by hashed title."
+  },
+  "recipes": [
+    {
+      "title": "Porkkanakakku",
+      "url": "https://fi.wikibooks.org/wiki/Keittokirja/Porkkanakakku",
+      "revid": 128952,
+      "revisedAt": "2020-06-07T12:40:50Z",
+      "language": "fi",
+      "countryCode": null,
+      "time": null,
+      "servings": null,
+      "description": "",
+      "ingredients": [
+        "n. 6 dl porkkanaraastetta",
+        "4 kananmunaa",
+        "4 dl sokeria",
+        "4 dl vehnäjauhoja",
+        "4,5 tl kanelia",
+        "2 tl vanilliinisokeria",
+        "2 tl soodaa",
+        "2 tl leivinjauhetta",
+        "Mehua tai muuta kostuketta"
+      ],
+      "steps": [
+        "Raasta porkkanat ja pane jääkaappiin. Laita uuni lämpenemään 170°C asteeseen",
+        "Aluksi vatkaa kananmunat ja sokeri vaahdoksi. Jos vaahtoon voi piirtää S-kirjaimen niin että se jää hetkeksi näkyviin on se valmista",
+        "Sekoita sooda, vehnäjauhot, kaneli, vanilliinisokeri ja leivinjauhe sekaisin",
+        "Sekoita vaahtoon vuorotellen porkkanaraastetta ja kuivista aineista sekoitettua jauhoa",
+        "Sekoita tasaiseksi vaahdoksi. HUOM! varovasti, sillä muuten kakku lätsähtää ja siitä tulee pannukakku",
+        "Kaada taikina kakkumuottiin ja paista 170°C lämmössä ½ tuntia tai vähän kauemmin",
+        "Kostuta kakku mehulla tai vastaavalla"
+      ]
+    },
+    {
+      "title": "Mämmi",
+      "url": "https://fi.wikibooks.org/wiki/Keittokirja/M%C3%A4mmi",
+      "revid": 118835,
+      "revisedAt": "2018-04-06T11:04:26Z",
+      "language": "fi",
+      "countryCode": null,
+      "time": null,
+      "servings": null,
+      "description": "Maltaina käytetään ruismaltaita. Seos maustetaan pomeranssinkuorilla. Vesi kuumennetaan 90 °C:een, ja joukkoon vispilöidään ruisjauhoja sekä maltaita, kunnes saadaan ohut puuro. Puuron pinnalle laitetaan paksuhko kerros ruisjauhoja sekä maltaita. Kattila peitetään ja jätetään lämpimään kolmeksi tunniksi imeltymään",
+      "ingredients": [
+        "5 l vettä",
+        "5 kg ruisjauhoja",
+        "1/2 kg maltaita",
+        "9 rkl siirappia",
+        "2–3 tl suolaa",
+        "8 rkl pomeranssin kuorta"
+      ],
+      "steps": [
+        "Maltaina käytetään ruismaltaita.",
+        "Seos maustetaan pomeranssinkuorilla.",
+        "Vesi kuumennetaan 90 °C:een, ja joukkoon vispilöidään ruisjauhoja sekä maltaita, kunnes saadaan ohut puuro.",
+        "Puuron pinnalle laitetaan paksuhko kerros ruisjauhoja sekä maltaita.",
+        "Kattila peitetään ja jätetään lämpimään kolmeksi tunniksi imeltymään",
+        "Seosta vatkataan ja joukkoon lisätään 1 litra kuumaa vettä.",
+        "Tämän jälkeen päälle pannaan toinen kerros ruisjauhoja ja maltaita, ja seos saa jälleen imeltyä puolen tunnin ajan.",
+        "Näin jatketaan, kunnes koko vesi-, jauho- ja mallasmäärä on käytetty",
+        "Imeltämisen jälkeen mämmiä keitetään noin tunti hyvin sekoittaen.",
+        "Mämmi maustetaan keittämisen aikana.",
+        "Keitetty mämmi vatkataan kylmäksi ja kaadetaan kylmällä vedellä huuhdottuihin tuokkosiin.",
+        "Pinnalle ripotellaan sokeria, ja mämmiä paistetaan uunin miedossa lämmössä noin viisi tuntia",
+        "sv:Kokboken/Recept/Memma"
+      ]
+    },
+    {
+      "title": "Patongit",
+      "url": "https://fi.wikibooks.org/wiki/Keittokirja/Patongit",
+      "revid": 103977,
+      "revisedAt": "2015-09-24T16:09:16Z",
+      "language": "fi",
+      "countryCode": null,
+      "time": null,
+      "servings": null,
+      "description": "",
+      "ingredients": [
+        "8 dl vettä",
+        "100 g hiivaa",
+        "5 tl sokeria",
+        "5 tl suolaa",
+        "1,2 l vehnäjauhoja",
+        "n. 1,2 l sämpylä- tai hiivaleipäjauhoja",
+        "1,5 dl öljyä"
+      ],
+      "steps": [
+        "Murenna hiiva kädenlämpöiseen veteen ja sekoita tasaiseksi. Sekoita joukkoon sokeri, suola, vehnäjauhot ja suurin osa sämpylä- tai hiivaleipäjauhoista",
+        "Lisää rasva ja alusta taikinaa, lisää samalla sämpyläjauhoja sen verran, että taikina irtoaa astiasta ja siitä muodostuu pehmeä kiinteä pallo",
+        "Anna taikinan kohota peitettynä lämpimässä kaksinkertaiseksi. Vaivaa taikina hyvin ja jaa se kahteen tai kolmeen osaan",
+        "Kaaviloi osat 40 sentin pituisiksi soikion mutoisiksi levyiksi. Kääri levyt rullalle ja pane ne pellille leivinpaperille kohoamaan",
+        "Vedä hyvin kohonneisiin patonkeihin vinoja viiltoja terävällä veitsellä",
+        "Paista patongit 225 asteessa uunin keskitasolla. Paistamisaika on noin 15 minuuttia. Jos haluat patonkeihin rapean kuoren, kastele patonkien pinta pari, kolme kertaa paistamisen aikana suihkauttamalla niitä vedellä. Anna patonkien jäähtyä pellillä ilman liinaa"
+      ]
+    },
+    {
+      "title": "Minttuinen hernesosekeitto",
+      "url": "https://fi.wikibooks.org/wiki/Keittokirja/Minttuinen_hernesosekeitto",
+      "revid": 158346,
+      "revisedAt": "2025-05-07T06:42:11Z",
+      "language": "fi",
+      "countryCode": null,
+      "time": null,
+      "servings": null,
+      "description": "",
+      "ingredients": [
+        "1 iso purjo (valkoinen ja vaaleanvihreä osa), viipaloituna tai puoliympyröiksi leikattuna",
+        "1 sipuli (keltainen tai valkoinen), kuutioituna",
+        "2 valkosipulinkynttä, karkeasti pilkottuna",
+        "2–3 rkl oliiviöljyä tai voita (tai molempien seosta)",
+        "7,2 dl vettä tai kasvislientä / kanalientä (3 cups)",
+        "1 tl suolaa (tai maun mukaan)",
+        "1/2 tl mustapippuria",
+        "2 kupillista (n. 10 unssia / 280 g) tuoreita herneitä tai pakasteherneitä",
+        "2,4 dl tuoretta minttua, tiiviisti pakattuna (n. 30 g)",
+        "1,2 dl lehtipersiljaa, tiiviisti pakattuna",
+        "1–2 rkl tuoretta sitruunamehua",
+        "2–4 rkl smetanaa tai ranskankermaa",
+        "Tryffeliöljyä tai oliiviöljyä",
+        "Chili- tai paprikahiutaleita",
+        "Tuoreita mintunlehtiä"
+      ],
+      "steps": [
+        "Viipaloi purjo ja huuhtele se huolellisesti. Valuta. Vesi estää purjoja palamasta",
+        "Kuumenna öljy ja/tai voi kattilassa keskilämmöllä. Lisää purjo, sipuli ja valkosipuli. Kypsennä miedolla lämmöllä noin 10–12 minuuttia, kunnes ne ovat pehmeitä ja tuoksuvia",
+        "Lisää vesi tai liemi, suola ja pippuri. Kiehauta ja laske sitten lämpöä, hauduta",
+        "Lisää herneet ja keitä miedolla lämmöllä 3–4 minuuttia, kunnes ne ovat pehmeitä mutta kirkkaan vihreitä",
+        "Lisää minttu ja persilja, anna niiden hieman nuupahtaa, ja sammuta lämpö",
+        "Soseuta keitto sauvasekoittimella tai tehosekoittimella täysin sileäksi",
+        "Lisää sitruunamehu ja tarkista maku. Lisää tarvittaessa suolaa tai sitruunamehua",
+        "Sekoita joukkoon smetana tai ranskankerma",
+        "Tarjoile ja koristele"
+      ]
+    },
+    {
+      "title": "Mustikkapiirakka",
+      "url": "https://fi.wikibooks.org/wiki/Keittokirja/Mustikkapiirakka",
+      "revid": 102014,
+      "revisedAt": "2015-05-30T12:37:22Z",
+      "language": "fi",
+      "countryCode": null,
+      "time": null,
+      "servings": null,
+      "description": "",
+      "ingredients": [
+        "4 munaa",
+        "vajaa 4 dl sokeria",
+        "6 dl vehnäjauhoja",
+        "reilu 1 tl leivinjauhetta",
+        "300 g sulatettua rasvaa",
+        "1 pss mustikoita"
+      ],
+      "steps": [
+        "Vatkaa munat ja sokeri keskenään vaahdoksi",
+        "Lisää jauhot mieluiten sihdin läpi",
+        "Vinkki: Sekoita leivinjauhe ensin 1 desilitraan vehnäjauhoja",
+        "Sekoita kattilassa sulatettu rasva joukkoon",
+        "Levitä taikina leivinpaperin päälle uunipellille",
+        "Ripottele mustikat tasaisesti levitettyyn taikinaan",
+        "Mustikat voivat olla myös jäisiä",
+        "Paista 200 asteessa noin 25 minuuttia"
+      ]
+    },
+    {
+      "title": "Ohukaiset",
+      "url": "https://fi.wikibooks.org/wiki/Keittokirja/Ohukaiset",
+      "revid": 149827,
+      "revisedAt": "2023-10-30T18:04:58Z",
+      "language": "fi",
+      "countryCode": null,
+      "time": null,
+      "servings": null,
+      "description": "Ohukaiset (tai lätyt, letut) ovat todella monen mielestä herkullisia suomalaisia välipaloja",
+      "ingredients": [
+        "3dl maitoa",
+        "1 muna",
+        "2-3 rkl sokeria",
+        "1/2 tl suolaa",
+        "1½ dl vehnäjauhoja",
+        "2rkl voisulaa tai öljyä",
+        "½ l maitoa",
+        "2 munaa",
+        "0,5 dl voisulaa 50 g",
+        "2½ dl jauhoja",
+        "spelttijauhoja ja vehnäjauhoja 50/50 tai kokonaan spelttijauhoja"
+      ],
+      "steps": [
+        "Vatkaa maito, munat, mausteet, jauhot ja rasva tasaiseksi taikinaksi",
+        "Jätä taikina seisomaan noin puoleksi tunniksi",
+        "Kuumenna pannu, laita vähän rasvaa pannulle ennen taikinan lisäämistä",
+        "Paista ohukaiset kummaltakin puolelta hyvällä lämmöllä kullanruskeiksi",
+        "Vinkki: Voit tarjota ohukaisia hillon, jäätelön, kermavaahdon tai sokerin kera",
+        "Lisää puolet maidosta",
+        "Lisää jauhot siivilöimällä",
+        "Lisää loppupuoli maidosta",
+        "Anna turvota vähintään 30 min"
+      ]
+    },
+    {
+      "title": "Sima",
+      "url": "https://fi.wikibooks.org/wiki/Keittokirja/Sima",
+      "revid": 102194,
+      "revisedAt": "2015-06-10T15:46:22Z",
+      "language": "fi",
+      "countryCode": null,
+      "time": null,
+      "servings": null,
+      "description": "Ohje siman valmistukseen. Simaa tulee tällä reseptillä noin 9 litraa",
+      "ingredients": [
+        "8 litraa vettä",
+        "400 grammaa kidesokeria",
+        "400 grammaa fariinisokeria",
+        "2 desilitraa siirappia",
+        "2–4 sitruunaa",
+        "1/4 teelusikallista hiivaa",
+        "rusinoita"
+      ],
+      "steps": [
+        "Puhdista huolellisesti muoviämpäri tai kymmenen litran kattila.",
+        "Kaada sokerit ja siirappi astian pohjalle.",
+        "Keitä noin puolet (3–4 litraa) vedestä, kaada se astiaan ja sekoita niin, että sokerit liukenevat.",
+        "Lisää tämän jälkeen loput vedestä.",
+        "Pese sitruunat, viipaloi ne ja laita ne nesteeseen kellumaan.",
+        "Odota, kunnes neste on kädenlämpöistä, jolloin voit lisätä hiivan.",
+        "Hiiva kannattaa ensin liottaa pieneen määrään simaa.",
+        "Anna siman käydä astiassa huoneenlämmössä yön yli peitettynä.",
+        "Pullota sima seuraavana päivänä mielellään lasipulloihin.",
+        "Lisää jokaiseen pulloon vielä muutama rusina ja teelusikallinen sokeria.",
+        "Sulje korkit kevyesti, ja anna käydä 2–3 päivää, jolloin rusinat nousevat pintaan ja sima on juomakelpoista.",
+        "Tämän jälkeen simaa voi säilyttää kylmässä, jossa se on parhaimmillaan noin viikon kuluttua"
+      ]
+    },
+    {
+      "title": "Makaronilaatikko",
+      "url": "https://fi.wikibooks.org/wiki/Keittokirja/Makaronilaatikko",
+      "revid": 102748,
+      "revisedAt": "2015-07-22T15:34:01Z",
+      "language": "fi",
+      "countryCode": null,
+      "time": null,
+      "servings": null,
+      "description": "Makaronien sijasta voit käyttää myös muita pastoja. Jauhelihankin voi tässäkin ruokalajissa korvata soijarouheella varsin yksinkertaisesti. Tähän reseptiin menee n. 2 dl soijarouhetta, johon lisätään 4 dl vettä ja keitetään noin 5 minuutin ajan. Mausta soijarouhe suolalla ja (sitruuna)pippurilla makusi mukaan. Sipuli, jos sitä halutaan käyttää, kuullotetaan samassa keittoastiassa soijarouheen kanssa ennen soijarouheen lisäämistä",
+      "ingredients": [
+        "1½ litraa vettä",
+        "200 g makaronia",
+        "400 g ruskistettua jauhelihaa",
+        "1 ja 3/4 tl suolaa",
+        "200 g juustoraastetta",
+        "30 g rasvaa",
+        "2 munaa",
+        "½ litraa maitoa",
+        "½ rkl sokeria",
+        "1/4 tl valkopippuria",
+        "voita vuoan voiteluun"
+      ],
+      "steps": [
+        "Lisää suola veteen ja laita vesi kattilaan",
+        "Keitä makaronit kattilassa",
+        "Laita ne kuivumaan siivilään",
+        "Pane makaronit, jauheliha, juusto ja rasva uunivuokaan",
+        "Ota kulho ja vatkaa munien rakenne rikki",
+        "Yhdistä munat, maito ja mausteet ja kaada seos makaronien päälle",
+        "Ripottele pinnalle juustoraaste ja paista 175 asteen lämmössä uunin alaosassa noin tunti kunnes munamaito on hyytynyt ja laatikko on kauniin ruskeaa"
+      ]
+    },
+    {
+      "title": "Makkarakeitto",
+      "url": "https://fi.wikibooks.org/wiki/Keittokirja/Makkarakeitto",
+      "revid": 101972,
+      "revisedAt": "2015-05-29T15:36:14Z",
+      "language": "fi",
+      "countryCode": null,
+      "time": null,
+      "servings": null,
+      "description": "Makkarakeitto on keitto, jossa on makkaraa ja vihanneksia oman maun mukaan",
+      "ingredients": [
+        "2 porkkanaa",
+        "pala lanttua",
+        "pala selleriä",
+        "1 sipuli",
+        "1 l vettä",
+        "½ tl suolaa",
+        "n. 5 perunaa",
+        "400 g lenkkimakkaraa"
+      ],
+      "steps": [
+        "Huuhdo ja kuori kasvikset",
+        "Pilko kasvikset kuutioiksi ja hienonna sipuli",
+        "Lisää vihannekset kiehuvaan veteen (myös pippuri)",
+        "Keitä seosta noin 15 minuuttia",
+        "Sillä aikaa kuori ja lohko peruna",
+        "Anna kiehua noin 20 minuuttia, kunnes kaikki vihannekset ovat kypsiä",
+        "Lisää makkara ja anna palojen kuumentua keitossa",
+        "Maista keittoa, ja lisää mausteita / vettä mikäli keitto on mautonta",
+        "Hienonna persilja ja ripottele se keiton pinnalle"
+      ]
+    },
+    {
+      "title": "Valkosipulipasta",
+      "url": "https://fi.wikibooks.org/wiki/Keittokirja/Valkosipulipasta",
+      "revid": 102753,
+      "revisedAt": "2015-07-22T15:43:04Z",
+      "language": "fi",
+      "countryCode": null,
+      "time": null,
+      "servings": null,
+      "description": "Ohje valkosipulipastaan käännetty englanninkielisiltä sivuilta. Reseptiä ei ole kokeiltu",
+      "ingredients": [
+        "110 g voita",
+        "2 tl kuivattua basilikaa (murskattua)",
+        "2 tl sitruunamehua",
+        "1 1/4 tl valkosipulijauhetta",
+        "3/4 tl suolaa",
+        "220 g ohutta narupastaa (keitetty ja valutettu)",
+        "430 g parsakaalia (keitetty, hieman rapea)",
+        "3 rkl saksanpähkinää (pilkottu)",
+        "tuoretta raastettua parmesaania"
+      ],
+      "steps": [
+        "Sulata voi isossa paistinpannussa.",
+        "Lisää basilika, sitruunamehu, valkosipulijauhe ja suola.",
+        "Lisää pasta, parsakaali, pähkinä ja kanaa tai katkarapuja (jos haluat).",
+        "Lisää lopuksi parmesaania ruuan päälle"
+      ]
+    },
+    {
+      "title": "Amerikkalainen pannukakku",
+      "url": "https://fi.wikibooks.org/wiki/Keittokirja/Amerikkalainen_pannukakku",
+      "revid": 131352,
+      "revisedAt": "2021-05-19T12:44:38Z",
+      "language": "fi",
+      "countryCode": null,
+      "time": null,
+      "servings": null,
+      "description": "Nämä pannukakut ovat perin amerikkalaistyyppisiä aamiaispannukakkuja. Nautitaan usein vaahterasiirapin kanssa",
+      "ingredients": [
+        "2,5 dl vehnäjauhoja",
+        "1 rkl sokeria",
+        "2 tl leivinjauhetta",
+        "1/4 tl suolaa",
+        "1 kpl muna",
+        "2,5 dl maitoa",
+        "2 rkl öljyä",
+        "tarvittaessa öljyä ja/tai voita paistamiseen"
+      ],
+      "steps": [
+        "Sekoita kuivat ainekset kulhossa",
+        "Riko munat toiseen kulhoon. Sekoita sen verran että munien rakenne menee rikki ja sekoita joukkoon loput nestemäiset ainekset, myös öljy",
+        "Sekoita kuivat ja nestemäiset ainekset yhteen. Sekoita vain sen verran ettei taikinassa ole jauhoisia paakkuja, ei yhtään enempää",
+        "Lämmitä paistinpannu keskilämpöiseksi",
+        "Kaada taikina pannuun siten että pannukakun halkaisija on noin 10cm. Taikinaa yhteen pannukakkuun tulee noin 0,5dl",
+        "Pannukakku kuplii. Kun kuplinta rauhoittuu ja reunat ovat aavistuksen verran kuivuneet, käännä pannukakku",
+        "Kun pannukakku näyttää valmiilta ota pois pannulta ja paista seuraava",
+        "Pannukakut tarjoillaan yleisesti lämpimän vaahterasiirapin kera"
+      ]
+    }
+  ]
+}

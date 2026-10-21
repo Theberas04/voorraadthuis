@@ -52,7 +52,7 @@ function plansForMonth(month){return db.prepare('SELECT * FROM planner WHERE pla
 function shiftTemplates(){return db.prepare('SELECT id,name,start_time AS startTime,end_time AS endTime,notes FROM shift_templates ORDER BY name COLLATE NOCASE,id').all();}
 // Ingrediëntregels uit de open bronnen kunnen lange beschrijvingen bevatten (de langste is
 // ruim 300 tekens); daarom is de naamlimiet hier ruimer dan bij zelf ingevoerde producten.
-const MAX_SHOPPING_NAME=400;
+const MAX_SHOPPING_NAME=600; // geïmporteerde bronregels uit het Wikibooks-kookboek lopen op tot 504 tekens; 400 weigerde die regels
 function addShoppingItem(item){const name=String(item.name||'').trim(),unit=String(item.unit||'stuks').trim(),quantity=Number(item.quantity??1);if(!name||name.length>MAX_SHOPPING_NAME||!Number.isFinite(quantity)||quantity<=0||quantity>100000||unit.length>24)throw Error('Ongeldig boodschappenproduct.');const old=db.prepare('SELECT id FROM shopping WHERE lower(name)=lower(?) AND lower(unit)=lower(?) ORDER BY id LIMIT 1').get(name,unit);if(old)db.prepare('UPDATE shopping SET quantity=quantity+? WHERE id=?').run(quantity,old.id);else db.prepare('INSERT INTO shopping(name,quantity,unit) VALUES(?,?,?)').run(name,quantity,unit);}
 
 const server=http.createServer(async(req,res)=>{const url=new URL(req.url,'http://localhost');try{

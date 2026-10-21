@@ -4,9 +4,93 @@
     "url": "https://raw.githubusercontent.com/farcrak/unitools-recipes/2f554073f7e730b18d707fe1164d18308f6ec16c/unitools-recipes-v1.json",
     "license": "CC BY-SA 4.0"
   },
-  "wikibooks": {
+  "wikibooks_en": {
     "revision": "49fb73ea07d2a1380c15197db5589934937457ed",
     "url": "https://huggingface.co/datasets/gossminn/wikibooks-cookbook/resolve/49fb73ea07d2a1380c15197db5589934937457ed/recipes_parsed.mini.json",
     "license": "CC BY-SA 4.0"
+  },
+  "wikibooks_es": {
+    "host": "es.wikibooks.org",
+    "category": "Recetas",
+    "license": "CC BY-SA 4.0",
+    "revision": "per-pagina revisies 138820–436605",
+    "fetchedAt": "2026-10-17T08:14:38Z"
+  },
+  "wikibooks_de": {
+    "host": "de.wikibooks.org",
+    "prefix": "Kochbuch/",
+    "license": "CC BY-SA 4.0",
+    "revision": "per-pagina revisies 275373–1092296",
+    "fetchedAt": "2026-10-20T18:28:37Z"
+  },
+  "wikibooks_nl": {
+    "host": "nl.wikibooks.org",
+    "prefix": "Kookboek/",
+    "license": "CC BY-SA 4.0",
+    "revision": "per-pagina revisies 395795–430486",
+    "fetchedAt": "2026-10-04T14:35:04Z"
+  },
+  "wikibooks_fr": {
+    "host": "https://fr.wikibooks.org/wiki/Livre de cuisine",
+    "prefix": "Livre de cuisine/",
+    "license": "CC BY-SA 4.0",
+    "revision": "per-pagina revisies 325303–775364",
+    "fetchedAt": "2026-10-18T12:16:02Z"
+  },
+  "wikibooks_it": {
+    "host": "https://it.wikibooks.org/wiki/Libro di cucina",
+    "prefix": "Libro di cucina/",
+    "license": "CC BY-SA 4.0",
+    "revision": "per-pagina revisies 384149–499018",
+    "fetchedAt": "2026-06-05T18:09:09Z"
+  },
+  "wikibooks_ca": {
+    "host": "https://ca.wikibooks.org/wiki/Llibre de cuina",
+    "prefix": "Llibre de cuina/",
+    "license": "CC BY-SA 4.0",
+    "revision": "per-pagina revisies 17567–76620",
+    "fetchedAt": "2026-03-18T18:12:18Z"
+  },
+  "wikibooks_pt": {
+    "host": "https://pt.wikibooks.org/wiki/Livro de receitas",
+    "prefix": "Livro de receitas/",
+    "license": "CC BY-SA 4.0",
+    "revision": "per-pagina revisies 186423–500071",
+    "fetchedAt": "2025-06-04T04:49:03Z"
+  },
+  "wikibooks_ja": {
+    "host": "https://ja.wikibooks.org/wiki/料理本",
+    "prefix": "料理本/",
+    "license": "CC BY-SA 4.0",
+    "revision": "per-pagina revisies 252852–303542",
+    "fetchedAt": "2026-09-11T05:02:32Z"
+  },
+  "wikibooks_pl": {
+    "host": "https://pl.wikibooks.org/wiki/Książka kucharska",
+    "prefix": "Książka kucharska/",
+    "license": "CC BY-SA 4.0",
+    "revision": "per-pagina revisies 512033–559009",
+    "fetchedAt": "2026-10-10T08:49:40Z"
+  },
+  "wikibooks_sv": {
+    "host": "https://sv.wikibooks.org/wiki/Kokboken",
+    "prefix": "Kokboken/",
+    "license": "CC BY-SA 4.0",
+    "revision": "per-pagina revisies 20859–57934",
+    "fetchedAt": "2026-06-10T21:02:47Z"
+  },
+  "wikibooks_nb": {
+    "host": "https://nb.wikibooks.org/wiki/Kokebok",
+    "prefix": "Kokebok/",
+    "license": "CC BY-SA 4.0",
+    "revision": "per-pagina revisies 43400–46630",
+    "fetchedAt": "2026-09-17T19:27:09Z"
+  },
+  "wikibooks_fi": {
+    "host": "https://fi.wikibooks.org/wiki/Keittokirja",
+    "prefix": "Keittokirja/",
+    "license": "CC BY-SA 4.0",
+    "revision": "per-pagina revisies 101972–158346",
+    "fetchedAt": "2025-05-07T06:42:11Z"
   }
 }
