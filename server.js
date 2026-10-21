@@ -94,7 +94,7 @@ const server=http.createServer(async(req,res)=>{const url=new URL(req.url,'http:
  if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{status:'ok'});
  // Eenvoudige tekstcontrole voor de installatie- en updatescripts (de app luistert
  // zelf op poort 80; er zit geen nginx meer voor).
- if(req.method==='GET'&&(url.pathname==='/healthz'||url.pathname==='/healthz/')){res.writeHead(200,{'content-type':'text/plain; charset=utf-8','cache-control':'no-cache'});return res.end('ok\n');}
+ if(req.method==='GET'&&(url.pathname==='/healthz'||url.pathname==='/healthz/')){res.writeHead(200,{'content-type':'text/plain; charset=utf-8','cache-control':'no-cache','x-voorraadthuis':'app'});return res.end('ok\n');}
  if(req.method==='GET'){const rel=url.pathname.slice(1);if(rel&&rel!=='index.html'&&!rel.includes('..')&&/^[A-Za-z0-9][A-Za-z0-9._\/-]*$/.test(rel)){const file=path.join(__dirname,'public',rel),publicDir=path.join(__dirname,'public');if(path.dirname(file).startsWith(publicDir)&&fs.existsSync(file)&&fs.statSync(file).isFile()){const types={'.svg':'image/svg+xml','.png':'image/png','.webmanifest':'application/manifest+json','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.ico':'image/x-icon','.txt':'text/plain; charset=utf-8'};const type=types[path.extname(file)];if(type){res.writeHead(200,{'content-type':type,'cache-control':rel==='sw.js'?'no-cache':'public, max-age=3600'});return fs.createReadStream(file).pipe(res);}}}}
  if(req.method==='GET'&&(url.pathname==='/'||url.pathname==='/index.html')){res.writeHead(200,{'content-type':'text/html; charset=utf-8','cache-control':'no-cache'});return fs.createReadStream(path.join(__dirname,'public','index.html')).pipe(res);}
  res.writeHead(404);res.end('Not found');

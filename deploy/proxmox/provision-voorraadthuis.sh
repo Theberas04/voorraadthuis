@@ -26,6 +26,11 @@ for f in unitools-recipes.json "wikibooks-en-recipes.json" "wikibooks-es-recipes
 pct exec "$CTID" -- chown -R voorraadthuis:voorraadthuis "$SITE_DIR" /var/lib/voorraadthuis /var/lib/voorraadthuis/fotos
 # nginx en het oude certificaat zijn niet meer nodig: de app luistert zelf op poort 80.
 pct exec "$CTID" -- bash -c 'systemctl disable --now nginx 2>/dev/null || true; systemctl disable --now voorraadthuis-cert.service 2>/dev/null || true; rm -f /etc/systemd/system/voorraadthuis-cert.service /usr/local/sbin/voorraadthuis-cert-refresh /etc/nginx/sites-enabled/voorraadthuis /etc/nginx/sites-available/voorraadthuis; rm -rf /etc/ssl/voorraadthuis; export DEBIAN_FRONTEND=noninteractive; apt-get purge -y -qq nginx nginx-common nginx-core 2>/dev/null || true; apt-get autoremove -y -qq >/dev/null 2>&1 || true; systemctl daemon-reload'
+# Wat er daarna ook nog op poort 80 luistert (een achtergebleven webserver): stoppen,
+# anders kan de app de pagina niet zelf bedienen en antwoordt iets anders op /healthz.
+pct exec "$CTID" -- pkill -f nginx 2>/dev/null || true
+pct exec "$CTID" -- bash -c 'command -v fuser >/dev/null 2>&1 && fuser -k -n tcp 80 >/dev/null 2>&1 || true'
+pct exec "$CTID" -- bash -c 'ss -ltnH "sport = :80" 2>/dev/null | grep -q . && echo "[!] poort 80 is nog bezet" || true'
 pct exec "$CTID" -- bash -c 'cat > /etc/systemd/system/voorraadthuis.service <<'"'"'UNIT'"'"'
 [Unit]
 Description=VoorraadThuis voorraad-app
@@ -70,6 +75,8 @@ diagnose(){
   pct exec "$CTID" -- curl -sS --max-time 5 -o /dev/null -w '    127.0.0.1 -> HTTP %{http_code}\n' http://127.0.0.1/ 2>/dev/null >&2 || printf '    de app antwoordt niet op 127.0.0.1\n' >&2
   printf 'bestanden:\n' >&2
   pct exec "$CTID" -- ls -la "$SITE_DIR" "$SITE_DIR/public" 2>/dev/null | sed 's/^/    /' >&2 || true
+  printf 'poort 80 in de container:\n' >&2
+  pct exec "$CTID" -- ss -ltnpH 'sport = :80' 2>/dev/null | sed 's/^/    /' >&2 || true
   printf 'dienst voorraadthuis: ' >&2
   pct exec "$CTID" -- systemctl is-active voorraadthuis 2>/dev/null >&2 || true
   pct exec "$CTID" -- journalctl -u voorraadthuis -n 8 --no-pager 2>/dev/null | sed 's/^/    /' >&2 || true
@@ -77,8 +84,17 @@ diagnose(){
     printf '    tip: de app mocht poort 80 niet openen (EACCES); controleer AmbientCapabilities=CAP_NET_BIND_SERVICE in /etc/systemd/system/voorraadthuis.service\n' >&2
   fi
 }
+# Antwoordt er iets anders dan de app op poort 80 (een achtergebleven webserver),
+# dan meteen stoppen met een duidelijke melding in plaats van door te blijven proberen.
+even=$(curl -fsS -D - -o /dev/null --max-time 3 "http://$IP/healthz" 2>/dev/null || true)
+if [ -n "$even" ] && ! printf '%s' "$even" | grep -qi '^x-voorraadthuis: app'; then
+  diagnose
+  die "Op poort 80 antwoordt iets anders dan de app; verwijder die webserver en probeer opnieuw."
+fi
 for _ in $(seq 1 20); do
-  if curl -fsS --max-time 3 "http://$IP/healthz" 2>/dev/null | grep -q '^ok$'; then
+  antwoord=$(curl -fsS -D - --max-time 3 "http://$IP/healthz" 2>/dev/null || true)
+  if printf '%s' "$antwoord" | grep -qi '^x-voorraadthuis: app' && printf '%s' "$antwoord" | grep -q '^ok$'; then
+    pct exec "$CTID" -- bash -c 'ss -ltnpH "sport = :80" 2>/dev/null | grep -q node' || { diagnose; die "Poort 80 wordt niet door de app bediend; er luistert nog iets anders op poort 80."; }
     curl -fsS --max-time 5 "http://$IP/" 2>/dev/null | grep -qi 'VoorraadThuis' || { diagnose; die "Healthcheck ok, maar app-pagina niet gevonden."; }
     curl -fsS --max-time 5 "http://$IP/api/products" 2>/dev/null | grep -q '^\[' || { diagnose; die "API-test mislukt."; }
     curl -fsS --max-time 5 "http://$IP/api/kast/config" 2>/dev/null | grep -q '"schoenen"' || { diagnose; die "Garderobe-API (Kledingkast) antwoordt niet."; }
