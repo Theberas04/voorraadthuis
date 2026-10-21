@@ -82,4 +82,6 @@ test('de pagina heeft een invulveld voor het aantal en een bediening per product
   assert.match(html,/data-min=/);
   assert.match(html,/id="countStuks"/);
   assert.match(html,/aantal:\$\('#aantal'\)\.value/);
+  // De vorige scanvulling moet overschreven kunnen worden; de variabele moet bestaan.
+  assert.match(html,/let barcodeTimer=null,barcodeLaatst='',barcodeBezig=false,scanVulling=\{hoeveelheid:''/);
 });
