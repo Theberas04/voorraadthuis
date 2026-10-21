@@ -31,7 +31,14 @@ pct exec "$CTID" -- bash -c 'systemctl disable --now nginx 2>/dev/null || true; 
 # Wat er daarna ook nog op poort 80 luistert (een achtergebleven webserver): stoppen,
 # anders kan de app de pagina niet zelf bedienen en antwoordt iets anders op /healthz.
 pct exec "$CTID" -- pkill -f nginx 2>/dev/null || true
-pct exec "$CTID" -- bash -c 'command -v fuser >/dev/null 2>&1 && fuser -k -n tcp 80 >/dev/null 2>&1 || true'
+pct exec "$CTID" -- bash -c 'command -v fuser >/dev/null 2>&1 && fuser -k -n tcp 80 443 >/dev/null 2>&1 || true'
+# Zelfondertekend certificaat voor https. Browsers geven de camera (barcodes scannen op
+# een telefoon) en de service worker alleen vrij op een beveiligde verbinding; daarom
+# luistert de app naast poort 80 ook op 443. Op de telefoon eenmalig de waarschuwing
+# accepteren, of het certificaat installeren via http://<ip>/certificaat.crt.
+pct exec "$CTID" -- bash -c 'command -v openssl >/dev/null 2>&1 || { export DEBIAN_FRONTEND=noninteractive; apt-get install -y -qq openssl >/dev/null 2>&1; } || true; install -d -m 755 /etc/voorraadthuis/tls'
+pct exec "$CTID" -- bash -c "if [ ! -s /etc/voorraadthuis/tls/cert.pem ]; then openssl req -x509 -newkey rsa:2048 -nodes -days 3650 -keyout /etc/voorraadthuis/tls/key.pem -out /etc/voorraadthuis/tls/cert.pem -subj '/CN=${IP}' -addext 'subjectAltName=IP:${IP}' >/dev/null 2>&1 || echo '[!] certificaat maken mislukte; camera scannen op de telefoon blijft dan beperkt tot https-omgevingen.'; fi"
+pct exec "$CTID" -- bash -c 'chown -R voorraadthuis:voorraadthuis /etc/voorraadthuis/tls 2>/dev/null || true; chmod 644 /etc/voorraadthuis/tls/cert.pem 2>/dev/null || true; chmod 600 /etc/voorraadthuis/tls/key.pem 2>/dev/null || true'
 pct exec "$CTID" -- bash -c 'ss -ltnH "sport = :80" 2>/dev/null | grep -q . && echo "[!] poort 80 is nog bezet" || true'
 pct exec "$CTID" -- bash -c 'cat > /etc/systemd/system/voorraadthuis.service <<'"'"'UNIT'"'"'
 [Unit]
@@ -45,6 +52,10 @@ Environment=PORT=80
 Environment=HOST=0.0.0.0
 Environment=DB_PATH=/var/lib/voorraadthuis/voorraad.db
 Environment=MEDIA_DIR=/var/lib/voorraadthuis/fotos
+# https met het zelfondertekende certificaat (camera + webapp op de telefoon).
+Environment=TLS_CERT=/etc/voorraadthuis/tls/cert.pem
+Environment=TLS_KEY=/etc/voorraadthuis/tls/key.pem
+Environment=TLS_PORT=443
 # Optioneel: AI-tagging van kledingfotos via een OpenAI-compatibele dienst.
 #Environment=AI_BASE_URL=http://192.168.1.10:11434/v1
 #Environment=AI_VISION_MODEL=llava
@@ -73,6 +84,8 @@ log "Wachten op de app…"
 PROEF=$(mktemp); KOPPEN=$(mktemp); trap 'rm -f "$PROEF" "$KOPPEN"' EXIT
 proef(){ curl -fsS --max-time 10 "$1" -o "$PROEF" 2>/dev/null || return 1; grep -Eqi "$2" "$PROEF"; }
 koppen(){ curl -fsS --max-time 5 -D "$KOPPEN" -o /dev/null "$1" 2>/dev/null || return 1; grep -Eqi "$2" "$KOPPEN"; }
+# Voor https met het zelfondertekende certificaat van de app zelf (-k).
+proefTls(){ curl -fsSk --max-time 10 "$1" -o "$PROEF" 2>/dev/null || return 1; grep -Eqi "$2" "$PROEF"; }
 # Bij een mislukte controle meteen laten zien wat er wél staat, zodat de oorzaak
 # zichtbaar is in plaats van alleen "mislukt".
 diagnose(){
@@ -106,7 +119,12 @@ for _ in $(seq 1 20); do
     proef "http://$IP/" 'VoorraadThuis' || { diagnose; die "Healthcheck ok, maar app-pagina niet gevonden."; }
     proef "http://$IP/api/products" '^\[' || { diagnose; die "API-test mislukt."; }
     proef "http://$IP/api/kast/config" '"schoenen"' || { diagnose; die "Garderobe-API (Kledingkast) antwoordt niet."; }
-    log "VoorraadThuis reageert op http://$IP/ (geen nginx; de app luistert zelf op poort 80)."
+    if proefTls "https://$IP/healthz" '^ok$'; then
+      log "VoorraadThuis reageert op http://$IP/ en https://$IP/ (geen nginx; de app luistert zelf op poort 80 en 443)."
+      log "Voor de camera op je telefoon: https://$IP/ — accepteer eenmalig de waarschuwing, of installeer http://$IP/certificaat.crt."
+    else
+      log "VoorraadThuis reageert op http://$IP/ (geen nginx; de app luistert zelf op poort 80). https antwoordt nog niet; controleer het certificaat."
+    fi
     exit 0
   fi
   sleep 1

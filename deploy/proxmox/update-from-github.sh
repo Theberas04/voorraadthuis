@@ -22,6 +22,8 @@ PROEF=$(mktemp); KOPPEN=$(mktemp); trap 'rm -rf "$TMP" "$PROEF" "$KOPPEN"' EXIT
 # een pijp die grep te vroeg sluit ('curl: (23) Failure writing output to destination').
 proef(){ curl -fsS --max-time 10 "$1" -o "$PROEF" 2>/dev/null || return 1; grep -Eqi "$2" "$PROEF"; }
 koppen(){ curl -fsS --max-time 5 -D "$KOPPEN" -o /dev/null "$1" 2>/dev/null || return 1; grep -Eqi "$2" "$KOPPEN"; }
+# Voor https met het zelfondertekende certificaat van de app zelf (-k).
+proefTls(){ curl -fsSk --max-time 10 "$1" -o "$PROEF" 2>/dev/null || return 1; grep -Eqi "$2" "$PROEF"; }
 SITE=/var/www/voorraadthuis
 STAGE=/var/www/voorraadthuis-staging
 BACKUP=/var/www/voorraadthuis-backup
@@ -36,6 +38,12 @@ for f in nl-huismerken.json winkelprefixen.json; do pct push "$CTID" "$TMP/produ
 pct exec "$CTID" -- node --check "$STAGE/server.js"
 pct exec "$CTID" -- chown -R voorraadthuis:voorraadthuis "$STAGE"
 # Nu pas wisselen, met een volledige kopie van de huidige versie als terugvaloptie.
+# Zelfondertekend certificaat, zodat de camera op een telefoon werkt (browsers geven de
+# camera en de service worker alleen vrij op https). Bestaat het al, dan blijft het staan.
+IP_CERT=$(pct exec "$CTID" -- ip -4 -o addr show dev eth0 | awk '{print $4}' | cut -d/ -f1 | head -1)
+pct exec "$CTID" -- bash -c 'command -v openssl >/dev/null 2>&1 || { export DEBIAN_FRONTEND=noninteractive; apt-get install -y -qq openssl >/dev/null 2>&1; } || true; install -d -m 755 /etc/voorraadthuis/tls'
+pct exec "$CTID" -- bash -c "if [ ! -s /etc/voorraadthuis/tls/cert.pem ]; then openssl req -x509 -newkey rsa:2048 -nodes -days 3650 -keyout /etc/voorraadthuis/tls/key.pem -out /etc/voorraadthuis/tls/cert.pem -subj '/CN=${IP_CERT}' -addext 'subjectAltName=IP:${IP_CERT}' >/dev/null 2>&1 || echo '[!] certificaat maken mislukte.'; fi"
+pct exec "$CTID" -- bash -c 'chown -R voorraadthuis:voorraadthuis /etc/voorraadthuis/tls 2>/dev/null || true; chmod 644 /etc/voorraadthuis/tls/cert.pem 2>/dev/null || true; chmod 600 /etc/voorraadthuis/tls/key.pem 2>/dev/null || true'
 pct exec "$CTID" -- systemctl stop voorraadthuis
 pct exec "$CTID" -- bash -c "rm -rf '$BACKUP' && cp -a '$SITE' '$BACKUP' && cp -a '$STAGE/.' '$SITE/' && rm -rf '$STAGE' && chown -R voorraadthuis:voorraadthuis '$SITE'"
 pct exec "$CTID" -- systemctl start voorraadthuis
@@ -56,7 +64,12 @@ if [ -n "$IP" ]; then
   proef "http://$IP/favicon.svg" '<svg' || { echo 'App-pictogram niet bereikbaar.' >&2; rollback; }
   proef "http://$IP/manifest.webmanifest" '"display"' || { echo 'Webapp-manifest niet bereikbaar.' >&2; rollback; }
   pct exec "$CTID" -- rm -rf "$BACKUP"
-  echo "VoorraadThuis bijgewerkt; controle: http://$IP/ (terugvaloptie verwijderd na geslaagde controle)"
+  if proefTls "https://$IP/healthz" '^ok$'; then
+    echo "VoorraadThuis bijgewerkt; controle: http://$IP/ en https://$IP/ (terugvaloptie verwijderd na geslaagde controle)"
+    echo "Voor de camera op je telefoon: https://$IP/ — accepteer eenmalig de waarschuwing, of installeer http://$IP/certificaat.crt."
+  else
+    echo "VoorraadThuis bijgewerkt; controle: http://$IP/ (https antwoordt nog niet; terugvaloptie verwijderd na geslaagde controle)"
+  fi
 else
   echo 'Bestanden bijgewerkt. IP niet gevonden; controleer service met pct exec <CTID> -- systemctl status voorraadthuis.'
 fi

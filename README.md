@@ -33,6 +33,27 @@ Eén Nederlandstalige app voor thuis: voorraad, 9.550 recepten in het Nederlands
 - Recepten komen in delen van 48 van de server, met **Nog … recepten laden**; zoeken en filteren gebeurt op de server en ingrediënten worden pas bij het openklappen opgehaald, zodat de pagina ook met 9.550 recepten vlot blijft.
 - Veilige marges voor toestellen met een inkeping (`viewport-fit=cover` en `env(safe-area-inset-bottom)`).
 
+### Camera: https in plaats van http
+
+Browsers geven de camera alleen vrij op een **beveiligde verbinding** (https of localhost).
+Op een gewoon `http://192.168.1.81`-adres kan de app dus geen barcode scannen — op elke
+telefoon, niet alleen op een Samsung. Daarom maakt de installatie een **zelfondertekend
+certificaat** aan en luistert de app naast poort 80 ook op **poort 443**:
+
+- Open op de telefoon **`https://192.168.1.81/`** en accepteer eenmalig de waarschuwing
+  (*Geavanceerd* → *Doorgaan*). De pagina is dan een beveiligde context: de camera werkt,
+  en de webapp kan zichzelf ook installeren en offline werken.
+- De waarschuwing helemaal weg? Installeer het certificaat op de telefoon:
+  open **`http://192.168.1.81/certificaat.crt`** en kies *Installeren* →
+  *CA-certificaat* (Android: *Instellingen → Beveiliging → Versleuteling en inloggegevens →
+  Certificaat installeren → CA-certificaat*).
+- Zonder https blijft alles werken: typ dan de barcode gewoon in het veld, dan wordt hij
+  net zo goed herkend. De app zegt dat er ook bij als je op **Scan** tikt.
+
+Het certificaat staat in `/etc/voorraadthuis/tls/` (tien jaar geldig, met het IP-adres van
+de container erin). Is het er niet, dan start de app alleen http — je verliest dan niets
+behalve de camera op de telefoon.
+
 ### Installeren als app (PWA)
 
 Open de app op je telefoon en kies **Toevoegen aan startscherm** (iOS/Safari) of **App installeren** (Android/Chrome). De app opent dan zonder adresbalk en houdt de laatst geladen pagina bij tot de server bereikbaar is. De app draait in je eigen netwerk op een gewoon `http`-adres. Een barcode intypen werkt daar meteen; de camera gebruiken (barcode scannen of een kledingfoto maken) blokkeren browsers op een onbeveiligde verbinding — daarvoor is `https` nodig, bijvoorbeeld via een omgekeerde proxy met een certificaat.

@@ -1,4 +1,5 @@
 const http = require('node:http');
+const https = require('node:https');
 const fs = require('node:fs');
 const path = require('node:path');
 const zlib = require('node:zlib');
@@ -10,6 +11,8 @@ const { createBarcodes } = require('./barcodes');
 const { createProfiles } = require('./profiles');
 const { URL } = require('node:url');
 
+const TLS_CERT = () => process.env.TLS_CERT || '/etc/voorraadthuis/tls/cert.pem';
+const TLS_KEY = () => process.env.TLS_KEY || '/etc/voorraadthuis/tls/key.pem';
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'data', 'voorraad.db');
 const MEDIA_DIR = process.env.MEDIA_DIR || path.join(path.dirname(DB_PATH), 'fotos');
 fs.mkdirSync(path.dirname(DB_PATH), {recursive:true});
@@ -136,7 +139,23 @@ if(x.aantal!=null||x.action==='min'||x.action==='plus'){const p=db.prepare('SELE
  if(req.method==='GET'&&(url.pathname==='/healthz'||url.pathname==='/healthz/')){res.writeHead(200,{'content-type':'text/plain; charset=utf-8','cache-control':'no-cache','x-voorraadthuis':'app'});return res.end('ok\n');}
  if(req.method==='GET'){const rel=url.pathname.slice(1);if(rel&&rel!=='index.html'&&!rel.includes('..')&&/^[A-Za-z0-9][A-Za-z0-9._\/-]*$/.test(rel)){const file=path.join(__dirname,'public',rel),publicDir=path.join(__dirname,'public');if(path.dirname(file).startsWith(publicDir)&&fs.existsSync(file)&&fs.statSync(file).isFile()){const types={'.svg':'image/svg+xml','.png':'image/png','.webmanifest':'application/manifest+json','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.ico':'image/x-icon','.txt':'text/plain; charset=utf-8'};const type=types[path.extname(file)];if(type){res.writeHead(200,{'content-type':type,'cache-control':rel==='sw.js'?'no-cache':'public, max-age=3600'});return fs.createReadStream(file).pipe(res);}}}}
  if(req.method==='GET'&&(url.pathname==='/'||url.pathname==='/index.html')){res.writeHead(200,{'content-type':'text/html; charset=utf-8','cache-control':'no-cache'});return fs.createReadStream(path.join(__dirname,'public','index.html')).pipe(res);}
+// Het certificaat van de app zelf, zodat je het op je telefoon kunt installeren en de
+// camera (die een beveiligde verbinding eist) zonder waarschuwing werkt.
+if(req.method==='GET'&&(url.pathname==='/certificaat.crt'||url.pathname==='/certificaat.pem')){const pad=TLS_CERT();if(!fs.existsSync(pad))return json(res,404,{error:'Er is nog geen certificaat gemaakt.'});res.writeHead(200,{'content-type':'application/x-x509-ca-cert','content-disposition':'attachment; filename="voorraadthuis.crt"','cache-control':'no-cache'});return fs.createReadStream(pad).pipe(res);}
  res.writeHead(404);res.end('Not found');
  }catch(e){json(res,400,{error:e.message||'Fout'});}});
-if(require.main===module)server.listen(Number(process.env.PORT||3000),process.env.HOST||'0.0.0.0',()=>console.log(`VoorraadThuis luistert op ${process.env.HOST||'0.0.0.0'}:${process.env.PORT||3000}`));
+if(require.main===module){
+  const host=process.env.HOST||'0.0.0.0',poort=Number(process.env.PORT||3000);
+  server.listen(poort,host,()=>console.log(`VoorraadThuis luistert op ${host}:${poort}`));
+  // Staat er een certificaat, dan luistert de app ook op https. Dat is nodig voor de
+  // camera op een telefoon: browsers geven camera, microfoon en de service worker
+  // alleen vrij op een beveiligde verbinding (https of localhost).
+  if(fs.existsSync(TLS_CERT())&&fs.existsSync(TLS_KEY())){
+    const tlsPoort=Number(process.env.TLS_PORT||443);
+    try{
+      https.createServer({key:fs.readFileSync(TLS_KEY()),cert:fs.readFileSync(TLS_CERT())},server.listeners('request')[0])
+        .listen(tlsPoort,host,()=>console.log(`VoorraadThuis luistert ook op https://${host}:${tlsPoort}`));
+    }catch(e){console.error('https kon niet starten:',e.message);}
+  }
+}
 module.exports={server,db,RECIPES};
