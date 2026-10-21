@@ -1,6 +1,7 @@
 const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
+const zlib = require('node:zlib');
 const sqlite3 = require('node:sqlite');
 const internationalRecipes = require('./recipes-international');
 const createOpenRecipes = require('./recipes-open');
@@ -28,7 +29,28 @@ const CURATED_RECIPES = [...BUILTIN_RECIPES, ...internationalRecipes];
 const openRecipes = createOpenRecipes(CURATED_RECIPES);
 const RECIPES = [...CURATED_RECIPES, ...openRecipes].sort((a,b)=>a.cuisine.localeCompare(b.cuisine,'nl')||a.name.localeCompare(b.name,'nl'));
 const recipeById = id => RECIPES.find(r=>r.id===Number(id));
-function json(res,status,data){res.writeHead(status,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});res.end(JSON.stringify(data));}
+// Zoeken gebeurt op naam, land, omschrijving en ingrediëntnamen. De zoektekst wordt
+// pas gemaakt als er echt gezocht wordt en daarna onthouden, zodat het opstarten en
+// het gewone bladeren niets extra kosten.
+const zoekTekstCache = new Map();
+function zoekTekst(recept){
+  let tekst = zoekTekstCache.get(recept.id);
+  if(!tekst){
+    tekst = [recept.name, recept.cuisine, recept.description||'', ...recept.ingredients.map(i=>i.name)].join(' ').toLowerCase();
+    zoekTekstCache.set(recept.id, tekst);
+  }
+  return tekst;
+}
+const compactRecept = r => ({id:r.id,name:r.name,cuisine:r.cuisine,description:r.description||'',time:r.time??null,servings:r.servings??null,translatedFrom:r.translatedFrom||null,sourceName:r.source?r.source.name:null,sourceUrl:r.source?r.source.url:null,sourceLicense:r.source?r.source.license:null,sourceLicenseUrl:r.source?r.source.licenseUrl:null});
+// Antwoorden worden gecomprimeerd zodra de browser dat aankan: de receptenlijst is
+// groot en zonder compressie gaat er tien keer zoveel over de lijn.
+function json(res,status,data){
+  const tekst=JSON.stringify(data);
+  const koppen={'content-type':'application/json; charset=utf-8','cache-control':'no-store'};
+  const accepteert=res.req&&/\bgzip\b/.test(String(res.req.headers['accept-encoding']||''));
+  if(accepteert&&tekst.length>1024){koppen['content-encoding']='gzip';koppen['vary']='accept-encoding';res.writeHead(status,koppen);return res.end(zlib.gzipSync(tekst));}
+  res.writeHead(status,koppen);res.end(tekst);
+}
 function body(req){return new Promise((resolve,reject)=>{let s='';req.on('data',c=>{s+=c;if(s.length>100000)reject(Error('payload too large'));});req.on('end',()=>{try{resolve(JSON.parse(s||'{}'));}catch{reject(Error('invalid JSON'));}});});}
 function products(){return db.prepare('SELECT * FROM products ORDER BY name COLLATE NOCASE').all();}
 function shopping(){return db.prepare('SELECT * FROM shopping ORDER BY name COLLATE NOCASE').all();}
@@ -62,7 +84,20 @@ const server=http.createServer(async(req,res)=>{let url;try{url=new URL((req.url
  const barcodeMatch=url.pathname.match(/^\/api\/barcode\/([0-9A-Za-z]{4,20})$/);if(barcodeMatch&&req.method==='GET'){const uitkomst=await barcodes.lookup(barcodeMatch[1],{force:url.searchParams.get('force')==='1'});return json(res,200,uitkomst);}
  if(url.pathname==='/api/barcode'&&req.method==='GET'){const code=url.searchParams.get('code')||'';return json(res,200,await barcodes.lookup(code,{force:url.searchParams.get('force')==='1'}));}
  if(url.pathname==='/api/shopping'&&req.method==='GET')return json(res,200,shopping());
- if(url.pathname==='/api/recipes'&&req.method==='GET'){const country=(url.searchParams.get('country')||'').trim();return json(res,200,country?RECIPES.filter(r=>r.cuisine===country):RECIPES);}
+ if(url.pathname==='/api/recipes/landen'&&req.method==='GET'){const telling=new Map();for(const r of RECIPES)telling.set(r.cuisine,(telling.get(r.cuisine)||0)+1);return json(res,200,[...telling].map(([cuisine,aantal])=>({cuisine,aantal})).sort((a,b)=>a.cuisine.localeCompare(b.cuisine,'nl')));}
+ if(url.pathname==='/api/recipes'&&req.method==='GET'){
+  const country=(url.searchParams.get('country')||url.searchParams.get('land')||'').trim();
+  // compact=1 geeft alleen wat de lijst nodig heeft (naam, land, tijd, porties, bron);
+  // de ingrediënten en bereiding komen per recept apart opgehaald.
+  if(url.searchParams.get('compact')!=='1')return json(res,200,country?RECIPES.filter(r=>r.cuisine===country):RECIPES);
+  const q=(url.searchParams.get('q')||'').trim().toLowerCase();
+  const vanaf=Math.max(0,Math.trunc(Number(url.searchParams.get('vanaf')||0))||0);
+  const aantal=Math.min(200,Math.max(1,Math.trunc(Number(url.searchParams.get('aantal')||48))||48));
+  let lijst=country?RECIPES.filter(r=>r.cuisine===country):RECIPES;
+  if(q)lijst=lijst.filter(r=>zoekTekst(r).includes(q));
+  return json(res,200,{totaal:lijst.length,vanaf,aantal,items:lijst.slice(vanaf,vanaf+aantal).map(compactRecept)});
+ }
+ const receptMatch=url.pathname.match(/^\/api\/recipes\/(\d+)$/);if(receptMatch&&req.method==='GET'){const recept=recipeById(receptMatch[1]);if(!recept)return json(res,404,{error:'Recept niet gevonden.'});return json(res,200,recept);}
  if(url.pathname==='/api/shift-templates'&&req.method==='GET')return json(res,200,shiftTemplates());
  if(url.pathname==='/api/shift-templates'&&req.method==='POST'){const x=await body(req),name=String(x.name||'').trim(),startTime=String(x.startTime||''),endTime=String(x.endTime||''),notes=String(x.notes||'').trim();if(!name||name.length>80||!validTime(startTime)||!validTime(endTime)||notes.length>200)return json(res,400,{error:'Vul een naam en geldige tijden in 24-uursnotatie (00:00–23:59) in.'});const result=db.prepare('INSERT INTO shift_templates(name,start_time,end_time,notes) VALUES(?,?,?,?)').run(name,startTime,endTime,notes);return json(res,201,db.prepare('SELECT id,name,start_time AS startTime,end_time AS endTime,notes FROM shift_templates WHERE id=?').get(Number(result.lastInsertRowid)));}
  const templateMatch=url.pathname.match(/^\/api\/shift-templates\/(\d+)$/);if(templateMatch&&req.method==='DELETE'){const result=db.prepare('DELETE FROM shift_templates WHERE id=?').run(Number(templateMatch[1]));if(!result.changes)return json(res,404,{error:'Opgeslagen dienst niet gevonden.'});return json(res,200,{ok:true});}
