@@ -28,6 +28,9 @@
 #page-kast .stats{grid-template-columns:repeat(4,minmax(0,1fr))}
 #page-kast .filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px;padding:14px;background:#fff;border:1px solid var(--l);border-radius:14px}
 #page-kast .filters .field{margin:0 0 6px}
+#page-kast .kastPanel{margin-bottom:16px;padding:14px;background:#fff;border:1px solid var(--l);border-radius:14px}
+#page-kast .kastPanel .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+#page-kast .kastPanel .actions .btn{flex:1 1 auto}
 #page-kast .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
 #page-kast .item{background:#fff;border:1px solid var(--l);border-radius:15px;padding:12px;display:flex;flex-direction:column;gap:8px}
 #page-kast .item h3{font-size:14px;margin:0}
@@ -82,8 +85,24 @@
   <div class="filters">
     <label><span class="field">Categorie</span><select id="filterCategory"><option value="">Alle categorieën</option></select></label>
     <label><span class="field">Status</span><select id="filterStatus"><option value="">Alle statussen</option></select></label>
+    <label><span class="field">Kast</span><select id="filterWardrobe"><option value="">Alle kasten</option></select></label>
     <label><span class="field">Zoeken</span><input id="filterQuery" type="search" placeholder="Zoek op naam, merk of kleur"></label>
   </div>
+  <details class="panel kastPanel" id="wardrobePanel">
+    <summary>Kasten beheren</summary>
+    <div class="hint">Elke kast houdt zijn eigen kledingstukken bij: thuis, mama, vakantiehuis. Kies bovenaan een kast om alleen die stuks te zien.</div>
+    <div class="three">
+      <div><label class="field" for="wardrobeNew">Nieuwe kast</label><input id="wardrobeNew" maxlength="40" placeholder="Bijv. Mama"></div>
+      <div><label class="field" for="wardrobeRename">Gekozen kast hernoemen</label><input id="wardrobeRename" maxlength="40" placeholder="Kies eerst een kast"></div>
+      <div><label class="field" for="wardrobeMoveTo">Stuks verplaatsen naar</label><select id="wardrobeMoveTo"></select></div>
+    </div>
+    <div class="actions">
+      <button class="btn" type="button" id="wardrobeAdd">Kast toevoegen</button>
+      <button class="btn" type="button" id="wardrobeRenameBtn">Naam opslaan</button>
+      <button class="btn danger" type="button" id="wardrobeDeleteBtn">Kast verwijderen</button>
+    </div>
+    <div class="notice" id="wardrobeNotice"></div>
+  </details>
   <details class="panel" id="formPanel" open>
     <summary>Kledingstuk toevoegen</summary>
     <div class="panelhead"><div><div class="hint" id="formTitle">Vul de velden in en voeg het kledingstuk toe aan je kast.</div><div class="hint">Een foto maakt je kast herkenbaar. Zonder foto werkt alles ook.</div></div><span class="pill" id="formMode">nieuw</span></div>
@@ -94,6 +113,7 @@
         <div><label class="field" for="status">Status</label><select id="status"></select></div>
       </div>
       <div class="three">
+        <div><label class="field" for="itemWardrobe">Kast</label><select id="itemWardrobe"></select></div>
         <div><label class="field" for="color">Kleur</label><input id="color" maxlength="40" placeholder="Bijv. marineblauw"></div>
         <div><label class="field" for="colorHex">Kleurcode</label><input id="colorHex" type="color" value="#1f6848"></div>
         <div><label class="field" for="pattern">Patroon</label><input id="pattern" maxlength="40" placeholder="effen, strepen, ruit"></div>
@@ -322,7 +342,7 @@ const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const localDate = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-let state = {items:[], config:null, outfits:[], washes:[], history:[], advice:null, page:'kast', filter:{category:'',status:'',q:''}, editId:null, photo:null, selectedDirty:new Set(), month:new Date(), seed:0, monthWears:[]};
+let state = {items:[], config:null, wardrobes:[], outfits:[], washes:[], history:[], advice:null, page:'kast', filter:{category:'',status:'',q:'',wardrobe:''}, editId:null, photo:null, selectedDirty:new Set(), month:new Date(), seed:0, monthWears:[]};
 
 async function api(url, options = {}) {
   const apiUrl = url.startsWith('/api/') ? '/api/kast' + url.slice(4) : url;
@@ -347,6 +367,36 @@ function fillChecks(container, values, name) {
 }
 const checkedValues = name => [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(x => x.value);
 
+function fillWardrobeSelects() {
+  const kasten = state.wardrobes || [];
+  const opties = kasten.map(k => `<option value="${k.id}">${esc(k.name)} (${k.items})</option>`).join('');
+  const filter = $('#filterWardrobe');
+  if (filter) {
+    filter.innerHTML = '<option value="">Alle kasten</option>' + kasten.map(k => `<option value="${k.id}">${esc(k.name)} (${k.items})</option>`).join('');
+    if (!kasten.some(k => String(k.id) === state.filter.wardrobe)) state.filter.wardrobe = '';
+    filter.value = state.filter.wardrobe;
+  }
+  const form = $('#itemWardrobe');
+  if (form) {
+    const bewerkt = state.editId ? state.items.find(i => i.id === state.editId) : null;
+    form.innerHTML = opties || '<option value="">geen kast</option>';
+    const doel = bewerkt ? bewerkt.wardrobeId : (state.filter.wardrobe || (kasten[0] && kasten[0].id));
+    if (kasten.some(k => String(k.id) === String(doel))) form.value = String(doel);
+  }
+  const verplaats = $('#wardrobeMoveTo');
+  if (verplaats) {
+    verplaats.innerHTML = kasten.filter(k => String(k.id) !== state.filter.wardrobe).map(k => `<option value="${k.id}">${esc(k.name)}</option>`).join('');
+  }
+  const naamVeld = $('#wardrobeRename');
+  if (naamVeld) {
+    const gekozen = kasten.find(k => String(k.id) === state.filter.wardrobe);
+    naamVeld.placeholder = gekozen ? `Nu: ${gekozen.name}` : 'Kies eerst een kast';
+    naamVeld.disabled = !gekozen;
+  }
+  const verwijder = $('#wardrobeDeleteBtn');
+  if (verwijder) verwijder.disabled = !state.filter.wardrobe || kasten.length < 2;
+}
+
 function itemCard(item) {
   const thumb = item.photo ? `<img class="thumb" src="/media/${esc(item.photo)}" alt="${esc(item.name)}" loading="lazy">` : '<div class="thumb empty">👕</div>';
   const seasons = item.seasons.length ? `<span class="chip">${esc(item.seasons.join(', '))}</span>` : '';
@@ -354,7 +404,7 @@ function itemCard(item) {
   return `<article class="item" data-item="${item.id}">${thumb}
     <div class="row2"><h3>${esc(item.name)}</h3><span class="pill ${statusClass(item.status)}">${esc(item.status)}</span></div>
     <div class="muted">${item.colorHex ? `<span class="swatch" style="background:${esc(item.colorHex)}"></span>` : ''}${esc(item.color || 'kleur onbekend')} · ${esc(item.category)}${item.brand ? ' · ' + esc(item.brand) : ''}${item.size ? ' · maat ' + esc(item.size) : ''}</div>
-    <div>${seasons}${occasions}</div>
+    <div>${state.wardrobes.length > 1 ? `<span class="chip">Kast: ${esc(item.wardrobeName || '')}</span>` : ''}${seasons}${occasions}</div>
     <div class="actions">
       <button class="btn" data-wear="${item.id}">Gedragen</button>
       <button class="btn warn" data-dirty="${item.id}">Vies</button>
@@ -366,6 +416,7 @@ function itemCard(item) {
 
 function renderKast() {
   const items = state.items.filter(item =>
+    (!state.filter.wardrobe || String(item.wardrobeId) === state.filter.wardrobe) &&
     (!state.filter.category || item.category === state.filter.category) &&
     (!state.filter.status || item.status === state.filter.status) &&
     (!state.filter.q || [item.name, item.brand, item.color, item.material, item.notes, item.category].join(' ').toLowerCase().includes(state.filter.q)));
@@ -467,9 +518,16 @@ function showKastPage(name) {
   if (name === 'analyse') loadAnalytics();
   if (name === 'vandaag') loadHistory();
 }
+async function herlaadKasten() {
+  state.config = await api('/api/config');
+  state.wardrobes = state.config.wardrobes || [];
+  fillWardrobeSelects();
+  await loadAll();
+}
 async function loadAll() {
   const [items, outfits, washes] = await Promise.all([api('/api/items'), api('/api/outfits'), api('/api/washes')]);
   state.items = items; state.outfits = outfits; state.washes = washes;
+  fillWardrobeSelects();
   renderStats(); renderKast(); renderDirty(); renderWashes(); renderOutfits();
   fillSelect($('#outfitItems'), items.map(i => `${i.id}|${i.name}`));
   $('#outfitItems').innerHTML = items.map(i => `<option value="${i.id}">${esc(i.name)} · ${esc(i.category)}</option>`).join('');
@@ -505,6 +563,7 @@ function editItem(id) {
   $('#color').value = item.color; $('#colorHex').value = item.colorHex || '#2a6f7f'; $('#pattern').value = item.pattern;
   $('#size').value = item.size; $('#brand').value = item.brand; $('#material').value = item.material;
   $('#price').value = item.price ?? ''; $('#notes').value = item.notes;
+  if ($('#itemWardrobe')) $('#itemWardrobe').value = String(item.wardrobeId || '');
   $$('input[name="seasons"]').forEach(box => box.checked = item.seasons.includes(box.value));
   $$('input[name="occasions"]').forEach(box => box.checked = item.occasions.includes(box.value));
   $('#photoState').textContent = item.photo ? 'Huidige foto blijft behouden.' : 'Geen foto gekozen.';
@@ -534,7 +593,7 @@ $('#itemForm').addEventListener('submit', async event => {
       size:$('#size').value, brand:$('#brand').value, material:$('#material').value,
       price:$('#price').value === '' ? null : Number($('#price').value),
       seasons:checkedValues('seasons'), occasions:checkedValues('occasions'),
-      notes:$('#notes').value, photo:state.photo || '',
+      notes:$('#notes').value, photo:state.photo || '', wardrobeId:$('#itemWardrobe').value ? Number($('#itemWardrobe').value) : undefined,
     };
     if (state.editId) await api(`/api/items/${state.editId}`, payload('PATCH', fields));
     else await api('/api/items', payload('POST', fields));
@@ -557,6 +616,35 @@ $('#itemGrid').addEventListener('click', async event => {
     if (remove) { await api(`/api/items/${remove}`, {method:'DELETE'}); $('#kastNotice').textContent = 'Kledingstuk verwijderd.'; }
     await loadAll();
   } catch (error) { $('#kastNotice').textContent = error.message; }
+});
+$('#filterWardrobe').addEventListener('change', event => { state.filter.wardrobe = event.target.value; fillWardrobeSelects(); renderKast(); });
+$('#wardrobeAdd').addEventListener('click', async () => {
+  try {
+    await api('/api/wardrobes', payload('POST', {name:$('#wardrobeNew').value}));
+    $('#wardrobeNew').value = '';
+    $('#wardrobeNotice').textContent = 'Kast toegevoegd.';
+    await herlaadKasten();
+  } catch (error) { $('#wardrobeNotice').textContent = error.message; }
+});
+$('#wardrobeRenameBtn').addEventListener('click', async () => {
+  try {
+    const id = state.filter.wardrobe;
+    if (!id) throw Error('Kies eerst een kast.');
+    await api(`/api/wardrobes/${id}`, payload('PATCH', {name:$('#wardrobeRename').value}));
+    $('#wardrobeRename').value = '';
+    $('#wardrobeNotice').textContent = 'Naam opgeslagen.';
+    await herlaadKasten();
+  } catch (error) { $('#wardrobeNotice').textContent = error.message; }
+});
+$('#wardrobeDeleteBtn').addEventListener('click', async () => {
+  try {
+    const id = state.filter.wardrobe;
+    if (!id) throw Error('Kies eerst een kast.');
+    await api(`/api/wardrobes/${id}?moveTo=${encodeURIComponent($('#wardrobeMoveTo').value)}`, {method:'DELETE'});
+    state.filter.wardrobe = '';
+    $('#wardrobeNotice').textContent = 'Kast verwijderd; de kledingstukken zijn verplaatst.';
+    await herlaadKasten();
+  } catch (error) { $('#wardrobeNotice').textContent = error.message; }
 });
 $('#filterCategory').addEventListener('change', event => { state.filter.category = event.target.value; renderKast(); });
 $('#filterStatus').addEventListener('change', event => { state.filter.status = event.target.value; renderKast(); });
@@ -649,6 +737,8 @@ async function openKast() {
   kastLoaded = true;
   try {
     state.config = await api('/api/config');
+    state.wardrobes = state.config.wardrobes || [];
+    fillWardrobeSelects();
     fillSelect($('#category'), state.config.categories);
     fillSelect($('#status'), state.config.statuses);
     fillSelect($('#filterCategory'), state.config.categories, 'Alle categorieën');

@@ -36,7 +36,16 @@ CREATE TABLE IF NOT EXISTS washes(
   id INTEGER PRIMARY KEY, planned_for TEXT NOT NULL, program TEXT NOT NULL DEFAULT '',
   notes TEXT NOT NULL DEFAULT '', done INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
 CREATE TABLE IF NOT EXISTS wash_items(
-  wash_id INTEGER NOT NULL, item_id INTEGER NOT NULL, PRIMARY KEY(wash_id,item_id))`);
+  wash_id INTEGER NOT NULL, item_id INTEGER NOT NULL, PRIMARY KEY(wash_id,item_id));
+CREATE TABLE IF NOT EXISTS wardrobes(
+  id INTEGER PRIMARY KEY, name TEXT NOT NULL, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)`);
+
+// Kasten: ieder kledingstuk hoort bij één kast (thuis, mama, vakantiehuis…).
+// Bestaande databases krijgen de kolom erbij; alles komt in de eerste kast terecht.
+const itemKolommen = db.prepare('PRAGMA table_info(items)').all().map(kolom => kolom.name);
+if (!itemKolommen.includes('wardrobe_id')) db.exec('ALTER TABLE items ADD COLUMN wardrobe_id INTEGER NOT NULL DEFAULT 1');
+if (!db.prepare('SELECT COUNT(*) AS n FROM wardrobes').get().n) db.prepare('INSERT INTO wardrobes(id,name) VALUES(1,?)').run(process.env.KAST_STANDAARD || 'Thuis');
+db.exec('UPDATE items SET wardrobe_id=(SELECT MIN(id) FROM wardrobes) WHERE wardrobe_id IS NULL OR wardrobe_id NOT IN (SELECT id FROM wardrobes)');
 
 const CATEGORIES = ['bovenkleding','trui','vest','jurk','broek','rok','jas','schoenen','accessoire','ondergoed','sport','overig'];
 const STATUSES = ['schoon','vies','in de was','reparatie'];
@@ -55,11 +64,18 @@ const validMonth = s => /^\d{4}-(0[1-9]|1[0-2])$/.test(s || '');
 const today = () => new Date().toISOString().slice(0, 10);
 const seasonOf = date => { const m = new Date(`${date}T12:00:00`).getMonth(); return m <= 1 || m === 11 ? 'winter' : m <= 4 ? 'lente' : m <= 7 ? 'zomer' : 'herfst'; };
 
-function rowToItem(row) { return { id:row.id, name:row.name, category:row.category, color:row.color, colorHex:row.color_hex, pattern:row.pattern, size:row.size, brand:row.brand, material:row.material, seasons:row.seasons ? row.seasons.split(',') : [], occasions:row.occasions ? row.occasions.split(',') : [], price:row.price, photo:row.photo, status:row.status, notes:row.notes, createdAt:row.created_at, updatedAt:row.updated_at }; }
+function kastNaam(id) { const rij = db.prepare('SELECT name FROM wardrobes WHERE id=?').get(Number(id)); return rij ? rij.name : ''; }
+function rowToItem(row) { return { id:row.id, wardrobeId:Number(row.wardrobe_id || 0), wardrobeName:kastNaam(row.wardrobe_id), name:row.name, category:row.category, color:row.color, colorHex:row.color_hex, pattern:row.pattern, size:row.size, brand:row.brand, material:row.material, seasons:row.seasons ? row.seasons.split(',') : [], occasions:row.occasions ? row.occasions.split(',') : [], price:row.price, photo:row.photo, status:row.status, notes:row.notes, createdAt:row.created_at, updatedAt:row.updated_at }; }
 const items = (where = '', params = []) => db.prepare(`SELECT * FROM items ${where} ORDER BY category, name COLLATE NOCASE`).all(...params).map(rowToItem);
 const itemById = id => { const row = db.prepare('SELECT * FROM items WHERE id=?').get(Number(id)); return row ? rowToItem(row) : null; };
 const itemsByIds = ids => ids.map(id => itemById(id)).filter(Boolean);
 const wearCount = id => db.prepare('SELECT COUNT(*) AS n FROM wear_items WHERE item_id=?').get(Number(id)).n;
+function wardrobes() {
+  return db.prepare(`SELECT w.id, w.name, w.created_at, (SELECT COUNT(*) FROM items i WHERE i.wardrobe_id=w.id) AS stuks FROM wardrobes w ORDER BY w.id`).all()
+    .map(rij => ({ id:rij.id, name:rij.name, items:rij.stuks, createdAt:rij.created_at }));
+}
+const kastById = id => wardrobes().find(kast => kast.id === Number(id)) || null;
+const standaardKast = () => wardrobes()[0] || null;
 
 function outfits() {
   return db.prepare('SELECT * FROM outfits ORDER BY name COLLATE NOCASE').all().map(row => {
@@ -99,9 +115,11 @@ function setItemFields(id, input) {
   if (colorHex && !/^#[0-9a-fA-F]{6}$/.test(colorHex)) throw Error('Kleurcode moet eruitzien als #1a2b3c.');
   const price = input.price === undefined || input.price === '' || input.price === null ? current.price : Number(input.price);
   if (price !== null && (!Number.isFinite(price) || price < 0 || price > 100000)) throw Error('Vul een geldige prijs in.');
+  const wardrobeId = input.wardrobeId === undefined || input.wardrobeId === '' ? current.wardrobeId : Number(input.wardrobeId);
+  if (!kastById(wardrobeId)) throw Error('Onbekende kast.');
   const photo = input.photo === undefined ? current.photo : text(Array.isArray(input.photo) ? input.photo[0] : input.photo, 120);
   if (photo && !fs.existsSync(path.join(MEDIA_DIR, path.basename(photo)))) throw Error('Foto niet gevonden.');
-  db.prepare(`UPDATE items SET name=?, category=?, color=?, color_hex=?, pattern=?, size=?, brand=?, material=?, seasons=?, occasions=?, price=?, photo=?, status=?, notes=?, updated_at=CURRENT_TIMESTAMP WHERE id=?`)
+  db.prepare(`UPDATE items SET name=?, category=?, color=?, color_hex=?, pattern=?, size=?, brand=?, material=?, seasons=?, occasions=?, price=?, photo=?, status=?, notes=?, wardrobe_id=?, updated_at=CURRENT_TIMESTAMP WHERE id=?`)
     .run(name, category,
       input.color === undefined ? current.color : text(input.color, 40),
       colorHex,
@@ -113,6 +131,7 @@ function setItemFields(id, input) {
       input.occasions === undefined ? current.occasions.join(',') : list(input.occasions, OCCASIONS).join(','),
       price, photo, status,
       input.notes === undefined ? current.notes : text(input.notes, 400),
+      wardrobeId,
       Number(id));
   return itemById(id);
 }
@@ -277,13 +296,15 @@ const MIME = {'.html':'text/html; charset=utf-8','.svg':'image/svg+xml','.png':'
 
   async function handle(req, res, url) {
       try {
-      if (req.method === 'GET' && url.pathname === '/api/config') return json(res, 200, {ai:{enabled:Boolean(AI.base && AI.vision), visionModel:AI.base ? AI.vision : '', textModel:AI.base ? AI.text : ''}, categories:CATEGORIES, statuses:STATUSES, seasons:SEASONS, occasions:OCCASIONS, today:today()});
+      if (req.method === 'GET' && url.pathname === '/api/config') return json(res, 200, {ai:{enabled:Boolean(AI.base && AI.vision), visionModel:AI.base ? AI.vision : '', textModel:AI.base ? AI.text : ''}, categories:CATEGORIES, statuses:STATUSES, seasons:SEASONS, occasions:OCCASIONS, wardrobes:wardrobes(), today:today()});
 
       if (url.pathname === '/api/items' && req.method === 'GET') {
         const category = text(url.searchParams.get('category'), 24).toLowerCase();
         const status = text(url.searchParams.get('status'), 16).toLowerCase();
         const query = text(url.searchParams.get('q'), 60).toLowerCase();
+        const kast = text(url.searchParams.get('wardrobe'), 12);
         const where = [], params = [];
+        if (kast && kast !== 'alle') { if (!kastById(kast)) return json(res, 400, {error:'Onbekende kast.'}); where.push('wardrobe_id=?'); params.push(Number(kast)); }
         if (category) { where.push('category=?'); params.push(category); }
         if (status) { where.push('status=?'); params.push(status); }
         let rows = items(where.length ? `WHERE ${where.join(' AND ')}` : '', params);
@@ -296,7 +317,9 @@ const MIME = {'.html':'text/html; charset=utf-8','.svg':'image/svg+xml','.png':'
         if (!name) return json(res, 400, {error:'Vul een naam in voor het kledingstuk.'});
         const category = text(input.category, 24).toLowerCase();
         if (!CATEGORIES.includes(category)) return json(res, 400, {error:'Kies een geldige categorie.'});
-        const result = db.prepare('INSERT INTO items(name,category) VALUES(?,?)').run(name, category);
+        const kast = input.wardrobeId === undefined || input.wardrobeId === '' ? standaardKast() : kastById(input.wardrobeId);
+        if (!kast) return json(res, 400, {error:'Onbekende kast.'});
+        const result = db.prepare('INSERT INTO items(name,category,wardrobe_id) VALUES(?,?,?)').run(name, category, kast.id);
         return json(res, 201, setItemFields(Number(result.lastInsertRowid), input));
       }
       let m = url.pathname.match(/^\/api\/items\/(\d+)$/);
@@ -323,6 +346,41 @@ const MIME = {'.html':'text/html; charset=utf-8','.svg':'image/svg+xml','.png':'
         db.prepare('DELETE FROM wash_items WHERE item_id=?').run(Number(m[1]));
         db.prepare('DELETE FROM items WHERE id=?').run(Number(m[1]));
         return json(res, 200, {ok:true});
+      }
+
+      if (url.pathname === '/api/wardrobes' && req.method === 'GET') return json(res, 200, wardrobes());
+      if (url.pathname === '/api/wardrobes' && req.method === 'POST') {
+        const input = await jsonBody(req);
+        const naam = text(input.name, 40);
+        if (!naam) return json(res, 400, {error:'Geef de kast een naam.'});
+        if (wardrobes().some(kast => kast.name.toLowerCase() === naam.toLowerCase())) return json(res, 400, {error:'Er is al een kast met deze naam.'});
+        const result = db.prepare('INSERT INTO wardrobes(name) VALUES(?)').run(naam);
+        return json(res, 201, kastById(Number(result.lastInsertRowid)));
+      }
+      let kastMatch = url.pathname.match(/^\/api\/wardrobes\/(\d+)$/);
+      if (kastMatch && req.method === 'PATCH') {
+        const kast = kastById(kastMatch[1]);
+        if (!kast) return json(res, 404, {error:'Kast niet gevonden.'});
+        const input = await jsonBody(req);
+        const naam = text(input.name, 40);
+        if (!naam) return json(res, 400, {error:'Geef de kast een naam.'});
+        if (wardrobes().some(other => other.id !== kast.id && other.name.toLowerCase() === naam.toLowerCase())) return json(res, 400, {error:'Er is al een kast met deze naam.'});
+        db.prepare('UPDATE wardrobes SET name=? WHERE id=?').run(naam, kast.id);
+        return json(res, 200, kastById(kast.id));
+      }
+      if (kastMatch && req.method === 'DELETE') {
+        const kast = kastById(kastMatch[1]);
+        if (!kast) return json(res, 404, {error:'Kast niet gevonden.'});
+        if (wardrobes().length === 1) return json(res, 400, {error:'Er moet minstens één kast blijven bestaan.'});
+        const verplaatsNaar = url.searchParams.get('moveTo') || '';
+        if (kast.items && !verplaatsNaar) return json(res, 409, {error:`Deze kast bevat nog ${kast.items} kledingstuk${kast.items === 1 ? '' : 'ken'}. Verplaats ze eerst naar een andere kast.`});
+        if (verplaatsNaar) {
+          const doel = kastById(verplaatsNaar);
+          if (!doel || doel.id === kast.id) return json(res, 400, {error:'Kies een andere kast om de kledingstukken naartoe te verplaatsen.'});
+          db.prepare('UPDATE items SET wardrobe_id=? WHERE wardrobe_id=?').run(doel.id, kast.id);
+        }
+        db.prepare('DELETE FROM wardrobes WHERE id=?').run(kast.id);
+        return json(res, 200, {ok:true, movedTo:verplaatsNaar ? Number(verplaatsNaar) : null, wardrobes:wardrobes()});
       }
 
       if (url.pathname === '/api/outfits' && req.method === 'GET') return json(res, 200, outfits());
