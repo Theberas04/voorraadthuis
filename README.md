@@ -89,7 +89,12 @@ Open de app op je telefoon en kies **Toevoegen aan startscherm** (iOS/Safari) of
 | --- | --- | --- | --- |
 | ![Mijn kast](docs/img/mobiel-kast-kaarten.jpg) | ![Vandaag](docs/img/mobiel-kast-vandaag.jpg) | ![Was](docs/img/mobiel-kast-was.jpg) | ![Analyse](docs/img/mobiel-kast-analyse.jpg) |
 
-- Kledingstukken met naam, categorie, kleur (met kleurcode), patroon, maat, merk, materiaal, seizoenen, gelegenheden, prijs, notities en een foto. Filter op categorie of status en zoek op naam, merk, kleur of notitie.
+| Meerdere kasten op desktop | Meerdere kasten op de telefoon |
+| --- | --- |
+| ![Kasten op desktop](docs/img/kledingkasten-desktop.png) | ![Kasten op de telefoon](docs/img/kledingkasten-mobiel.jpg) |
+
+- **Meerdere kledingkasten**: naast elkaar bijvoorbeeld *Thuis* en *Mama*. Elk kledingstuk hoort bij één kast; met het kastfilter zie je alleen die kast, en op elke kaart staat bij welke kast het stuk hoort. In **Kasten beheren** maak je een kast, hernoem je hem of verwijder je hem — kleding verhuist dan in één stap naar een andere kast. Bestaande kasten uit een oudere versie komen automatisch in de eerste kast (*Thuis*) terecht.
+- Kledingstukken met naam, categorie, kleur (met kleurcode), patroon, maat, merk, materiaal, seizoenen, gelegenheden, prijs, notities en een foto. Filter op categorie, status of kast en zoek op naam, merk, kleur of notitie.
 - Status per stuk: **schoon**, **vies**, **in de was** of **reparatie**, met tellers in de navigatie.
 - **Vandaag** geeft een combineeradvies voor de gekozen dag en gelegenheid, met de beweegredenen erbij. Met één knop registreer je het als gedragen (het stuk gaat dan op vies) of bewaar je het als setje.
 - **Was**: vies kleding bij elkaar vinken, een was starten met programma en datum, en met **Was klaar** staat alles weer op schoon. Een was annuleren zet de kleding terug op vies.
@@ -154,7 +159,7 @@ Neem beide mee in je back-up. Lokaal staan ze standaard in `data/`.
 Node.js 22.5+ is vereist (gebruikt de ingebouwde `node:sqlite`; er zijn geen npm-dependencies).
 
 ```sh
-npm test     # 35 tests: voorraad, boodschappen, recepten, vertaling, planning én garderobe
+npm test     # 68 tests: voorraad, boodschappen, recepten, vertaling, planning, garderobe en kledingkasten
 npm start    # http://localhost:3000
 ```
 
@@ -163,7 +168,7 @@ npm start    # http://localhost:3000
 | Pad | Inhoud |
 | --- | --- |
 | `server.js` | HTTP-server, SQLite-schema, API en de gecombineerde receptenlijst; verwijst de garderoberoutes door. |
-| `wardrobe.js` | Het garderobe-onderdeel (Kledingkast): kleding, was, setjes, draaghistorie en de adviesregels. |
+| `wardrobe.js` | Het garderobe-onderdeel (Kledingkast): kledingkasten, kleding, was, setjes, draaghistorie en de adviesregels. |
 | `public/index.html` | De hele webpagina: opmaak, mobiele indeling en app-logica van alle tabs. |
 | `public/manifest.webmanifest`, `public/sw.js`, `public/favicon.svg`, `public/icon-*.png` | Pictogrammen en webapp-manifest voor installatie op de telefoon. |
 | `recipes-international.js` | 110 eigen Nederlandstalige thuisvarianten. |
@@ -185,7 +190,8 @@ npm start    # http://localhost:3000
 | `GET/PUT/DELETE /api/planner/<datum>`, `GET /api/planner?month=` | Dagplanning met recept, landkeuken en diensten. |
 | `GET/POST/DELETE /api/shift-templates` | Herbruikbare diensten. |
 | `GET /api/kast/config` | Categorieën, statussen, seizoenen, gelegenheden en of AI-tagging aanstaat. |
-| `GET/POST /api/kast/items`, `GET/PATCH/DELETE /api/kast/items/<id>` | Kledingstukken; `PATCH` met `action: analyze`, `wear` of een status. |
+| `GET/POST /api/kast/items`, `GET/PATCH/DELETE /api/kast/items/<id>` | Kledingstukken; `PATCH` met `action: analyze`, `wear` of een status. `GET ?wardrobe=<id>` of `?wardrobe=alle` filtert op kast. |
+| `GET/POST /api/kast/wardrobes`, `PATCH/DELETE /api/kast/wardrobes/<id>` | Kledingkasten: aanmaken, hernoemen en verwijderen; `DELETE ?moveTo=<id>` verplaatst de kledingstukken eerst. |
 | `POST /api/kast/photos`, `GET /media/<bestand>` | Kledingfoto uploaden (JPEG, PNG of WebP) en terugkrijgen. |
 | `GET /api/kast/suggest?occasion=&date=&seed=` | Combineeradvies met beweegredenen. |
 | `GET/POST /api/kast/wear`, `DELETE /api/kast/wear/<id>` | Dragen registreren, historie per maand en een registratie wissen. |
