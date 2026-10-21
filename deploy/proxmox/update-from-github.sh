@@ -17,6 +17,11 @@ FILES=(server.js wardrobe.js barcodes.js profiles.js package.json recipes-intern
 for f in "${FILES[@]}"; do mkdir -p "$TMP/$(dirname "$f")"; curl -fsSL --retry 3 --max-time 60 "$RAW/$f?cb=$(date +%s)" -o "$TMP/$f" || { echo "Download mislukt: $f" >&2; exit 1; }; done
 grep -q 'VoorraadThuis' "$TMP/public/index.html" || { echo 'Gedownloade pagina niet herkend; niets gewijzigd.' >&2; exit 1; }
 grep -q '"display"' "$TMP/public/manifest.webmanifest" || { echo 'Gedownload manifest niet herkend; niets gewijzigd.' >&2; exit 1; }
+PROEF=$(mktemp); KOPPEN=$(mktemp); trap 'rm -rf "$TMP" "$PROEF" "$KOPPEN"' EXIT
+# Antwoord eerst volledig wegschrijven en daarna zoeken: curl mag niet struikelen over
+# een pijp die grep te vroeg sluit ('curl: (23) Failure writing output to destination').
+proef(){ curl -fsS --max-time 10 "$1" -o "$PROEF" 2>/dev/null || return 1; grep -Eqi "$2" "$PROEF"; }
+koppen(){ curl -fsS --max-time 5 -D "$KOPPEN" -o /dev/null "$1" 2>/dev/null || return 1; grep -Eqi "$2" "$KOPPEN"; }
 SITE=/var/www/voorraadthuis
 STAGE=/var/www/voorraadthuis-staging
 BACKUP=/var/www/voorraadthuis-backup
@@ -36,14 +41,17 @@ IP=$(pct exec "$CTID" -- ip -4 -o addr show dev eth0 | awk '{print $4}' | cut -d
 if [ -n "$IP" ]; then
   ok=0
   for _ in $(seq 1 15); do
-    if curl -fsS --max-time 5 "http://$IP/healthz" 2>/dev/null | grep -q '^ok$'; then ok=1; break; fi
+    if proef "http://$IP/healthz" '^ok$'; then ok=1; break; fi
     sleep 1
   done
   [ "$ok" = 1 ] || { echo 'App-healthcheck mislukt.' >&2; rollback; }
-  curl -fsS --max-time 10 "http://$IP/" | grep -qi 'VoorraadThuis' || { echo 'App-pagina niet gevonden op / (staat index.html in /var/www/voorraadthuis/public?).' >&2; rollback; }
-  curl -fsS --max-time 10 "http://$IP/api/products" | grep -q '^\[' || { echo 'API-test mislukt.' >&2; rollback; }
-  curl -fsS --max-time 10 "http://$IP/favicon.svg" | grep -qi '<svg' || { echo 'App-pictogram niet bereikbaar.' >&2; rollback; }
-  curl -fsS --max-time 10 "http://$IP/manifest.webmanifest" | grep -q '"display"' || { echo 'Webapp-manifest niet bereikbaar.' >&2; rollback; }
+  # Antwoordt er iets anders dan de app op poort 80, dan is dit de verkeerde container
+  # of staat er nog een webserver voor; eerst inrichten met provision-voorraadthuis.sh.
+  koppen "http://$IP/healthz" '^x-voorraadthuis: app' || { echo 'Op poort 80 antwoordt niet de VoorraadThuis-app (achtergebleven webserver?). Draai eerst: provision-voorraadthuis.sh '"$CTID"'.' >&2; rollback; }
+  proef "http://$IP/" 'VoorraadThuis' || { echo 'App-pagina niet gevonden op / (staat index.html in /var/www/voorraadthuis/public?).' >&2; rollback; }
+  proef "http://$IP/api/products" '^\[' || { echo 'API-test mislukt.' >&2; rollback; }
+  proef "http://$IP/favicon.svg" '<svg' || { echo 'App-pictogram niet bereikbaar.' >&2; rollback; }
+  proef "http://$IP/manifest.webmanifest" '"display"' || { echo 'Webapp-manifest niet bereikbaar.' >&2; rollback; }
   pct exec "$CTID" -- rm -rf "$BACKUP"
   echo "VoorraadThuis bijgewerkt; controle: http://$IP/ (terugvaloptie verwijderd na geslaagde controle)"
 else

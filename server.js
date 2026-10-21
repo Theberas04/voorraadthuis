@@ -55,7 +55,7 @@ function shiftTemplates(){return db.prepare('SELECT id,name,start_time AS startT
 const MAX_SHOPPING_NAME=600; // geïmporteerde bronregels uit het Wikibooks-kookboek lopen op tot 504 tekens; 400 weigerde die regels
 function addShoppingItem(item){const name=String(item.name||'').trim(),unit=String(item.unit||'stuks').trim(),quantity=Number(item.quantity??1);if(!name||name.length>MAX_SHOPPING_NAME||!Number.isFinite(quantity)||quantity<=0||quantity>100000||unit.length>24)throw Error('Ongeldig boodschappenproduct.');const old=db.prepare('SELECT id FROM shopping WHERE lower(name)=lower(?) AND lower(unit)=lower(?) ORDER BY id LIMIT 1').get(name,unit);if(old)db.prepare('UPDATE shopping SET quantity=quantity+? WHERE id=?').run(quantity,old.id);else db.prepare('INSERT INTO shopping(name,quantity,unit) VALUES(?,?,?)').run(name,quantity,unit);}
 
-const server=http.createServer(async(req,res)=>{const url=new URL(req.url,'http://localhost');try{
+const server=http.createServer(async(req,res)=>{let url;try{url=new URL((req.url||'/').replace(/^\/{2,}/,'/'),'http://localhost');}catch{res.writeHead(400,{'content-type':'text/plain; charset=utf-8'});return res.end('Ongeldig verzoek\n');}try{
  if(url.pathname.startsWith('/api/kast/')||url.pathname.startsWith('/media/'))return wardrobe.handle(req,res,wardrobePath(url));
  if(url.pathname==='/api/products'&&req.method==='GET')return json(res,200,products());
  // Barcode opzoeken: /api/barcode/<code> (optioneel ?force=1 voor een nieuwe opzoeking).
