@@ -1,0 +1,1584 @@
+{
+ "source": {
+  "name": "Wikibooks Borrelhapjes",
+  "dataset": "https://nl.wikibooks.org/wiki/Kookboek · https://en.wikibooks.org/wiki/Cookbook",
+  "revision": "per-pagina revisies",
+  "fetchedAt": "2026-10-21T00:00:00Z",
+  "language": "meerdere",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+ },
+ "selection": {
+  "count": 56,
+  "criteria": "Elke pagina uit deze bronnen met minstens drie ingrediënten en een echte bereiding; titels ontdubbeld tegen alle eerdere imports. Titels ook ontdubbeld tegen de eigen recepten en tegen elkaar."
+ },
+ "soort": "borrel",
+ "recipes": [
+  {
+   "title": "Vaddisznó",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Vaddisznó",
+   "revid": "292840",
+   "revisedAt": "2017-08-12T06:03:29Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "A húst erősen megmossuk, s csontját kivesszük, felhajtjuk és összekötjük, azután egy rész vörösbor és három rész vízből pácot készítünk. Ebben a húst puhára főzzük (babérlevél nem kell hozzá). Ha megfőtt, egy cserépedényben eltesszük, úgy hogy a lé ellepje. Tetejére zsírt öntünk, és három napra elte",
+   "ingredients": [
+    "Vaddisznóhús 1 kg,",
+    "vörösbor 0.25 l,",
+    "víz 0.75 l,",
+    "hagyma 1 fej,",
+    "vegyes zöldség 0.25 kg,",
+    "bors 10 szem,",
+    "zsír 10 dkg,",
+    "csipke vagy áfonya íz."
+   ],
+   "steps": [
+    "A húst erősen megmossuk, s csontját kivesszük, felhajtjuk és összekötjük, azután egy rész vörösbor és három rész vízből pácot készítünk.",
+    "Ebben a húst puhára főzzük (babérlevél nem kell hozzá).",
+    "Ha megfőtt, egy cserépedényben eltesszük, úgy hogy a lé ellepje.",
+    "Tetejére zsírt öntünk, és három napra eltesszük állni.",
+    "Hidegen bármit adhatunk hozzá, melegen levében újra felforraljuk, és csipkeízzel, vagy áfonyával adjuk fel."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Nigerian Gizdodo",
+   "url": "https://en.wikibooks.org/wiki/User:SHE-LOVES-BRIAN/Nigerian_Gizdodo",
+   "revid": "4639684",
+   "revisedAt": "2026-06-09T21:33:26Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Gizdodo is a popular Nigerian dish that combines fried plantain (dodo) and spiced gizzard (giz), creating a flavorful and satisfying meal.",
+   "ingredients": [
+    "Gizzard",
+    "Ripe plantains",
+    "Vegetable oil (for frying){{Recipe summary",
+    "Tomatoes",
+    "Onions",
+    "Pepper (Scotch bonnet)",
+    "Bell peppers (optional)",
+    "Seasoning cubes",
+    "Salt"
+   ],
+   "steps": [
+    "Cook the gizzard Wash and season the gizzard with onions, salt, and seasoning cubes, then boil until tender.",
+    "Fry the gizzard Once cooked, lightly fry the gizzard until slightly crispy and set aside.",
+    "Fry the plantains Peel and slice ripe plantains, then fry until golden brown. Set aside.",
+    "Prepare the sauce Blend tomatoes, peppers, and onions, then fry the mixture in oil until it thickens.",
+    "Season the sauce Add seasoning cubes and salt, and allow it to cook well.",
+    "Combine everything Add the fried gizzard and plantains into the sauce and mix thoroughly.",
+    "Simmer briefly Let it cook for a few minutes so all flavors combine.",
+    "Serve Serve hot as a side dish or snack."
+   ],
+   "bronNaam": "Wikibooks Cookbook (Engels)"
+  },
+  {
+   "title": "Libamáj puding",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Libamáj_puding",
+   "revid": "292835",
+   "revisedAt": "2017-08-12T06:01:23Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "(Lehet borjú vagy malacmájból is készíteni. Egy negyed kiló májat megfőzünk, félretesszük hűlni, majd szitán áttörjük, vagy megreszeljük, - ez könnyebb.)",
+   "ingredients": [
+    "Liba-, malac-, vagy borjúmáj 0,25 kg,",
+    "vaj 5 dkg,",
+    "borjúvelő 10 dkg,",
+    "tojás 5 db,",
+    "zsemle 1 db,",
+    "szalonna 5 dkg,",
+    "só, bors 1-1 késh.,",
+    "hagyma 1/4 fej,",
+    "citrom 1 db."
+   ],
+   "steps": [
+    "Egy kisült libamájat apró kockákra vágunk, kevés vajban megpároljuk.",
+    "Teszünk hozzá 10 dkg borjúvelőt, ezt előbb megabáljuk, áttörjük, teszünk bele pici reszelt hagymát és kis sót.",
+    "Ez alatt bekeverünk 5 tojás sárgáját, egy tejben áztatott és áttört zsemlét, sót, borsot, pici szerecsendió virágot, kevés finomra kockázott szalonnát is.",
+    "Azután a habot beletesszük, és legutoljára összekeverjük a májjal könnyedén.",
+    "Gőzben, puding-formában, egy óráig főzzük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Cookbook:Arambasici (Croatian Sour Cabbage Rolls)",
+   "url": "https://en.wikibooks.org/wiki/Cookbook:Arambasici_(Croatian_Sour_Cabbage_Rolls)",
+   "revid": "4509907",
+   "revisedAt": "2025-06-16T01:16:13Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Aramba&#353;i&#263;i are a speciality from Sinj, Croatia. Unlike some other cabbage rolls, which use fresh leaves, these are rolled up in whole pickled cabbage leaves.",
+   "ingredients": [
+    "600 g beef (best from the neck), finely chopped",
+    "150 g smoked ham or bacon, finely chopped",
+    "50–60 g suet from ox kidneys, finely chopped",
+    "200 g pork, finely chopped",
+    "Mutton (optional), finely chopped",
+    "2 large onions, chopped",
+    "Some garlic",
+    "Cloves",
+    "Grated lemon rind",
+    "Salt",
+    "Pepper",
+    "Some ground cinnamon",
+    "2–3 cloves, crushed",
+    "1 grind nutmeg",
+    "1 head of whole pickled cabbage (sauerkraut) or fresh white of grape leaves",
+    "Smoked pork",
+    "Smoked ham or tongue",
+    "Broth or water"
+   ],
+   "steps": [
+    "Combine the beef, ham, suet, pork, and mutton in a bowl.",
+    "Add the chopped onions, garlic cloves, grated lemon rind, salt, pepper, a little cinnamon, crushed cloves, and ground nutmeg.",
+    "Mix all the ingredients well; knead together with your hands, if desired.",
+    "Separate the leaves from the sauerkraut head, setting aside the better ones for stuffing.",
+    "Cut away part of the leaf stalk at the base.",
+    "Add a spoonful of the meat mixture to each kraut leaf.",
+    "Roll the Aramba&#353;ici from the base of each leaf, and fold the ends together well so that they do not fall apart during cooking.",
+    "Put 1 spoonful of grease in a deep stoneware casserole dish.",
+    "Pack and layer the Aramba&#353;ici rolls tightly next to one another in the casserole dish.",
+    "Layer smoked meat between the layers of kraut rolls.",
+    "Pour the broth or water over the Aramba&#353;ici. Cover tightly and cook 3–4 hours over low heat.",
+    "Shake casserole form several times, but do not stir."
+   ],
+   "bronNaam": "Wikibooks Cookbook (Engels)"
+  },
+  {
+   "title": "Avokádó pástétom",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Kóser/Előételek/Avokádó_pástétom",
+   "revid": "217098",
+   "revisedAt": "2015-11-17T17:42:05Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "2 db kemény tojás,",
+    "1 fej hagyma,",
+    "1 kanál margarin,",
+    "1 db avokádó,",
+    "só, bors, citromlé,",
+    "kevés őrölt szerecsendió."
+   ],
+   "steps": [
+    "A hagymát apróra vágjuk, a margarinban üvegesre pároljuk, belereszeljük a kemény tojást, és hozzáadjuk a hámozott, villával áttört avokádót.",
+    "Fűszerezzük, majd ízlésesen tálba helyezzük, paradicsommal, olajbogyóval díszítjük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Cookbook:Vinegar-Pickled Eggs and Onions",
+   "url": "https://en.wikibooks.org/wiki/Cookbook:Vinegar-Pickled_Eggs_and_Onions",
+   "revid": "4526117",
+   "revisedAt": "2025-07-23T01:57:42Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "This recipe is used to preserve eggs for a longer period of time in comparison to having raw eggs stored in a refrigerator. Pickled eggs make for a tasty snack or are good in salads.",
+   "ingredients": [
+    "3 cups malt vinegar (malt vinegar can be substituted with any other type of vinegar to taste)",
+    "1 cup water",
+    "½ cup granulated white sugar",
+    "2 tablespoons granulated salt",
+    "2 tablespoons whole black peppercorns",
+    "12 chicken eggs",
+    "2 medium red or brown onions"
+   ],
+   "steps": [
+    "Combine vinegar, water, salt, sugar, and peppercorns in a pot, and bring to simmer over medium heat. Stir regularly while heating so that the sugar on the bottom of the pot doesn't burn.",
+    "Simmer until the sugar and salt are fully dissolved. Remove from the heat, set aside and allow this pickling solution to cool to room temperature.",
+    "Bring a large pot of water to a boil.",
+    "Place eggs in boiling water, using a ladle to gently lower them in. The temperature of the water will lower with the addition of the eggs. Wait for the water to return to a boil and then boil the eggs for a further 12 minutes.",
+    "Drain the hot water from the eggs, and transfer the eggs to ice-cold water to stop the cooking. Crack and peel off shells, making sure to remove the membrane between the egg and the shell.",
+    "Cut onions into rings 5 mm thick.",
+    "Place a layer of onions into a large, non-reactive container, and then arrange a layer of eggs on top. If necessary, continue layering in this way until you have used up the eggs and onions.",
+    "Pour in enough of the pickling solution into the container to fully cover the eggs and onions.",
+    "Refrigerate for two weeks before serving."
+   ],
+   "bronNaam": "Wikibooks Cookbook (Engels)"
+  },
+  {
+   "title": "Tüdő koch",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Tüdő_koch",
+   "revid": "292856",
+   "revisedAt": "2017-08-12T06:09:30Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Egy borjútüdőt jó puhára főzünk, azután ledaráljuk, és 4 tojás sárgájával összekeverjük, beleteszünk tejben áztatott zsemlemorzsát, 2 ek. tejfölt, kevés borsot, sót, és a 4 tojás felvert habját. Azután vajban pirított petrezselymet, hagymát teszünk bele. Gőzben fél óráig főzzük.",
+   "ingredients": [
+    "Borjútüdő 1 db,",
+    "tojás 4 db,",
+    "morzsa 3 ek.,",
+    "tejföl 3 ek.,",
+    "tej 1 dl.",
+    "Bors, só 1 késhegynyi,",
+    "petrezselyem fél csomó,",
+    "hagyma 1/8 fej,",
+    "vaj 3 dkg."
+   ],
+   "steps": [
+    "Egy borjútüdőt jó puhára főzünk, azután ledaráljuk, és 4 tojás sárgájával összekeverjük, beleteszünk tejben áztatott zsemlemorzsát, 2 ek. tejfölt, kevés borsot, sót, és a 4 tojás felvert habját.",
+    "Azután vajban pirított petrezselymet, hagymát teszünk bele.",
+    "Gőzben fél óráig főzzük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Velő kagylóban",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Velő_kagylóban",
+   "revid": "523804",
+   "revisedAt": "2025-11-20T09:46:08Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "A borjúvelőt hártyájától meg kell tisztítani, megabálni, lecsurgatni. Dió nagyságú darabokra vágjuk. Beszórjuk pici borssal, kagylókba téve parmezánnal és vajban pirított morzsával beszórjuk, kis citromlevet is teszünk hozzá, és sütőben megsütjük.",
+   "ingredients": [
+    "Borjúvelő 2 egész,",
+    "bors, só késhegynyi,",
+    "parmezán sajt 5 dkg,",
+    "vaj 5 dkg,",
+    "morzsa 1 ek.,",
+    "citromlé 1/2 ek."
+   ],
+   "steps": [
+    "A borjúvelőt hártyájától meg kell tisztítani, megabálni, lecsurgatni.",
+    "Dió nagyságú darabokra vágjuk.",
+    "Beszórjuk pici borssal, kagylókba téve parmezánnal és vajban pirított morzsával beszórjuk, kis citromlevet is teszünk hozzá, és sütőben megsütjük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Rántott marhanyelv",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Rántott_marhanyelv",
+   "revid": "292855",
+   "revisedAt": "2017-08-12T06:09:08Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "A nyelvet leforrázzuk, és a bőrét leszedjük, azután jó puhára főzzük, majd nagyon vékony szeletekre vágjuk, tojásba, morzsába mártjuk, forró zsírban kisütjük.",
+   "ingredients": [
+    "Nyelv 75 dkg,",
+    "morzsa 15 dkg,",
+    "tojás 2 db,",
+    "zsír 25 dkg,",
+    "liszt 3 dkg"
+   ],
+   "steps": [
+    "A nyelvet leforrázzuk, és a bőrét leszedjük, azután jó puhára főzzük, majd nagyon vékony szeletekre vágjuk, tojásba, morzsába mártjuk, forró zsírban kisütjük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Kruidige loempiaatjes met zalm en garnaal",
+   "url": "https://nl.wikibooks.org/wiki/Kookboek/Kruidige_loempiaatjes_met_zalm_en_garnaal",
+   "revid": "426786",
+   "revisedAt": "2026-05-16T07:18:59Z",
+   "language": "nl",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "(bijvoorbeeld vers gemaakte van kruiden & overschot pronkbonen)",
+   "ingredients": [
+    "8 vellen brikdeeg (ook wel filodeeg genoemd)",
+    "een stuk (250g)",
+    "100g (grijze)",
+    "1 grote ui",
+    "1 teentje knoflook",
+    "1",
+    "(bijvoorbeeld vers gemaakte van kruiden & overschot pronkbonen)",
+    "wat citroensap",
+    "een scheutje olijfolie",
+    "een paar blaadjes verse , en hysop",
+    "een snufje peper"
+   ],
+   "steps": [
+    "Snipper de ui fijn.",
+    "Snij de knoflook en de tomaat fijn.",
+    "Snij de kruiden (salie, citroenmelisse, hysop) fijn.",
+    "Meng de ui, knoflook, tomaat en kruiden, en doe er een beetje citroensap en een snufje peper bij.",
+    "Stoof dit alles in de pan gedurende maximum 15 minuten in wat olijfolie.",
+    "Voeg na een minuut of 10 een beetje groentebouillon toe.",
+    "Na nog 5 minuten van het vuur halen en laten afkoelen.",
+    "Pocheer de zalm in een kokend mengsel van half water half groentebouillon gedurende 5 minuutjes.",
+    "Meng de zalm en de garnalen bij de gestoofde groenten en kruiden.",
+    "Snij een vel brikdeeg in 2 helften.",
+    "Bevochtig het halve vel brikdeeg met groentenbouillon (Bijvoorbeeld met een kwastje).",
+    "Leg een lepel vulling onderaan op het vel.",
+    "Vouw er een driehoekje over.",
+    "Maak driehoekjes door de randen beurtelings naar links en rechts om te vouwen.",
+    "Druk het deeg goed aan, en bevochtig de laatste vouw extra.",
+    "Het resultaat is dat je een driehoekig loempiaatje hebt.",
+    "Herhaal dit tot het brikdeeg op is.",
+    "Heb je vulling tekort kun je altijd wat driehoekjes maken met vulling van andere overschotjes.",
+    "Leg de loempiaatjes op een ovenschotel of bakpapier en bak in een voorverwarmde oven van 180 graden gedurende 20 minuten.",
+    "Serveer de loempiaatjes met rijst of pasta.",
+    "Vergeet niet ook wat van de bouillon te gebruiken voor het koken van de rijst of de pasta."
+   ],
+   "bronNaam": "Wikibooks Kookboek (Nederlands)"
+  },
+  {
+   "title": "Cookbook:Buffalo Wings",
+   "url": "https://en.wikibooks.org/wiki/Cookbook:Buffalo_Wings",
+   "revid": "4502423",
+   "revisedAt": "2025-06-08T18:42:42Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Heat the oil to 350 °F (180°C). Add the chicken pieces to the hot oil, and fry for 11 minutes. Drain on a cooling rack.",
+   "ingredients": [
+    "48 chicken wingettes",
+    "Oil for deep frying",
+    "Poultry Shake, as needed",
+    "½ cup unsalted butter, melted",
+    "½ cup Smoky Chipotle Hot Sauce",
+    "¼ cup tomato paste",
+    "1 tbsp soy sauce",
+    "Chili leaves, optional"
+   ],
+   "steps": [
+    "Sprinkle chicken with the Poultry Shake.",
+    "Heat the oil to 350 °F (180°C). Add the chicken pieces to the hot oil, and fry for 11 minutes. Drain on a cooling rack.",
+    "Meanwhile, combine remaining ingredients. Add wings and toss to coat and serve.",
+    "Garnish with the chili leaves, if desired."
+   ],
+   "bronNaam": "Wikibooks Cookbook (Engels)"
+  },
+  {
+   "title": "Csípős tojás",
+   "url": "https://hu.wikibooks.org/wiki/Nemzetek/India/Előételek/Csípős_tojás",
+   "revid": "216551",
+   "revisedAt": "2015-11-15T11:14:24Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "1-1 kávéskanál őrölt koriander, köménymag, kurkuma, curry, garam masala, só.",
+   "ingredients": [
+    "6 főtt tojás,",
+    "10 dkg ghí (vízmentesre főzött leszűrt vaj) vagy vaj,",
+    "3 csemegehagyma,",
+    "2 gerezd fokhagyma,",
+    "1 paradicsom,",
+    "1-1 piros és zöld csípős paprika,",
+    "2-3 kanál kókuszos tej,",
+    "1-1 kávéskanál őrölt koriander, köménymag, kurkuma, curry, garam masala, só."
+   ],
+   "steps": [
+    "A vajban az összezúzott fokhagymával üvegesre pároljuk a vékony karikára vágott hagymát, majd kiszedjük és félretesszük.",
+    "A köményt, kurkumát, koriandert és curryt a vajon egy-két percig pirítjuk, majd hozzáadjuk az apró kockára vágott paradicsomot és paprikát, megsózzuk, és kb. negyed óráig főzzük.",
+    "Hozzákeverjük a kókuszos tejet, beletesszük a félbevágott tojásokat és további tíz percig főzzük.",
+    "Nant (joghurtos kenyérféle) vagy pirítóst, illetve gyümölcscsatnit (ízesítő) kínálunk hozzá."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Olasz rántotta",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Olasz_rántotta",
+   "revid": "523802",
+   "revisedAt": "2025-11-20T09:43:10Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Azt a tálat, amelyben tálalni akarjuk, behintjük reszelt parmezánnal és apróra vágott sonkával. Azután öntünk rá tejfölt, vajat és erre ráütjük a tojásokat egészben. Újra sajtot és sonkát teszünk rá, sütőbe tesszük, s közepes meleg mellett addig sütjük, míg a végül ráhintett morzsa megpirul.",
+   "ingredients": [
+    "Tojás 6 db,",
+    "parmezán sajt 5 dkg,",
+    "sonka 10 dkg,",
+    "vaj 5 dkg,",
+    "tejföl 4 dl,",
+    "morzsa 1 kávésk.",
+    "só 1 késh."
+   ],
+   "steps": [
+    "Azt a tálat, amelyben tálalni akarjuk, behintjük reszelt parmezánnal és apróra vágott sonkával.",
+    "Azután öntünk rá tejfölt, vajat és erre ráütjük a tojásokat egészben.",
+    "Újra sajtot és sonkát teszünk rá, sütőbe tesszük, s közepes meleg mellett addig sütjük, míg a végül ráhintett morzsa megpirul."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Karfiol más módon",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Karfiol_más_módon",
+   "revid": "292850",
+   "revisedAt": "2017-08-12T06:07:12Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "A karfiolt sok, bő vízben, melybe sót és kevés cukrot teszünk, főzzük meg, ha már puha, levét lecsurgatjuk, tálba tesszük, leöntjük tejföllel. Megszórjuk morzsával, és sütőbe sütni tesszük.",
+   "ingredients": [
+    "Karfiol 1 kg,",
+    "vaj 10 dkg,",
+    "tejföl 3-4 dl,",
+    "morzsa 1 ek.,",
+    "só, cukor 1-2 késh."
+   ],
+   "steps": [
+    "A karfiolt sok, bő vízben, melybe sót és kevés cukrot teszünk, főzzük meg, ha már puha, levét lecsurgatjuk, tálba tesszük, leöntjük tejföllel.",
+    "Megszórjuk morzsával, és sütőbe sütni tesszük.",
+    "Ha csak forró vajat teszünk rá, akkor nem kell se tejfel rá, se sütőbe nem tesszük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Zsemle puding",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Zsemle_puding",
+   "revid": "386704",
+   "revisedAt": "2020-12-07T06:30:35Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Vágjuk a zsemléket kockákra, tejjel nedvesítsük meg, a tojást jól verjük fel és öntsük a zsemlére. Tehetünk 2 kanál tejfölt is hozzá, és erősen vajjal kikent asztalkendőbe tesszük, és fél óráig főzzük.",
+   "ingredients": [
+    "Zsemle 6 db,",
+    "tojás 6 db,",
+    "tejföl 2 evőkanál,",
+    "parmezán sajt 4 dkg,",
+    "vaj 5 dkg,",
+    "só 1 késh."
+   ],
+   "steps": [
+    "Vágjuk a zsemléket kockákra, tejjel nedvesítsük meg, a tojást jól verjük fel és öntsük a zsemlére.",
+    "Tehetünk 2 kanál tejfölt is hozzá, és erősen vajjal kikent asztalkendőbe tesszük, és fél óráig főzzük.",
+    "Ha kész, tálra tesszük, forró vajjal leöntjük, és reszelt sajttal meghintjük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Pacal hidegen",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Húsok/Belsőség/Pacal/Pacal_hidegen",
+   "revid": "194000",
+   "revisedAt": "2015-04-22T03:01:01Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "80 dkg konyhakész pacal",
+    "2 babérlevél,",
+    "néhány szem fekete bors só,",
+    "1 kisebb vöröshagyma",
+    "5-6 gerezd fokhagyma,",
+    "2 evőkanál fehérborecet vagy fél citrom leve,",
+    "fél csokor kapor"
+   ],
+   "steps": [
+    "A pacalt lábasba tesszük, és annyi vizet öntünk rá, amennyi bőven ellepi.",
+    "A babérlevéllel meg a borssal fűszerezzük, megsózzuk.",
+    "A megtisztított vöröshagymát 2 gerezd fokhagymával együtt hozzáadjuk, és az ecettel ízesítjük.",
+    "Lefödve, kis lángon puhára főzzük.",
+    "Levében hagyjuk kihűlni, majd lecsöpögtetjük.",
+    "Utána kb. 20x20 centis darabokra vágjuk, bolyhos oldalával lefelé fordítva deszkára fektetjük.",
+    "A maradék fokhagymát présen áttörjük, és a pacal sima oldalára kenjük.",
+    "A fölaprított kaporral fűszerezzük, és összetekerjük, akár a bejglit.",
+    "Szorosan alufóliába csomagoljuk, majd néhány órára hűtőszekrénybe tesszük.",
+    "Tálaláskor 2-3 milliméter vastagon fölszeleteljük.",
+    "Előételként kínáljuk."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Cookbook:Spanakopita",
+   "url": "https://en.wikibooks.org/wiki/Cookbook:Spanakopita",
+   "revid": "4587227",
+   "revisedAt": "2025-10-26T23:28:34Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "900 g (2 lbs) fresh spinach or 580 g (20 oz) frozen, thawed, and drained spinach",
+   "ingredients": [
+    "900 g (2 lbs) fresh spinach or 580 g (20 oz) frozen, thawed, and drained spinach",
+    "1 large onion, finely chopped",
+    "¼ cup extra-virgin olive oil",
+    "1 cup chopped scallions",
+    "½ cup minced fresh parsley",
+    "1 tbsp minced fresh dill",
+    "¼ tsp freshly ground nutmeg",
+    "1 tbsp lemon juice",
+    "¾ cup crumbled feta cheese",
+    "¾ cup small curd cottage cheese",
+    "¼ cup freshly grated parmesan cheese",
+    "4 eggs, beaten",
+    "12–20 sheets phyllo pastry",
+    "⅔ cup clarified butter",
+    "¼ tsp freshly-ground black pepper",
+    "½ tsp salt (or to taste)"
+   ],
+   "steps": [
+    "Preheat oven to 180°C (350°F).",
+    "Wash the spinach, remove large stems, and chop. Place in a steamer over boiling water and steam for 2 minutes, or until wilted and reduced in volume. Drain, pressing out any liquid with the back of a spoon.",
+    "Heat the oil in a large skillet. Add onion and cook over medium heat until slightly tender. Add scallions and cook until limp. Remove from heat. Stir in parsley, dill, nutmeg, salt and pepper.",
+    "Add the cheeses, spinach, and lemon juice to the skillet. Mix. Add eggs and mix again gently.",
+    "Brush a 9x12-inch baking dish with some of the butter. Lay a sheet of phyllo dough across the bottom of the dish, covering the entire surface and letting the edges fold upward against the sides. Brush with butter, and place another sheet on top. Continue layering the phyllo (brushing each sheet) until the bottom of the dish is covered with about 8 sheets.",
+    "Place half of the spinach filling on top of the phyllo, smoothing out with a rubber spatula until evenly distributed.",
+    "Cover the filling with 5–8 phyllo sheets, brushing each layer with butter. Place remaining spinach filling on top and smooth as above.",
+    "Cover with 5–8 phyllo sheets, brushing with butter as above. Roll up all overhanging phyllo sheets and crumble any broken sheet bits on top. Drizzle any remaining clarified butter over top.",
+    "Place the spanakopita in the oven on a medium rack. Bake for 45 minutes, or until puffed and golden. Let sit for 10 minutes before cutting and serving."
+   ],
+   "bronNaam": "Wikibooks Cookbook (Engels)"
+  },
+  {
+   "title": "Cookbook:Zacusca (Romanian Vegetable Spread)",
+   "url": "https://en.wikibooks.org/wiki/Cookbook:Zacusca_(Romanian_Vegetable_Spread)",
+   "revid": "4514056",
+   "revisedAt": "2025-06-19T01:42:50Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Zacuscă is a vegetable spread popular in Romania. It is usually eaten with bread. Similar spreads are found in other countries in the Balkan region and bordering regions. Although traditionally prepared at home as a way to store vegetables for the winter, it is also commercially available.",
+   "ingredients": [
+    "3 kg medium-large eggplant (any variety)",
+    "500 g onion, finely chopped or grated",
+    "1 kg red bell pepper of the gogoșar variety",
+    "1 kg bell pepper",
+    "200 g tomato paste",
+    "3 tbsp salt",
+    "700 ml sunflower oil",
+    "20 dried black peppercorns",
+    "4–6 dried bay leaves"
+   ],
+   "steps": [
+    "Roast the eggplants and peppers until their skins are charred and easily removable by hand. Skin the vegetables. The pepper skins should come off easily in long strips. The eggplant skin might retain some of the flesh; some people like to take the back of the knife over the skin to remove that flesh and use it because it has a smokey flavor, but you can easily discard it if pressed for time.",
+    "Dice the eggplants and peppers in 1–2 cm cubes. The peppers will retain their shape, but the eggplant flesh is mushy so don't worry if your cubes aren't perfect shapes, they will disintegrate more when cooking and that is the goal.",
+    "In a large nonstick skillet, sauté the onions in the oil over medium until golden.",
+    "Add the peppers to the onions. Cook for 15 minutes, stirring occasionally. Make sure it doesn't stick to the bottom of the pan and burn.",
+    "Stir in the eggplants, tomato paste, bay leaves, salt, and peppercorns. Simmer until the oil comes to the surface.",
+    "Can the mixture in sterilized jars. Store in a cool place. If you don't want to can, zacusca can be stored in the fridge and consumed within a few days, like any stew. If that is the case, given the large quantity you just made, invite over a few friends and smear the spread on thin-to-medium slices of a baguette. Bon appetite!"
+   ],
+   "bronNaam": "Wikibooks Cookbook (Engels)"
+  },
+  {
+   "title": "Cookbook:Sylheti Onion and Rice Fritters",
+   "url": "https://en.wikibooks.org/wiki/Cookbook:Sylheti_Onion_and_Rice_Fritters",
+   "revid": "4517772",
+   "revisedAt": "2025-06-21T03:03:47Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Sylheti salty rice cake, locally known as nunor bora among other names, is a cherished savoury rice flour fritter originating from Sylhet. This delectable treat, often paired with tea, boasts a golden hue thanks to the infusion of turmeric, and it holds a special place in Sylhet's culinary heritage.",
+   "ingredients": [
+    "2 medium-sized onions, chopped",
+    "570 ml boiling water",
+    "Salt to taste",
+    "Turmeric powder",
+    "Panch puran (optional)",
+    "300 grams rice flour",
+    "120 grams ground rice",
+    "Chopped coriander (optional)",
+    "Water"
+   ],
+   "steps": [
+    "Blend the onions, ginger, and garlic, then add them to a saucepan with the boiling water.",
+    "Season the mixture with salt and turmeric powder. Optionally incorporate panch puran.",
+    "Stir plain flour, rice flour, and/or ground rice into the saucepan, forming a spongy, soft paste.",
+    "Once the paste is fully cooked, remove it from the saucepan and let it cool.",
+    "Knead the paste on a floured surface until it comes together into a dough.",
+    "Flatten or roll out the dough, then cut out pieces.",
+    "Deep fry the dough pieces in hot oil, then drain and serve."
+   ],
+   "bronNaam": "Wikibooks Cookbook (Engels)"
+  },
+  {
+   "title": "Padlizsánpástétom",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Kóser/Előételek/Padlizsánpástétom",
+   "revid": "217374",
+   "revisedAt": "2015-11-17T23:41:22Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Hidegen tálaljuk. Lehet egyforma nagyságú kivájt paradicsomban is tálalni.",
+   "ingredients": [
+    "4 szem érett padlizsán,",
+    "1 kis fej hagyma,",
+    "fél csésze olaj,",
+    "só, cukor, citromlé."
+   ],
+   "steps": [
+    "A padlizsánokat platnin vagy a villanysütő közepes fokozatán gyakran forgatva megsütjük.",
+    "Szenes héjukat lehúzzuk, lemossuk, majd apróra vágjuk.",
+    "Összekeverjük az apróra vágott hagymával, citromlével, olajjal, sóval, kevés cukorral.",
+    "Egyes helyeken cukor helyett borsot és apróra zúzott fokhagymát tesznek bele.",
+    "Hidegen tálaljuk.",
+    "Lehet egyforma nagyságú kivájt paradicsomban is tálalni."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Húspuding",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Húspuding",
+   "revid": "386705",
+   "revisedAt": "2020-12-07T06:31:11Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Egy fél kiló főtt marhahúst, 7 dkg szalonnát 1 vízben áztatott zsemlét megdarálunk, adunk hozzá kevés zsírban megpárolt hagymát, petrezselymet, borsot, egy kanál mustárt, 3 tojás sárgáját, 3 ek. tejfölt. Ezeket jól összekeverve, hozzáadjuk a 3 tojás jó keményre vert habját. Vajjal kikent és liszteze",
+   "ingredients": [
+    "Marhahús 0.5 kg,",
+    "szalonna 7 dkg,",
+    "zsemle 1 db,",
+    "tojás 3 db,",
+    "tejfel 3 ek.,",
+    "hagyma 1/4 fej.",
+    "Borjúcomb 0.5 kg,",
+    "tojás 2+3 db,",
+    "zsemle 1 db,",
+    "citrom 1 db,",
+    "szalonna 5 dkg,",
+    "tejföl 4 dl,",
+    "bors, só 1 késh."
+   ],
+   "steps": [
+    "Egy fél kiló főtt marhahúst, 7 dkg szalonnát 1 vízben áztatott zsemlét megdarálunk, adunk hozzá kevés zsírban megpárolt hagymát, petrezselymet, borsot, egy kanál mustárt, 3 tojás sárgáját, 3 ek. tejfölt.",
+    "Ezeket jól összekeverve, hozzáadjuk a 3 tojás jó keményre vert habját.",
+    "Vajjal kikent és lisztezett formába tesszük, és egy óráig gőzben főzzük.",
+    "A fél kiló borjúcombot megsütjük, ez alatt készítünk 2 tojásból rántottát, azt a kisült hússal ledaráljuk, hozzáadunk egy tejben áztatott zsemlét, sót, borsot egy citrom levét, 5 dkg apróra vágott szalonnát, három tojás sárgáját, ezzel jól összekeverjük, végül a 3 tojás kemény habját.",
+    "Vajjal kikent formában, gőzben főzzük fél óráig.",
+    "Ha kész, azt a levet, melyben a hús sült, feltesszük forrni, citromlevet s bőven tejfelt teszünk bele.",
+    "Ha együtt felforrt, a kiborított húsra öntjük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Knisesz",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Kóser/Előételek/Knisesz",
+   "revid": "217372",
+   "revisedAt": "2015-11-17T23:39:05Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "A tésztát vékonyra nyújtjuk, derelyeszaggatóval tenyérnyi négyzeteket vágunk. Megtöltjük, háromszögűre hajtjuk, és zsírozott tepsiben lassú tűzön sütjük.",
+   "ingredients": [
+    "2 csésze liszt,",
+    "1 tojás,",
+    "3 evőkanál libazsír,",
+    "1 csésze hideg víz,",
+    "só."
+   ],
+   "steps": [
+    "A lisztet, a tojást, a zsírt, a vizet és a sót összedolgozzuk, hogy jól nyújtható tésztát kapjunk.",
+    "A töltelékhez a zsírban sárgára pároljuk a hagymát, elkeverjük a burgonyával és az apróra vágott töpörtyűvel, sóval, borssal.",
+    "A tésztát vékonyra nyújtjuk, derelyeszaggatóval tenyérnyi négyzeteket vágunk.",
+    "Megtöltjük, háromszögűre hajtjuk, és zsírozott tepsiben lassú tűzön sütjük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Burgonya omlett",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Burgonya_omlett",
+   "revid": "292832",
+   "revisedAt": "2017-08-12T06:00:09Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Vajat habosra keverünk, 3 tojás sárgáját, 3-4 kanál sült és áttört burgonyát, másfél dl forralt hideg tejszínt és egy késhegynyi finomra törött gyömbért adunk hozzá. Mikor mindezt jól kikevertük, hozzáadjuk a 3 tojás jól felvert habját, utoljára 2 kanál lisztet és sót. Jól kikent és lisztezett tepsi",
+   "ingredients": [
+    "Vaj 3 dkg,",
+    "sült és áttört burgonya 3-4 kanál,",
+    "tojás 3 db,",
+    "tejszín 1.5 dl,",
+    "liszt 2 ek."
+   ],
+   "steps": [
+    "Vajat habosra keverünk, 3 tojás sárgáját, 3-4 kanál sült és áttört burgonyát, másfél dl forralt hideg tejszínt és egy késhegynyi finomra törött gyömbért adunk hozzá.",
+    "Mikor mindezt jól kikevertük, hozzáadjuk a 3 tojás jól felvert habját, utoljára 2 kanál lisztet és sót.",
+    "Jól kikent és lisztezett tepsiben szép pirosra sütjük.",
+    "Velővel, vagy finomra vágott sonkával egyik felét megtöltjük, másik felét ráborítjuk, és csinos hosszú szeletekre vágjuk.",
+    "A tölteléket a burgonyafánk tölteléke szerint készítjük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Kirántott karfiol",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Kirántott_karfiol",
+   "revid": "292849",
+   "revisedAt": "2017-08-12T06:06:51Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "A karfiolt szépen megmossuk, egészben feltesszük sós vízbe főni, ha puha kivesszük, lecsurgatjuk, azután morzsába hengergetjük, és forró zsírban kisütjük, mély tálba tesszük, és bőven tejföllel leöntjük, sütőbe tesszük, hogy tálalásig meleg legyen, de nem sütjük.",
+   "ingredients": [
+    "Karfiol 1 kg,",
+    "tejföl 4 dl,",
+    "tojás 3 db,",
+    "morzsa 15 dkg,",
+    "liszt 3 dkg,",
+    "só 2 késh.,",
+    "zsír 25 dkg."
+   ],
+   "steps": [
+    "A karfiolt szépen megmossuk, egészben feltesszük sós vízbe főni, ha puha kivesszük, lecsurgatjuk, azután morzsába hengergetjük, és forró zsírban kisütjük, mély tálba tesszük, és bőven tejföllel leöntjük, sütőbe tesszük, hogy tálalásig meleg legyen, de nem sütjük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Pastas de queijo prato com pimentão",
+   "url": "https://pt.wikibooks.org/wiki/Livro_de_receitas/Pastas_de_queijo_prato_com_pimentão",
+   "revid": "206749",
+   "revisedAt": "2011-01-25T11:43:07Z",
+   "language": "pt",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "300 gramas de queijo prato ralado fino (3 xícaras das de chá) --",
+   "ingredients": [
+    "300 gramas de queijo prato ralado fino (3 xícaras das de chá) --",
+    "3 colheres (sopa) de pimentão vermelho picado",
+    "1/4 xícara (chá) de leite",
+    "1 colher (chá) de molho inglês",
+    "Sal a gosto."
+   ],
+   "steps": [
+    "Numa tigela grande, misture bem, com uma colher.",
+    "Coloque em recipiente, apertando-a bem.",
+    "Leve à geladeira de um dia para outro, para que os sabores se combinem."
+   ],
+   "bronNaam": "Wikibooks Livro de receitas (Portugees)"
+  },
+  {
+   "title": "Cookbook:Artichoke Dip with Parmesan",
+   "url": "https://en.wikibooks.org/wiki/Cookbook:Artichoke_Dip_with_Parmesan",
+   "revid": "4630216",
+   "revisedAt": "2026-04-12T18:50:57Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Artichoke hearts are readily available in cans and jars in many countries, and are increasingly used in the making of snack dips. Many national chain restaurants in the USA have some variety of artichoke dip, which is usually mayonnaise-based. One easy variation on the creamy artichoke dip is joking",
+   "ingredients": [
+    "Artichoke hearts, drained and chopped or squeezed",
+    "Mayonnaise",
+    "Parmesan or Romano cheese"
+   ],
+   "steps": [
+    "Combine all ingredients to make dip."
+   ],
+   "bronNaam": "Wikibooks Cookbook (Engels)"
+  },
+  {
+   "title": "Vese, velővel",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Vese,_velővel",
+   "revid": "292854",
+   "revisedAt": "2017-08-12T06:08:45Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "A jól megmosott vesét apró kockákra vágjuk, és vízben megfőzzük, a velőt egy kicsit megabáljuk, és hártyájától megtisztítjuk. Közben zsírban hagymát pirítunk és beletesszük a velőt, öntünk egy-egy kis vizet, hogy jól megpuhuljon. Ütünk rá 4 db tojást, ezzel is egy picit még forr, végül hozzáadjuk az",
+   "ingredients": [
+    "Vesevelő 1 adag,",
+    "zsír 15 dkg,",
+    "hagyma 1/2 fej,",
+    "tojás 4 db,",
+    "bors, só 1-1 késhegynyi."
+   ],
+   "steps": [
+    "A jól megmosott vesét apró kockákra vágjuk, és vízben megfőzzük, a velőt egy kicsit megabáljuk, és hártyájától megtisztítjuk.",
+    "Közben zsírban hagymát pirítunk és beletesszük a velőt, öntünk egy-egy kis vizet, hogy jól megpuhuljon.",
+    "Ütünk rá 4 db tojást, ezzel is egy picit még forr, végül hozzáadjuk az apróra vágott vesét, kevés borsot és sót.",
+    "Forrón tálaljuk."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Kókuszos sült paprika",
+   "url": "https://hu.wikibooks.org/wiki/Nemzetek/India/Előételek/Kókuszos_sült_paprika",
+   "revid": "216553",
+   "revisedAt": "2015-11-15T11:14:44Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "1-1 zöld, sárga és piros, vastag húsú paprika,",
+    "5 dkg kókuszreszelék,",
+    "2 evőkanál szezámmag,",
+    "5 dkg összetört (nem sózott) földimogyoró,",
+    "3 kanál mazsola,",
+    "1 citrom leve,",
+    "1-2 kanál olaj, só."
+   ],
+   "steps": [
+    "A paprikát kimagozzuk, vékony csíkokra vágjuk, és az olajon megpirítjuk.",
+    "Hozzákeverjük a többi hozzávalót, felengedjük egy deci vízzel, sózzuk, és lefedve, lassú tűzön kb. tíz perc alatt készre főzzük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Maradék húsok tejföllel",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Maradék_húsok_tejföllel",
+   "revid": "292857",
+   "revisedAt": "2017-08-12T06:10:02Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Bármilyen maradék sültet, hogy ne legyen száraz, dió nagyságú darabokra vágunk, tűzálló tálba rakunk és öntünk rá bőven tejfölt, megszórjuk morzsával, a sütőbe tesszük, hogy jól felforrjon, úgy tálaljuk.",
+   "ingredients": [
+    "Maradék hús 0.5 kg,",
+    "tejföl 3 dl,",
+    "vaj 5 dkg,",
+    "zsemlemorzsa 1 ek."
+   ],
+   "steps": [
+    "Bármilyen maradék sültet, hogy ne legyen száraz, dió nagyságú darabokra vágunk, tűzálló tálba rakunk és öntünk rá bőven tejfölt, megszórjuk morzsával, a sütőbe tesszük, hogy jól felforrjon, úgy tálaljuk."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Spárga",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Spárga",
+   "revid": "292851",
+   "revisedAt": "2017-08-12T06:07:32Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "A spárgát megmossuk, és csomós végét levágjuk. Ügyeljünk a spárgára, hogy vén ne legyen, mert akkor keserű. Csomóra összekötjük, és sós vízben kifőzzük. Ha puha, kiszedjük, szétborítva tálra rakjuk, és leöntjük bőven tejföllel, megszórjuk morzsával, és sütőbe tesszük.",
+   "ingredients": [
+    "Spárga 1 kg,",
+    "vaj 10 dkg,",
+    "tejföl 4 dl,",
+    "morzsa 1 ek.,",
+    "só 1 késh."
+   ],
+   "steps": [
+    "A spárgát megmossuk, és csomós végét levágjuk.",
+    "Ügyeljünk a spárgára, hogy vén ne legyen, mert akkor keserű.",
+    "Csomóra összekötjük, és sós vízben kifőzzük.",
+    "Ha puha, kiszedjük, szétborítva tálra rakjuk, és leöntjük bőven tejföllel, megszórjuk morzsával, és sütőbe tesszük.",
+    "Ezt is készíthetjük úgy, mint a karfiolt, tejfel nélkül, csak forró vajjal."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Krumplis latkesz",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Kóser/Desszertek/Krumplis_latkesz",
+   "revid": "217328",
+   "revisedAt": "2015-11-17T23:25:21Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "fél kg hámozott, reszelt burgonya,",
+    "1 nagy fej reszelt hagyma,",
+    "2 tojás,",
+    "3 evőkanál liszt,",
+    "só, bors,",
+    "a sütéshez olaj."
+   ],
+   "steps": [
+    "A reszelt burgonyát hagymával, tojással, liszttel összekeverjük, fűszerezzük.",
+    "Palacsintasütőben olajat hevítünk, és merőkanál mennyiségenként a masszát kisütjük.",
+    "Peszahkor liszt helyett maceszdarát használunk!"
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Spárgakoch",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Spárgakoch",
+   "revid": "386702",
+   "revisedAt": "2020-12-07T06:29:36Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Hat tojássárgáját egy kanál vajjal habosra keverünk, pici sót, lisztet, apróra vágott ujjnyi hosszú főtt spárgát teszünk bele. Végre a 6 tojásfehérjét kemény habbá verjük.",
+   "ingredients": [
+    "Tojás 6 db,",
+    "vaj 3 dkg,",
+    "liszt 12 dkg,",
+    "spárga 0.5 kg,",
+    "vaj 3 dkg,",
+    "só 1 késhegynyi."
+   ],
+   "steps": [
+    "Hat tojássárgáját egy kanál vajjal habosra keverünk, pici sót, lisztet, apróra vágott ujjnyi hosszú főtt spárgát teszünk bele.",
+    "Végre a 6 tojásfehérjét kemény habbá verjük.",
+    "Tálaláskor forró vajjal leöntjük.",
+    "Puding-formában, melyet vajjal jól kikenünk, főzzük meg.",
+    "Forró vízzel telt nagyobb edénybe tesszük a formát, és egy óráig állandóan kell forrnia, míg tálalunk."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Hasé formában",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Hasé_formában",
+   "revid": "292843",
+   "revisedAt": "2017-08-12T06:04:40Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Egy db. Finomra vágott főtt sonkát, sült borjúhúst, egy csirke fehérhúsát tejföllel puhára párolunk. Tegyünk bele finomra vágott hagymát, sót, borsot, kevés tejfelt, ha kész, tegyük félre hűlni. Teszünk bele aztán 4 tojás sárgáját és a tojás fehérje kemény habját. A formát kikenjük zsírral, a keveré",
+   "ingredients": [
+    "Borjúhús 0.5 kg,",
+    "sonka 0.25 kg,",
+    "csirkehús 1 fehérje,",
+    "zsír 15 dkg,",
+    "hagyma 1/4 fej,",
+    "bors, só 1 késh.,",
+    "tejföl 1 dl,",
+    "tojás 4 db."
+   ],
+   "steps": [
+    "Finomra vágott főtt sonkát, sült borjúhúst, egy csirke fehérhúsát tejföllel puhára párolunk.",
+    "Tegyünk bele finomra vágott hagymát, sót, borsot, kevés tejfelt, ha kész, tegyük félre hűlni.",
+    "Teszünk bele aztán 4 tojás sárgáját és a tojás fehérje kemény habját.",
+    "A formát kikenjük zsírral, a keveréket beleöntjük, és kis időre a sütőbe tesszük (1/4 órára)."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Velős puding",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Velős_puding",
+   "revid": "292841",
+   "revisedAt": "2017-08-12T06:03:54Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Öt tojás sárgáját és egy apróra vágott borjúvelőt elkeverünk. Adunk hozzá egy kevés fekete borsot, egy pici sót, három ek. zsemlemorzsát és 5 tojás fehérjét kemény habbá verve. Vajjal kikent, és kilisztezett puding-formába téve 1 óráig gőzben főzzük. Apró borjú-, vagy disznóhúsból vágott pogácsákkal",
+   "ingredients": [
+    "Borjú vagy marhavelő 1 db,",
+    "tojás 5 db,",
+    "morzsa 3 ek.,",
+    "bors, só 1-2 késh.,",
+    "tejföl 3 dl,",
+    "tojás 2 db."
+   ],
+   "steps": [
+    "Öt tojás sárgáját és egy apróra vágott borjúvelőt elkeverünk.",
+    "Adunk hozzá egy kevés fekete borsot, egy pici sót, három ek. zsemlemorzsát és 5 tojás fehérjét kemény habbá verve.",
+    "Vajjal kikent, és kilisztezett puding-formába téve 1 óráig gőzben főzzük.",
+    "Apró borjú-, vagy disznóhúsból vágott pogácsákkal, vagy rudacskákkal köríthetjük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Zöldbab",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Zöldbab",
+   "revid": "292852",
+   "revisedAt": "2017-08-12T06:07:55Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "A szép gyenge zöldbabot szálkájától megtisztítjuk, és sós vízben puhára főzzük, tovább úgy járunk el, mint a spárgával.",
+   "ingredients": [
+    "Zöldbab 1/2 kg,",
+    "vaj 10 dkg,",
+    "tejföl 4 dl,",
+    "morzsa 1 ek.,",
+    "só 1 késh."
+   ],
+   "steps": [
+    "A szép gyenge zöldbabot szálkájától megtisztítjuk, és sós vízben puhára főzzük, tovább úgy járunk el, mint a spárgával."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Babpástétom",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Kóser/Előételek/Babpástétom",
+   "revid": "217360",
+   "revisedAt": "2015-11-17T23:35:26Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "fél kg nagy szemű bab,",
+    "3 kemény tojás,",
+    "2 fej hagyma,",
+    "só, bors,",
+    "1 evőkanál libazsír vagy olaj."
+   ],
+   "steps": [
+    "A babot éjszakára beáztatjuk, majd sós vízben nagyon puhára főzzük.",
+    "Leöntjük a vizet, majd villával összetörjük.",
+    "Összekeverjük az apró kockára vágott főtt tojással, a zsíron sárgára párolt, apróra vagdalt hagymával.",
+    "Sózzuk, borsozzuk.",
+    "Hidegen és melegen is fogyasztható."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Hamis hal",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Kóser/Előételek/Hamis_hal",
+   "revid": "217368",
+   "revisedAt": "2015-11-17T23:37:38Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "1 főtt tyúkmell,",
+    "3 fej hagyma,",
+    "1 zsemle,",
+    "1-1 sárgarépa, fehérrépa,",
+    "1 kanál zsír,",
+    "2 tojás,",
+    "1 csokor petrezselyem,",
+    "só, bors, cukor."
+   ],
+   "steps": [
+    "A tyúkhúst megdaráljuk, összekeverjük egy kis fej apróra vágott hagymával, l beáztatott és kifacsart zsemlével, 1 kanál zsírral, 2 tojással, sóval, borssal és egy kevés cukorral.",
+    "Egy lábosban megfőzzük a két fej hagymát, a sárga-fehérrépát, sóval, borssal, apróra vágott petrezselyemmel, kevés cukorral ízesítve.",
+    "Amikor csaknem puha, vizes kézzel lapos gombócokat formálunk a masszából, és a lébe helyezzük.",
+    "Még 15-20 percig főzzük, majd tálba szedjük, a levét rászűrjük, és répakarikával, petrezselyemmel díszítjük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Cookbook:Mango Avocado Salsa",
+   "url": "https://en.wikibooks.org/wiki/Cookbook:Mango_Avocado_Salsa",
+   "revid": "4509829",
+   "revisedAt": "2025-06-16T01:06:55Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "​Refreshingly tasty mango avocado salsa is a crowd-pleasing snack or appetizer with tortilla chips.",
+   "ingredients": [
+    "¼ cup red onion, diced",
+    "1 jalapeño pepper, seeded and minced",
+    "1 small bunch of cilantro, chopped (about 1 cup, packed)",
+    "3 Hass avocados, peeled, cored, and diced",
+    "1 ripe mango, peeled, cored, and diced (about 1 cup)",
+    "Salt to taste",
+    "Pepper to taste",
+    "Juice of 1 lime"
+   ],
+   "steps": [
+    "Combine all ingredients in a medium bowl.",
+    "Mix well with a spoon and serve with tortilla chips or use it as toppings for another dish."
+   ],
+   "bronNaam": "Wikibooks Cookbook (Engels)"
+  },
+  {
+   "title": "Májpuding",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Májpuding",
+   "revid": "292834",
+   "revisedAt": "2017-08-12T06:01:03Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Hat dkg vajat 4 tojás sárgájával habosra keverünk, teszünk bele egy tejben áztatott és áttört zsemlét, negyed kiló főtt, megreszelt borjú v. disznómájat, egynegyed reszelt hagymát, finomra vágott petrezselymet, melyet egy kevés zsírban előbb megpárolunk, törött borsot, sót, és a 4 tojás kemény habjá",
+   "ingredients": [
+    "Vaj 6 dkg,",
+    "tojás 4 db,",
+    "zsemle 1 db,",
+    "tej 1 dl,",
+    "borjú vagy disznómáj 0.25 kg,",
+    "zsír 5 dkg,",
+    "hagyma 1/4 fej,",
+    "petrezselyem 3-4 szál,",
+    "vaj 5 dkg,",
+    "bors, só 1-1 késhegynyi,",
+    "gomba vagy sajt 5 dkg."
+   ],
+   "steps": [
+    "Hat dkg vajat 4 tojás sárgájával habosra keverünk, teszünk bele egy tejben áztatott és áttört zsemlét, negyed kiló főtt, megreszelt borjú v. disznómájat, egynegyed reszelt hagymát, finomra vágott petrezselymet, melyet egy kevés zsírban előbb megpárolunk, törött borsot, sót, és a 4 tojás kemény habját.",
+    "Kikent és lisztezett puding-formában 1 óráig főzzük.",
+    "Vajjal, tejföllel tálaljuk, és meghintjük gombával, vagy reszelt sonkával."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Burgonyafánk",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Burgonyafánk",
+   "revid": "386707",
+   "revisedAt": "2020-12-07T06:32:01Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Mindenkor bőséges és nagyon forró zsírban sütjük ki, ami azért gazdaságos, mert a bő zsírnak csak kis része fogy el, és a többit, bármihez felhasználhatjuk!",
+   "ingredients": [
+    "Héjában sült burgonya 4 db,",
+    "tojás 4 db,",
+    "tejföl 4 kanál,",
+    "vaj 5 dkg,",
+    "élesztő 4 dkg,",
+    "tej 1 kanál,",
+    "liszt 1 dkg,",
+    "sonka 15 dkg,",
+    "só 2 késh."
+   ],
+   "steps": [
+    "A sült burgonyát megtisztítjuk.",
+    "A hány burgonya, annyi tojást és kanál tejfölt veszünk hozzá.",
+    "Tojásnyi vajat jól kikeverünk.",
+    "Azután 4 dkg élesztőt pici cukorral tejbe áztatunk, teszünk közé annyi lisztet, hogy kalácstészta keménységű legyen, jól kidolgozzuk, és félretesszük kelni.",
+    "Ha megkelt, lisztezett deszkán kinyújtjuk.",
+    "A felét beszórjuk a következő töltelékkel: 3 dkg vajban 1 kanál morzsát megpirítunk, 15 dkg daráltsonka, 1-2 kanál tej, csipet só.",
+    "Azután a másik felét a tésztának ráborítjuk, fánkszúróval kiszaggatjuk, újra kelni hagyjuk, és nagyon forró zsírban kisütjük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Sonkás borjú",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Sonkás_borjú",
+   "revid": "292842",
+   "revisedAt": "2017-08-12T06:04:15Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "A borjúszeleteket jó finomra kiverjük, gyengén megsózzuk, vágunk felényi vékonyságú főtt sonkadarabokat és rátesszük a fél borjúszeletekre, másik felét ráhajtjuk, és kés segítségével kerekre formázzuk. Tojásba, prézlibe mártva forró zsírban kisütjük. Külön csészében pikáns mártást is adunk hozzá.",
+   "ingredients": [
+    "Borjúszelet 80 dkg,",
+    "sonka 25 dkg,",
+    "tojás 2 db,",
+    "morzsa 15 dkg,",
+    "zsír 25 dkg."
+   ],
+   "steps": [
+    "A borjúszeleteket jó finomra kiverjük, gyengén megsózzuk, vágunk felényi vékonyságú főtt sonkadarabokat és rátesszük a fél borjúszeletekre, másik felét ráhajtjuk, és kés segítségével kerekre formázzuk.",
+    "Tojásba, prézlibe mártva forró zsírban kisütjük.",
+    "Külön csészében pikáns mártást is adunk hozzá."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Rizottó",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Rizottó",
+   "revid": "523795",
+   "revisedAt": "2025-11-20T09:37:17Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Rizst, zöldborsót külön zsírban megpárolunk, ha van, a rizst kis húslevessel eresztjük fel, ha mindkettő puha, összekeverjük és beletesszük a már megfőtt és apróra vágott húsdarabokat. Ez lehet borjú, csirkeaprólék kicsontozva, máj, zúza stb., sőt kis főtt sonkakockákat is teszünk bele. (Ezt általáb",
+   "ingredients": [
+    "Rizs 1/4 kg,",
+    "zöldborsó 10 dkg,",
+    "borjú vagy csirkehús 1/2 kg,",
+    "pástétomfűszer 1-2 késh.,",
+    "só 1-2 késh.,",
+    "zsír 15 dkg,",
+    "parmezán sajt 3-4 dkg."
+   ],
+   "steps": [
+    "Rizst, zöldborsót külön zsírban megpárolunk, ha van, a rizst kis húslevessel eresztjük fel, ha mindkettő puha, összekeverjük és beletesszük a már megfőtt és apróra vágott húsdarabokat.",
+    "Ez lehet borjú, csirkeaprólék kicsontozva, máj, zúza stb., sőt kis főtt sonkakockákat is teszünk bele. (Ezt általában akkor célszerű készíteni, ha sok aprólékból, kis borjúhúsból, csontból húslevest főzünk.) Teszünk bele pástétom fűszert, sót.",
+    "Ha jól összekevertük, egy zsírral kikent formába nyomjuk, sütőben addig sütjük csak, míg kiborítható.",
+    "Forró zsírral a tálon meglocsoljuk, és reszelt parmezánnal meghintjük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Cookbook:Pimento Cheese Spread I",
+   "url": "https://en.wikibooks.org/wiki/Cookbook:Pimento_Cheese_Spread_I",
+   "revid": "4515181",
+   "revisedAt": "2025-06-19T02:59:37Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "1 pound sharp cheddar cheese, grated",
+    "1 cup mayonnaise",
+    "1 tablespoon apple cider vinegar",
+    "3 tablespoons diced pimentos",
+    "1 tablespoon white granulated sugar",
+    "Salt to taste",
+    "Pepper to taste",
+    "¼–2 teaspoons finely diced jalapeños, to taste"
+   ],
+   "steps": [
+    "Mix ingredients thoroughly.",
+    "Store in well-sealed container in refrigerator."
+   ],
+   "bronNaam": "Wikibooks Cookbook (Engels)"
+  },
+  {
+   "title": "Nyúlpástétom",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Nyúlpástétom",
+   "revid": "292859",
+   "revisedAt": "2017-08-12T06:11:13Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Nyúl elejét pácban, de sokkal jobb finom pörköltnek megfőzni, és szitán áttörni. (Lehet két libamájat is hozzáadni, ezeket megsütjük, egyiket szitán áttörjük, a másikat apró kockára vágva beletesszük.) Adunk hozzá egy tejben áztatott zsemlét, két egész tojást, pástétomfűszert, mustárt, sót, apró koc",
+   "ingredients": [
+    "Nyúlaprólék 1 egész nyúlé,",
+    "hagyma 1 fej,",
+    "zsír 15 dkg,",
+    "szalonna 10 dkg,",
+    "zsemle 1 db,",
+    "tojás 2 db,",
+    "pástétomfűszer 1 késh.",
+    "Mustár 1 kávésk.,",
+    "só, paprika 1-2 késh."
+   ],
+   "steps": [
+    "Nyúl elejét pácban, de sokkal jobb finom pörköltnek megfőzni, és szitán áttörni. (Lehet két libamájat is hozzáadni, ezeket megsütjük, egyiket szitán áttörjük, a másikat apró kockára vágva beletesszük.) Adunk hozzá egy tejben áztatott zsemlét, két egész tojást, pástétomfűszert, mustárt, sót, apró kockára vágott szalonnát. (Lehet esetleg vörösborban pác helyett, és úgy fűszerezzük borssal, sóval, ez azonban nem olyan jó, mint a fenti módszer.)"
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Töltött tojás",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Töltött_tojás",
+   "revid": "292858",
+   "revisedAt": "2017-08-12T06:10:23Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "A tojást keményre főzzük, ha megfőtt hideg vízbe rakjuk, hogy a héja könnyen leváljon. Akkor hosszában kettévágjuk, sárgáját áttörjük. Teszünk bele kevés vajat, tejfölt, pici reszelt hagymát, petrezselymet, sót, zsemlemorzsát, mustárt, ezt visszarakjuk a fehérjékbe. Tűzálló tálra rakjuk, és leöntjük",
+   "ingredients": [
+    "Tojás 6 db,",
+    "vaj 5 dkg,",
+    "tejföl 1/2 dl,",
+    "morzsa 1/2 ek.,",
+    "petrezselyem 1/4 csomó,",
+    "mustár 1 ek.,",
+    "vaj 5 dkg,",
+    "tejföl 3 dl."
+   ],
+   "steps": [
+    "A tojást keményre főzzük, ha megfőtt hideg vízbe rakjuk, hogy a héja könnyen leváljon.",
+    "Akkor hosszában kettévágjuk, sárgáját áttörjük.",
+    "Teszünk bele kevés vajat, tejfölt, pici reszelt hagymát, petrezselymet, sót, zsemlemorzsát, mustárt, ezt visszarakjuk a fehérjékbe.",
+    "Tűzálló tálra rakjuk, és leöntjük bőven tejföllel.",
+    "Beszórjuk zsemlemorzsával.",
+    "Sütőbe tesszük, míg felforr."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Patês de fígado de galinha",
+   "url": "https://pt.wikibooks.org/wiki/Livro_de_receitas/Patês_de_fígado_de_galinha",
+   "revid": "206778",
+   "revisedAt": "2011-01-25T11:44:45Z",
+   "language": "pt",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Dissolva os tabletes de caldo de galinha “Knorr” na água, misture numa tigela com o fígado, o pimentão, o louro e o limão. Deixe tomar gosto por 1 hora.",
+   "ingredients": [
+    "2 tabletes de caldo de galinha (knorr ou Arisco) --",
+    "2 colheres (sopa) de água fervente",
+    "1/2 kg de fígado de galinha",
+    "1 pimentão vermelho (grande) picado",
+    "1 folha de louro",
+    "Suco de 1 limão (pequeno)",
+    "1/2 xícaras (chá) de óleo (marca mazola ou outro similar)",
+    "3 colheres (sopa) de maisena (amido de milho)",
+    "2 xícaras (chá)de leite",
+    "Pimenta-do-reino, a gosto.",
+    "1 kg de fígado de galinha --",
+    "50 gramas de manteiga",
+    "6 ovos",
+    "300 gramas de creme de leite fresco",
+    "400 gramas de toucinho defumado (bacon)",
+    "300 gramas de pão",
+    "200 ml de leite",
+    "1 cebola",
+    "Salsa",
+    "Sal, pimenta e noz-moscada a gosto."
+   ],
+   "steps": [
+    "Dissolva os tabletes de caldo de galinha “Knorr” na água, misture numa tigela com o fígado, o pimentão, o louro e o limão. Deixe tomar gosto por 1 hora.",
+    "Frite no óleo (marca Mazola) bem quente, durante 10 minutos.",
+    "Retire do fogo, bata no liquidificador e reserve.",
+    "À parte, leve ao fogo a “maisena” misturada com o leite, mexendo sempre, até ferver. Junte este creme à pasta de fígado reservada, coloque a pimenta-do-reino e sirva sobre torradas ou em sanduíches.",
+    "Refogar todos os ingredientes, por pouco tempo, sendo que o creme de leite é colocado por último.",
+    "Depois bater tudo no liquidificador.",
+    "Assar em banho-maria em um refratário untado."
+   ],
+   "bronNaam": "Wikibooks Livro de receitas (Portugees)"
+  },
+  {
+   "title": "Ślimaki po burgundzku",
+   "url": "https://pl.wikibooks.org/wiki/Książka_kucharska/Ślimaki_po_burgundzku",
+   "revid": "551021",
+   "revisedAt": "2026-08-07T09:35:15Z",
+   "language": "pl",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Ślimaki po burgundzku - potrawa ze ślimaków winniczków spożywana na gorąco z bagietką.",
+   "ingredients": [
+    "24 winniczki",
+    "175g masła",
+    "15g pietruszki",
+    "8g czosnku",
+    "8g soli",
+    "15g",
+    "pieprz"
+   ],
+   "steps": [
+    "Ślimaki wyjąć z muszelek i osączyć; bardzo drobno posiekać pietruszkę, czosnek (można rozgnieść w moździerzu) i szalotki, a następnie dobrze wymieszać z miękkim masłem, dodać sól i pieprz do smaku, ucierać aż do uzyskania homogenicznej masy; do każdej muszelki włożyć kuleczkę masła z przyprawami, a następnie ślimaczka i dopełnić masłem lekko ugniatając; wypełnione muszelki ułożyć na płaskiej brytfance, można lekko przyprószyć tartą bułką; piec około 10-15 minut w uprzednio nagrzanym piekarniku, w temperaturze aż się dobrze upieką; podawać z bagietką."
+   ],
+   "bronNaam": "Wikibooks Książka kucharska (Pools)"
+  },
+  {
+   "title": "Sajt-felfújt",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Sajt-felfújt",
+   "revid": "292837",
+   "revisedAt": "2017-08-12T06:02:08Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "8 dkg vajat felolvasztunk, 12 dkg lisztet felmelegítünk, és 0.25 l tejjel folytonos kevergetés közt leforrázzuk. Főzni nem kell. Erősen kikeverjük, adunk hozzá sót, egy egész tojást, 3 tojás sárgáját, egy jó ek. parmezánt, végül 3 tojás kemény habját. Puding-formát vajjal jól kikenünk, liszttel megh",
+   "ingredients": [
+    "Vaj 8 dkg,",
+    "liszt 12 dkg,",
+    "tej 2.5 dl,",
+    "tojás 4 db,",
+    "(reszelt) parmezán 1 kanál,",
+    "vaj 5 dkg."
+   ],
+   "steps": [
+    "8 dkg vajat felolvasztunk, 12 dkg lisztet felmelegítünk, és 0.25 l tejjel folytonos kevergetés közt leforrázzuk.",
+    "Erősen kikeverjük, adunk hozzá sót, egy egész tojást, 3 tojás sárgáját, egy jó ek. parmezánt, végül 3 tojás kemény habját.",
+    "Puding-formát vajjal jól kikenünk, liszttel meghintjük, gőzben 1 óráig főzzük.",
+    "Tálaláskor forró vajat és reszelt sajtot adunk be hozzá."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Hagymás tojás",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Kóser/Előételek/Hagymás_tojás",
+   "revid": "217366",
+   "revisedAt": "2015-11-17T23:37:03Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "4 kemény tojás,",
+    "2 nagy fej hagyma,",
+    "2 evőkanál libazsír,",
+    "1 csirkemáj,",
+    "1 kanál só, kevés törött bors."
+   ],
+   "steps": [
+    "A tojást apró kockákra vágjuk vagy sajtreszelőn lereszeljük.",
+    "A zsírban megpároljuk az apróra vágott hagymát, majd belerakjuk a kóserított, összetört csirkemájat.",
+    "Amikor a máj megsült, levesszük a tűzről, és jól összekeverjük a tojással.",
+    "Tálba tesszük, uborkával, paradicsommal díszítjük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Cookbook:Ployes",
+   "url": "https://en.wikibooks.org/wiki/Cookbook:Ployes",
+   "revid": "4613444",
+   "revisedAt": "2026-01-24T05:45:29Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Ployes are thin, bubbly buckwheat pancakes cooked only on one side, originating from French-Acadian communities in New Brunswick, Quebec, and Northern Maine. Traditionally served with maple syrup, molasses, or creton, they are a staple of Acadian cuisine and are enjoyed at any time of day.",
+   "ingredients": [
+    "1 cup (120 g) light buckwheat flour",
+    "¾ cup (90 g) unbleached all-purpose flour (or gluten-free blend)",
+    "1 tbsp (15 ml) baking powder",
+    "¾ tsp (3.75 ml) salt",
+    "1 cup (240 ml) cold water",
+    "½ cup (120 ml) hot water (not boiling)"
+   ],
+   "steps": [
+    "In a large mixing bowl, whisk together buckwheat flour, all-purpose flour, baking powder, and salt.",
+    "Stir in cold water gradually to form a thick paste. Mix until just combined.",
+    "Slowly add hot water, whisking vigorously to create a smooth, lump-free batter. The consistency should be thinner than pancake batter but thicker than cream.",
+    "Let the batter rest at room temperature for 15–30 minutes. Bubbles should begin to form.",
+    "Heat a dry cast iron skillet over medium-high heat until hot but not smoking.",
+    "Stir the batter briefly. Ladle about ¼ cup into the center of the pan and spread thinly with the back of the ladle.",
+    "Cook on one side only until the top is dry and full of holes. Do not flip.",
+    "Stack cooked ployes on a plate and cover with a clean towel to keep warm. Serve immediately."
+   ],
+   "bronNaam": "Wikibooks Cookbook (Engels)"
+  },
+  {
+   "title": "Pastas de presunto e queijo suíço",
+   "url": "https://pt.wikibooks.org/wiki/Livro_de_receitas/Pastas_de_presunto_e_queijo_suíço",
+   "revid": "206748",
+   "revisedAt": "2011-01-25T11:43:04Z",
+   "language": "pt",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "250 gramas de presunto picado fino (2 e 1/2 xícaras das de chá) --",
+   "ingredients": [
+    "250 gramas de presunto picado fino (2 e 1/2 xícaras das de chá) --",
+    "250 gramas de queijo tipo suíço ralado fino (2 e 1/2 xícaras das de chá)",
+    "1 xícara (chá) de creme de leite azedo",
+    "1/4 xícara (chá) de salsinha picada",
+    "1 colher (sopa) de mostarda",
+    "1/2 colher (chá) de cebola ralada",
+    "Sal a gosto."
+   ],
+   "steps": [
+    "Numa tigela grande, misture bem, com uma colher.",
+    "Coloque em recipiente, apertando-a bem, e leve à geladeira de um dia para outro, para que os sabores se combinem."
+   ],
+   "bronNaam": "Wikibooks Livro de receitas (Portugees)"
+  },
+  {
+   "title": "Lecsó",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Lecsó",
+   "revid": "292829",
+   "revisedAt": "2017-08-12T05:58:56Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Szükséges mennyiségű zöldpaprikát bőséges hagymával zsírban befedve puhára párolunk, azután a kellő mennyiségű megmosott és lehéjazott paradicsomot teszünk bele, és az egészet jó sűrű péppé főzzük. Ha elfőtt tojást ütünk rá, felverve és megsózva, addig forr, míg rántotta keménységű lesz. Tojás helye",
+   "ingredients": [
+    "Zöldpaprika 1 kg,",
+    "paradicsom 0.5 kg,",
+    "zsír 15 dkg,",
+    "hagyma 2 fej,",
+    "tojás 4 db,",
+    "esetleg füstölt kolbász 0,25 kg, vagy rizs 20 dkg,",
+    "só, paprika 1-1 késhegynyi."
+   ],
+   "steps": [
+    "Szükséges mennyiségű zöldpaprikát bőséges hagymával zsírban befedve puhára párolunk, azután a kellő mennyiségű megmosott és lehéjazott paradicsomot teszünk bele, és az egészet jó sűrű péppé főzzük.",
+    "Ha elfőtt tojást ütünk rá, felverve és megsózva, addig forr, míg rántotta keménységű lesz.",
+    "Tojás helyett, (vagy mellett) tehetünk bele karikára vágott füstölt kolbászt, vagy rizst.",
+    "Sót és ízlés szerint 1-2 késhegynyi paprikát is teszünk bele."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Tiroli gombóc",
+   "url": "https://hu.wikibooks.org/wiki/Móra_Ferencné/Előételek/Tiroli_gombóc",
+   "revid": "292827",
+   "revisedAt": "2017-08-12T05:58:12Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Negyed kiló lisztet 4 tojás sárgájával, 4 dl tejföllel és pici sóval jól kikeverünk. Azután beletesszük a 4 tojás habját. Kivajazott kendőbe kötve, forró vízben egy óráig főzzük. Ha kifőtt, tálra téve forró vajjal és tejföllel leöntjük, finomra vágott sonkával megszórjuk.",
+   "ingredients": [
+    "Liszt 0,25 kg,",
+    "tojás 4 db,",
+    "tejföl 4 db,",
+    "só késhegynyi,",
+    "vaj 3 dkg,",
+    "tejföl 2 dl,",
+    "sonka 10 dkg."
+   ],
+   "steps": [
+    "Negyed kiló lisztet 4 tojás sárgájával, 4 dl tejföllel és pici sóval jól kikeverünk.",
+    "Azután beletesszük a 4 tojás habját.",
+    "Kivajazott kendőbe kötve, forró vízben egy óráig főzzük.",
+    "Ha kifőtt, tálra téve forró vajjal és tejföllel leöntjük, finomra vágott sonkával megszórjuk."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Fekete retek hagymával",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Kóser/Előételek/Fekete_retek_hagymával",
+   "revid": "357149",
+   "revisedAt": "2019-07-19T02:18:55Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "2 nagyobb fekete retek,",
+    "2 fej hagyma,",
+    "1 kanál olaj,",
+    "só, bors"
+   ],
+   "steps": [
+    "A retket lereszeljük, a hagymát apró kockára vágjuk, az olajjal és a fűszerekkel elkeverjük.",
+    "Kedvelt előétel, de sokan a húsleveshez is eszik."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Húspástétom",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Kóser/Előételek/Húspástétom",
+   "revid": "217370",
+   "revisedAt": "2015-11-17T23:38:19Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "2 csésze főtt hús,",
+    "5 dkg füstölt marhaszegy,",
+    "1 kanál libazsír,",
+    "1 tojás,",
+    "1 kis fej reszelt hagyma,",
+    "só, bors, mustár, kakukkfű."
+   ],
+   "steps": [
+    "A főtt és füstölt húst összedaráljuk, hozzáadjuk a tojást, a zsírt, a fűszereket és simára keverjük.",
+    "Ízlésesen tálba rendezzük főtt tojással, paradicsommal, uborkával díszítjük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Cookbook:Romanian Roasted Eggplant Spread II",
+   "url": "https://en.wikibooks.org/wiki/Cookbook:Romanian_Roasted_Eggplant_Spread_II",
+   "revid": "4505504",
+   "revisedAt": "2025-06-10T01:26:45Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Salată de vinete (eggplant salad) is a common Romanian spread made with eggplants and onion. It is usually eaten with bread.",
+   "ingredients": [
+    "2 ea. (1–1&frac12; pounds) medium-large eggplant (any variety)",
+    "½ large or 1 medium onion, finely diced or grated",
+    "3 tablespoons sunflower oil",
+    "½ tsp salt",
+    "1–2 tablespoons mayonnaise (optional)"
+   ],
+   "steps": [
+    "Roast the eggplants. This can be done in a variety of ways, but the flesh should be fully cooked and the skin should be burned and falling off easily. An effective method is to prick the eggplants and place them in a preheated 400 °F oven until the skin is charred and a fork easily pierces the vegetable all the way through.",
+    "Skin the the eggplants—the skin should come off easily by hand. Use the back of a table knife to scrape off any residual eggplant from the skin once the skin is removed—this portion of eggplant retains the smoky flavor and should not be discarded.",
+    "Finely chop or blend the eggplant flesh. The consistency should be smooth, like a purée.",
+    "Transfer the eggplant to a bowl, and mix in the other ingredients. The amounts can be adjusted for taste.",
+    "Chill in the fridge until serving."
+   ],
+   "bronNaam": "Wikibooks Cookbook (Engels)"
+  }
+ ]
+}

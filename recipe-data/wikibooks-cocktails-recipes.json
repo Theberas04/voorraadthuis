@@ -1,0 +1,4617 @@
+{
+ "source": {
+  "name": "Wikibooks Cocktails",
+  "dataset": "https://de.wikibooks.org/wiki/Cocktails · https://en.wikibooks.org/wiki/Bartending",
+  "revision": "per-pagina revisies",
+  "fetchedAt": "2026-10-21T00:00:00Z",
+  "language": "meerdere",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+ },
+ "selection": {
+  "count": 201,
+  "criteria": "Elke pagina uit deze bronnen met minstens drie ingrediënten en een echte bereiding; titels ontdubbeld tegen alle eerdere imports. Titels ook ontdubbeld tegen de eigen recepten en tegen elkaar."
+ },
+ "soort": "cocktail",
+ "recipes": [
+  {
+   "title": "Dirty Harry",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Dirty_Harry",
+   "revid": "532402",
+   "revisedAt": "2010-06-28T06:19:12Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alle Zutaten mit viel Eis in den Mixer geben. Ein großes Glas mit Schokosirup an den Rändern garnieren.",
+   "ingredients": [
+    "4cl Kahlúa",
+    "2cl Amaretto",
+    "2cl Kokosmilch",
+    "2cl Sahne",
+    "2cl Schokosirup",
+    "10cl Kaffee"
+   ],
+   "steps": [
+    "Alle Zutaten mit viel Eis in den Mixer geben.",
+    "Ein großes Glas mit Schokosirup an den Rändern garnieren.",
+    "Einfüllen und mit Ananas und Cocktailkische garniert mit Strohhalm servieren."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Jet Black",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Gin_alapú_koktélok/Jet_Black",
+   "revid": "517699",
+   "revisedAt": "2025-10-01T03:26:52Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "6 cl gin,",
+    "egy öntet édes vermut,",
+    "2 kiskanál Black Sambuca,",
+    "jég"
+   ],
+   "steps": [
+    "Az alapanyagokat a jéggel együtt egy keverőpohárban összekeverjük.",
+    "Leszűrjük a koktélos pohárba, és díszítjük.",
+    "Díszítés: fél szelet citrom és egy koktélcseresznye"
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Liquid Fire",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Liquid_Fire",
+   "revid": "656508",
+   "revisedAt": "2012-12-12T21:34:19Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Man gebe alle Zutaten in ein Glas und zünde den Cocktail an. Nach einer kurzen Brenndauer gießt man den Cocktail in ein anderes Glas um.",
+   "ingredients": [
+    "1 cl Gin",
+    "1 cl Rum",
+    "1 cl Tequila",
+    "1 cl Wodka",
+    "3 cl Triple Sec"
+   ],
+   "steps": [
+    "Man gebe alle Zutaten in ein Glas und zünde den Cocktail an.",
+    "Nach einer kurzen Brenndauer gießt man den Cocktail in ein anderes Glas um."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Brandy Alexander",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Brandy_alapú_koktélok/Brandy_Alexander",
+   "revid": "517678",
+   "revisedAt": "2025-10-01T03:14:42Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "5 cl brandy,",
+    "5 cl friss tejszín,",
+    "3 cl fehér Créme de Cacao,",
+    "jég"
+   ],
+   "steps": [
+    "Az alapanyagokat shakerbe öntjük, összerázzuk és leszűrjük a pohárba.",
+    "A tetejét enyhén megszórjuk reszelt szerecsendióval."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Melon Bomb",
+   "url": "https://en.wikibooks.org/wiki/Bartending/Cocktails/Melon_Bomb",
+   "revid": "1119738",
+   "revisedAt": "2008-02-20T15:54:18Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "The Melon Bomb is a clear tropical flavored drink that tastes good. It is a good use for flavored liquor. It is suitable for anyone wanting a classy looking and tasty cocktail. The bomb comes from the shot glass dropping into another glass such as an Irish Car Bomb or a Jäger Bomb or a Boilermaker. ",
+   "ingredients": [
+    "1 1/2 oz. Green Apple Vodka (Smirnoff)",
+    "1 1/2 oz. Watermelon Rum (Bacardi Grand Melon)",
+    "7-Up"
+   ],
+   "steps": [
+    "Rim Collins glass with sugar(optional).",
+    "Build (or shake if using warm ingredients) Vodka and 7-Up in a Chilled Collins (longdrink) glass about half full.",
+    "Pour Rum in a shot glass.",
+    "Drop the shot glass into the Collins Glass. To prevent spilling cup one hand over the glass as the other hand drops the shot glass. A [barmat] is a nice tool for this stage.",
+    "Drop the cherry into the glass so it falls into the shot glass (it thus displaces some of the rum and begins slightly mixing the cocktail).",
+    "Fill the Collins glass the rest of the way with ice and/or 7-Up.",
+    "(optional place wedge of lemon or lime on the rim of the collins glass)"
+   ],
+   "bronNaam": "Wikibooks Bartending (Engels)"
+  },
+  {
+   "title": "Manhattan Medium",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Manhattan_Medium",
+   "revid": "659505",
+   "revisedAt": "2013-01-11T14:22:08Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "5 cl Rye oder Canadian Whisky",
+    "2 cl Wermut (rosé)",
+    "1 cl Wermut (trocken)"
+   ],
+   "steps": [
+    "Martini- oder Cocktailglas vorkühlen",
+    "Zutaten mit Eiswürfeln in ein Rührglas geben und umrühren",
+    "Inhalt ins Glas seihen"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Absinth Kamikaze",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Absinth_Kamikaze",
+   "revid": "515567",
+   "revisedAt": "2010-03-23T15:15:08Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Den Absinth am Glasrand verteilen (das geht gut mit Hilfe eines Teelöffels) und anzünden.",
+   "ingredients": [
+    "1cl Absinth",
+    "1cl Alter Rum",
+    "1cl Bourbon Whiskey",
+    "1cl Cointreau",
+    "1cl Dry Gin",
+    "1cl Grenadine",
+    "1cl Tequila",
+    "1cl Wodka"
+   ],
+   "steps": [
+    "Alle Zutaten bis auf den Absinth mischen.",
+    "Den Absinth am Glasrand verteilen (das geht gut mit Hilfe eines Teelöffels) und anzünden."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Lime Cooler",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Lime_Cooler",
+   "revid": "656509",
+   "revisedAt": "2012-12-12T21:36:21Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Wodka, Zuckersirup und den Saft der ausgepreßten Limette mit 3 Eiswürfeln in einem extra Glas verrühren. Restliche Eiswürfel in ein Longdrinkglas geben. Den Wodkmix durch ein Sieb in das Longdrinkglas geben und mit Bitter Lemon auffüllen.",
+   "ingredients": [
+    "2 cl Wodka",
+    "1 cl Zuckersirup",
+    "1 Limette",
+    "7-8 Eiswürfel",
+    "100 ml Bitter Lemon"
+   ],
+   "steps": [
+    "Wodka, Zuckersirup und den Saft der ausgepreßten Limette mit 3 Eiswürfeln in einem extra Glas verrühren.",
+    "Restliche Eiswürfel in ein Longdrinkglas geben.",
+    "Den Wodkmix durch ein Sieb in das Longdrinkglas geben und mit Bitter Lemon auffüllen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Perroquet",
+   "url": "https://fr.wikibooks.org/wiki/Livre_de_cuisine/Boissons/Cocktails/Perroquet",
+   "revid": "452574",
+   "revisedAt": "2014-10-31T20:15:12Z",
+   "language": "fr",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "2,5 cl de liqueur d'",
+    "1,5 cl de sirop de menthe",
+    "eau"
+   ],
+   "steps": [
+    "Verser dans un verre à apéritif le sirop et l'anis",
+    "Ajouter de l'eau"
+   ],
+   "bronNaam": "Wikibooks Boissons (Frans)"
+  },
+  {
+   "title": "BBC",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_BBC",
+   "revid": "598024",
+   "revisedAt": "2011-08-19T19:30:05Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alle Zutaten, bis auf die Bananenscheiben, in einem Mixer zu einem glatten Drink verarbeiten und in ein großes, gekühltes Cocktailglas gießen.",
+   "ingredients": [
+    "2 cl brauner Rum",
+    "2 cl Baileys",
+    "1 cl Kokoscreme",
+    "Crushed Ice"
+   ],
+   "steps": [
+    "Alle Zutaten, bis auf die Bananenscheiben, in einem Mixer zu einem glatten Drink verarbeiten und in ein großes, gekühltes Cocktailglas gießen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Carthagène",
+   "url": "https://fr.wikibooks.org/wiki/Livre_de_cuisine/Boissons/Cocktails/Carthagène",
+   "revid": "626841",
+   "revisedAt": "2019-12-20T18:55:37Z",
+   "language": "fr",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "La carthagène, ou cartagène (cartagena en espagnol), est une boisson alcoolisée de type mistelle consommée à l'apéritif typique du Languedoc.",
+   "ingredients": [
+    "10 litres de moût,",
+    "2,5 litres d' à 50°,",
+    "1 à 2 kg de ,",
+    "50 grains de fleur de ,",
+    "50 grains de ,"
+   ],
+   "steps": [
+    "La base c'est toujours l'alcool et le jus de raisin ; si on augmente la quantité de sucre on peut diminuer celle d'alcool, ensuite il faut laisser reposer dans l'obscurité, il est préférable de la boire un an après, si on veut éviter le « dépôt » il faut filtrer à la mise en bouteille, délai minimum pour la macération : 40 jours."
+   ],
+   "bronNaam": "Wikibooks Boissons (Frans)"
+  },
+  {
+   "title": "Pansy Blossom",
+   "url": "https://fr.wikibooks.org/wiki/Livre_de_cuisine/Boissons/Cocktails/Pansy_Blossom",
+   "revid": "452572",
+   "revisedAt": "2014-10-31T20:15:09Z",
+   "language": "fr",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Verser dans un verre à aperitif le sirop, l'angostura et l'anis",
+   "ingredients": [
+    "3 cl de liqueur d'",
+    "2 traits de sirop de grenadine",
+    "1 trait d'angostura",
+    "eau"
+   ],
+   "steps": [
+    "Verser dans un verre à aperitif le sirop, l'angostura et l'anis",
+    "Ajouter de l'eau"
+   ],
+   "bronNaam": "Wikibooks Boissons (Frans)"
+  },
+  {
+   "title": "Flaming Engineer",
+   "url": "https://en.wikibooks.org/wiki/Bartending/Cocktails/Flaming_Engineer",
+   "revid": "4495908",
+   "revisedAt": "2025-05-28T01:38:12Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "The Flaming Engineer is a cocktail originating at Ryerson University in Toronto, Canada, and is very popular among engineering students and in the surrounding area.",
+   "ingredients": [
+    "3/4 pint Molson Canadian beer",
+    "1 1/2 oz. amaretto",
+    "1 1/2 oz. Canadian Club whiskey",
+    "orange juice"
+   ],
+   "steps": [
+    "Pour the beer into the beer mug.",
+    "Add the amaretto and the whiskey.",
+    "Fill with orange juice."
+   ],
+   "bronNaam": "Wikibooks Bartending (Engels)"
+  },
+  {
+   "title": "California Sour",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_California_Sour",
+   "revid": "532314",
+   "revisedAt": "2010-06-27T15:46:56Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Der Drink kann auch im Gästeglas geschüttelt werden (speedshake).",
+   "ingredients": [
+    "4 cl Bourbon",
+    "4 cl Zitronensaft",
+    "4 cl Orangensaft",
+    "2 cl Zuckersirup"
+   ],
+   "steps": [
+    "Alles zusammen mit Eis shaken.",
+    "Abseihen in einem short tumbler."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Trinity",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Trinity",
+   "revid": "659695",
+   "revisedAt": "2013-01-11T22:59:49Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "2cl Gin",
+    "2cl Wermut (trocken)",
+    "2cl Wermut (rosé)"
+   ],
+   "steps": [
+    "Zutaten verrühren",
+    "In ein Cocktailglas giessen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Strawberry Down",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Gin_alapú_koktélok/Strawberry_Down",
+   "revid": "517694",
+   "revisedAt": "2025-10-01T03:24:32Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "6 cl gin,",
+    "5 cl kókusztej,",
+    "4 szem érett eper,",
+    "jégkása"
+   ],
+   "steps": [
+    "A gint, a sűrű kókusztejet és az epret bőséges jéggel turmixgépben összekeverjük.",
+    "Csak nagyon rövid ideig mixeljük, különben nem lesz elég sűrű.",
+    "Áttöltjük a gobletbe, és díszítjük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "B-57",
+   "url": "https://en.wikibooks.org/wiki/Bartending/Cocktails/B-57",
+   "revid": "939221",
+   "revisedAt": "2007-08-08T20:59:20Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "1 part Kahlua",
+    "1 part Triple Sec",
+    "1 part Sambuca"
+   ],
+   "steps": [
+    "Make pousse-café"
+   ],
+   "bronNaam": "Wikibooks Bartending (Engels)"
+  },
+  {
+   "title": "Virgin Colada",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Virgin_Colada",
+   "revid": "659664",
+   "revisedAt": "2013-01-11T22:08:09Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Zutaten mit einem Shaker vermengen, danach Cocktail in ein mit Eis vorgekühltes Hurricaneglas abseihen.",
+   "ingredients": [
+    "4 cl Kokossirup bzw. Kokosmilch",
+    "2 cl Milch-Sahne (Half´n´Half)",
+    "8 cl Ananassaft"
+   ],
+   "steps": [
+    "Zutaten mit einem Shaker vermengen, danach Cocktail in ein mit Eis vorgekühltes Hurricaneglas abseihen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Surfrider",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Vodka_alapú_koktélok/Surfrider",
+   "revid": "517713",
+   "revisedAt": "2025-10-01T03:34:35Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "8 cl vodka,",
+    "5 cl édes vermut,",
+    "egy narancs leve,",
+    "egy facsarásnyi lime-lé,",
+    "1 kiskanál Grenadine,",
+    "jég"
+   ],
+   "steps": [
+    "Az alapanyagokat shakerbe öntjük, összerázzuk, a pohárba szűrjük és díszítjük.",
+    "Díszítés: egy szelet narancs és eg szem maraschino cseresznye"
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Grasshopper",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Grasshopper",
+   "revid": "565302",
+   "revisedAt": "2011-01-21T13:19:13Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Der Grasshopper wurde angeblich von Phlibert Guichet, dem Eigentümer der Tujaque's Bar in New Orleans erfunden und in einen New Yorker Cocktailwettbewerb eingereicht. Dies geschah kurz bevor das Alkoholverbot in Kraft trat.",
+   "ingredients": [
+    "6 cl Sahne",
+    "3 cl Crème de Cacao (weiß)",
+    "3 cl Grüner Pfefferminzlikör",
+    "1 cl Crème de Menthe (grün)",
+    "2 cl Crème de Cacao (weiß)",
+    "4 cl Sahne",
+    "2cl Blue Curaçao",
+    "5cl Grapefruitsaft",
+    "1cl Zitronensaft"
+   ],
+   "steps": [
+    "Alle Zutaten werden im Shaker mit Eis gut geschüttelt und in eine Cocktailschale geben.",
+    "Dieses Rezept hat circa 340 kcal, 12 % Alkoholgehalt und kostet circa 1,20 Euro in der Herstellung (Zutaten) [http://www.cocktailberater.de/website/recipe/Grasshopper_nach_Guichet Original Grasshopper Cocktailrezept nach Guichet] mit Kosten- und Kalorienangaben .",
+    "Auf Eiswürfeln kräftig schütteln, in die vorgekühlte Cocktailschale abseihen.",
+    "Auf Eiswürfeln gut shaken und in eine Cocktailschale abseihen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Road Runner",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Vodka_alapú_koktélok/Road_Runner",
+   "revid": "517726",
+   "revisedAt": "2025-10-01T03:40:17Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "6 cl vodka,",
+    "3 cl Amaretto likőr,",
+    "3 cl kókusztej,",
+    "jég"
+   ],
+   "steps": [
+    "Az alapanyagokat shakerbe öntjük, összerázzuk és leszűrjük a pohárba.",
+    "A tetejét enyhén megszórjuk reszelt szerecsendióval."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Cement Mixer (shot)",
+   "url": "https://en.wikibooks.org/wiki/Bartending/Cement_Mixer_(shot)",
+   "revid": "3224838",
+   "revisedAt": "2017-06-01T13:59:38Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "The Cement Mixer is not a shot that is meant to be enjoyed, and is often given to a friend as a joke.",
+   "ingredients": [
+    "2 shot glasses",
+    "Baileys Irish Cream",
+    "Lime Juice"
+   ],
+   "steps": [
+    "Fill one shot glass with Bailey's, and the other glass with lime juice.",
+    "Have the victim drink the Bailey's, followed immediately by the lime juice.",
+    "An alternative is to carefully pour both into a layered shot, being careful not to mix them.",
+    "The result is the creamy Bailey's followed by the tart lime juice causes the mixture to taste and feel as if it were hardening (like cement) in the victim's mouth.",
+    "A long-standing myth is that the lime somehow sours the Bailey's, but this is not the case, it merely causes the emulsified liqueur to curdle, (get chunky).",
+    "Caution: you may want to do this either near a toilet or sink as this causes a lot of people to be sick"
+   ],
+   "bronNaam": "Wikibooks Bartending (Engels)"
+  },
+  {
+   "title": "Screaming Orgasm",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Screaming_Orgasm",
+   "revid": "536122",
+   "revisedAt": "2010-07-22T21:27:59Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Im Shaker mit Crushed Ice mixen und langsam in ein Glas mit Eiswürfeln abseihen.",
+   "ingredients": [
+    "2 cl Cointreau",
+    "1 cl Irish cream liqueur",
+    "1 cl Wodka",
+    "1 cl Amaretto Liqueur",
+    "1 cl Coffee Liqueur",
+    "Crushed Ice",
+    "Eiswürfel"
+   ],
+   "steps": [
+    "Im Shaker mit Crushed Ice mixen und langsam in ein Glas mit Eiswürfeln abseihen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Aprico Lady",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Aprico_Lady",
+   "revid": "516368",
+   "revisedAt": "2010-03-28T16:07:05Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Zutaten auf gestoßenem Eis im Shaker schütteln. In eisgekühlte Cocktailschale geben.",
+   "ingredients": [
+    "4 cl Rum weiß",
+    "2 cl Apricot Brandy",
+    "1 Eiweiß",
+    "Limettensaft aus einer Limette"
+   ],
+   "steps": [
+    "Zutaten auf gestoßenem Eis im Shaker schütteln. In eisgekühlte Cocktailschale geben."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Perfect Martini",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Perfect_Martini",
+   "revid": "659514",
+   "revisedAt": "2013-01-11T14:33:01Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "5½ cl Gin",
+    "1 cl Wermut (trocken)",
+    "1 cl Wermut (rosé)"
+   ],
+   "steps": [
+    "Martini- oder Cocktailglas vorkühlen",
+    "Zutaten mit Eiswürfeln in ein Rührglas geben und umrühren",
+    "Inhalt ins Glas seihen"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Vin chaud",
+   "url": "https://fr.wikibooks.org/wiki/Livre_de_cuisine/Boissons/Cocktails/Vin_chaud",
+   "revid": "677607",
+   "revisedAt": "2022-06-01T18:55:55Z",
+   "language": "fr",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Le vin chaud est une boisson consommée principalement en hiver.",
+   "ingredients": [
+    "1,5 l de ,",
+    "150 g de ,",
+    "30 cl de ,",
+    "200 g de fruits ; , , sèche, , effilée,",
+    "15 g d'épices diverses : , , ,",
+    "1 bâton de ."
+   ],
+   "steps": [
+    "Laisser cuire les ingrédients une heure à feu doux."
+   ],
+   "bronNaam": "Wikibooks Boissons (Frans)"
+  },
+  {
+   "title": "Alabama Slammer",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Alabama_Slammer",
+   "revid": "515903",
+   "revisedAt": "2010-03-25T16:40:44Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "In ein Long Island Glas geben und mit einem Stück Ananas, einer Maraschino-Kirsche und einem Strohhalm servieren.",
+   "ingredients": [
+    "3 cl Southern Comfort",
+    "2 cl Amaretto",
+    "2 cl Zitronensaft",
+    "5 cl Apfelsaft",
+    "14 cl Ananassaft",
+    "14 cl Orangensaft",
+    "2 cl Southern Comfort",
+    "2 cl Gin",
+    "1 cl Amaretto",
+    "3 cl Orangensaft"
+   ],
+   "steps": [
+    "Die Zutaten mit zerkleinerten Eiswürfeln gut shaken.",
+    "Im old-fashioned Glas über ein paar Eiswürfel geben,"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "TGV",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_TGV",
+   "revid": "659683",
+   "revisedAt": "2013-01-11T22:36:41Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alle drei Zutaten in einem Shaker mixen, danach in ein Old-Fashioned-Glas mit etwas gecrashtem Eis füllen.",
+   "ingredients": [
+    "2 cl Tequila",
+    "2 cl Gin",
+    "2 cl Wodka"
+   ],
+   "steps": [
+    "Alle drei Zutaten in einem Shaker mixen, danach in ein Old-Fashioned-Glas mit etwas gecrashtem Eis füllen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Leap Frog",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Leap_Frog",
+   "revid": "656514",
+   "revisedAt": "2012-12-12T21:45:25Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Mit Eiswürfeln im Glas zubereiten. Mit kleinem Strohhalm servieren.",
+   "ingredients": [
+    "4,5 cl Gin",
+    "1,5 cl Zitronensaft, frisch",
+    "15 cl Ginger Ale"
+   ],
+   "steps": [
+    "Mit Eiswürfeln im Glas zubereiten.",
+    "Mit kleinem Strohhalm servieren."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Frosch",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Frosch",
+   "revid": "532579",
+   "revisedAt": "2010-06-29T08:02:21Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Erst den Rum dann die Sprite und zum Schluss den Waldmeistersirup der sich im Glas dann von alleine verteilt. Geeignetes Glas ist ein Londrinkglas, Deko keine, ausser ein bisschen Eis.",
+   "ingredients": [
+    "2 cl Havana Rum",
+    "200 ml Sprite",
+    "und je nach Geschmack einen Schuss Waldmeistersirup"
+   ],
+   "steps": [
+    "Erst den Rum dann die Sprite und zum Schluss den Waldmeistersirup der sich im Glas dann von alleine verteilt.",
+    "Geeignetes Glas ist ein Londrinkglas, Deko keine, ausser ein bisschen Eis."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Campari Soda",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Campari_Soda",
+   "revid": "595902",
+   "revisedAt": "2011-08-06T21:52:36Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Im Glas mit Eiswürfeln zubereiten. Falls man Soda aus dem Siphon verwendet kann man sich das noch abschließende Umrühren sparen.",
+   "ingredients": [
+    "Longdrinkglas",
+    "3 cl Campari",
+    "Sodawasser",
+    "Eiswürfel"
+   ],
+   "steps": [
+    "Im Glas mit Eiswürfeln zubereiten.",
+    "Falls man Soda aus dem Siphon verwendet kann man sich das noch abschließende Umrühren sparen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Black Marie",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Black_Marie",
+   "revid": "532055",
+   "revisedAt": "2010-06-26T19:58:01Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "1 Tasse kalter Kaffee",
+    "2 cl Rum (braun)",
+    "2 cl Brandy",
+    "1 cl Tia Maria",
+    "1 Barlöffel Puderzucker"
+   ],
+   "steps": [
+    "Im Shaker schütteln und auf Eiswürfel im Tumbler abseihen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Werder's Dream",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Werder's_Dream",
+   "revid": "592611",
+   "revisedAt": "2011-07-16T16:31:48Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alle Zutaten, bis auf den Sekt, auf 3 Eiswürfel giessen und gut verrühren.",
+   "ingredients": [
+    "2 cl Gin (Bombay Sapphire)",
+    "2 cl Ramazotti",
+    "2 cl Cointreau",
+    "12 cl Sekt (halbtrocken)"
+   ],
+   "steps": [
+    "Alle Zutaten, bis auf den Sekt, auf 3 Eiswürfel giessen und gut verrühren.",
+    "Mit Sekt auffüllen und einer Zitronenscheibe garnieren."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Don Rolando",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Don_Rolando",
+   "revid": "546991",
+   "revisedAt": "2010-09-19T18:40:30Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Zitronen- oder Limettensaft und Zuckersirup dazugeben und umrühren. Reichlich Crushed ice und den Rum samt Crème De Menthe dazugeben, nochmals umrühren. Mit Soda abspritzen. Den Minzezweig in das Glas geben.",
+   "ingredients": [
+    "einige Minzeblätter",
+    "2 cl Zitronensaft- oder Limettensaft",
+    "1 cl Zuckersirup",
+    "4 cl weißer Rum",
+    "5 Spritzer Crème De Menthe (weiß)",
+    "Sodawasser zum Abspritzen"
+   ],
+   "steps": [
+    "Zitronen- oder Limettensaft und Zuckersirup dazugeben und umrühren.",
+    "Reichlich Crushed ice und den Rum samt Crème De Menthe dazugeben, nochmals umrühren.",
+    "Mit Soda abspritzen.",
+    "Den Minzezweig in das Glas geben."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Whiskey Cola",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Whiskey_Cola",
+   "revid": "659660",
+   "revisedAt": "2013-01-11T22:03:22Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Whiskey und Cola in einem Tumbler mischen (Verhältnis 1:3), die Eiswürfel dazugeben.",
+   "ingredients": [
+    "2-5 cl Whiskey",
+    "6-15 cl Cola",
+    "2-3 Eiswürfel"
+   ],
+   "steps": [
+    "Whiskey und Cola in einem Tumbler mischen (Verhältnis 1:3), die Eiswürfel dazugeben.",
+    "Es sollte ein relativ \"guter\" Whiskey verwendet werden (Jack Daniel's Black Label, etc.), Single Malts sind aber meist zu schade."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Coko Choko",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Coko_Choko",
+   "revid": "1034713",
+   "revisedAt": "2024-06-01T18:55:02Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "und anschließend in ein Glas mit ein oder zwei Eiswürfel einseihen.",
+   "ingredients": [
+    "14 cl Milch",
+    "2 cl Kokossirup",
+    "Schokoladensirup"
+   ],
+   "steps": [
+    "Die Milch und den Kokossirup in einen Shaker mit Eis geben und anschließend in ein Glas mit ein oder zwei Eiswürfel einseihen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Carabian",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Carabian",
+   "revid": "1033129",
+   "revisedAt": "2024-05-16T19:37:06Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Beim Einkauf auf die Inhaltsstoffe achten, oftmals steckt mehr Apfel als Passionsfrucht drin.",
+   "ingredients": [
+    "6 cl Kirschsaft",
+    "10 cl Majacujasaft (Passionsfrucht)",
+    "1 cl Zironensaft",
+    "2 cl Kokossirup",
+    "1 cl Lime Juice"
+   ],
+   "steps": [
+    "Alle Zutaten in einen Shaker mit Eis geben und mixen.",
+    "Anschließend in ein Glas mit 1 bis 2 Eiswürfeln abseihen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Deímos",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Deímos",
+   "revid": "532397",
+   "revisedAt": "2010-06-28T06:09:43Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Der Cocktail nimmt eine blassorangefarbene Färbung an und wird leicht trüb.",
+   "ingredients": [
+    "6 cl Genever",
+    "2 cl Vodka",
+    "2 cl weißer Rum",
+    "8 cl Pfirsichsaft",
+    "4 cl Ananassaft",
+    "4 cl Orangensaft"
+   ],
+   "steps": [
+    "Zutaten in obiger Reihenfolge in den Shaker geben."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Monaco",
+   "url": "https://fr.wikibooks.org/wiki/Livre_de_cuisine/Boissons/Cocktails/Monaco",
+   "revid": "452566",
+   "revisedAt": "2014-10-31T20:14:54Z",
+   "language": "fr",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "8 cl de limonade",
+    "2 cl de sirop de",
+    "15 cl de"
+   ],
+   "steps": [
+    "Verser dans un verre à bière la grenadine puis la limonade",
+    "Compléter à la bière"
+   ],
+   "bronNaam": "Wikibooks Boissons (Frans)"
+  },
+  {
+   "title": "Planter's Punch",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Rum_alapú_koktélok/Planter's_Punch",
+   "revid": "517704",
+   "revisedAt": "2025-10-01T03:30:22Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "10 cl jamaicai rum,",
+    "3 cl friss narancslé,",
+    "3 cl ananászlé,",
+    "egy öntet Grenadine,",
+    "egy öntet gyomorkeserű,",
+    "szódavíz,",
+    "jég"
+   ],
+   "steps": [
+    "A rumot, a friss gyümölcsleveket, a gyomorkeserűt, a Grendine-t és a jeget shakerbe tesszük, összerázzuk, és leszűrjük a jéggel kibélelt ananászba.",
+    "Ízlés szerint kiegészítjük szódavízzel, majd díszítjük.",
+    "Pohár: egy kisebb kivájt ananász vagy egy nagy pohár Díszítés: egy szelet ananász, ananászlevelek, egy szelet narancs és citrom, cseresznyék, szívószál"
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Sandy Sour",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Sandy_Sour",
+   "revid": "518575",
+   "revisedAt": "2010-04-06T23:01:05Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "4½ cl Scotch Whisky",
+    "3 cl frischer Zitronensaft",
+    "1½ cl Läuterzucker"
+   ],
+   "steps": [
+    "Old-Fashioned-Glas",
+    "Zutaten mit Eis in den Shaker geben und gut schütteln",
+    "Inhalt ins Glas seihen"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Dark and Stormy",
+   "url": "https://en.wikibooks.org/wiki/Bartending/Cocktails/Dark_and_Stormy",
+   "revid": "2752880",
+   "revisedAt": "2015-01-08T11:51:41Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "The 'Dark n' Stormy' is a popular rum based drink in Bermuda. It is especially appreciated on the north end of the island around St. Georges. It is the first cocktail to be registered internationally with a trade mark. It is not uncommon for bar owners to call their cocktails 'Dark and Stormy' so as",
+   "ingredients": [
+    "50cl Gosling's Black Seal",
+    "Squeeze of Lime Segment",
+    "12.5cl Lime Juice",
+    "Topped with a can of ginger beer"
+   ],
+   "steps": [
+    "Load with ice.",
+    "Shake and strain.",
+    "Top with ginger beer."
+   ],
+   "bronNaam": "Wikibooks Bartending (Engels)"
+  },
+  {
+   "title": "Bessem's Best",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Bessem's_Best",
+   "revid": "532043",
+   "revisedAt": "2010-06-26T19:41:25Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Bessem's Best ist ein aus Deutschland stammendes alkoholisches Mischgetränk (Cocktail)",
+   "ingredients": [
+    "Wodka: 4 cl",
+    "Apricot Brandy: 2 cl",
+    "Lime Juice: 1 cl",
+    "Erdbeersirup: 1 cl",
+    "Zitronensaft: 1 cl",
+    "Maracujasaft: ca. 6 cl"
+   ],
+   "steps": [
+    "Alle Zutaten mit Eiswürfeln schütteln und in ein Glas mit zerstoßenem Eis abseihen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Negroni",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Negroni",
+   "revid": "831053",
+   "revisedAt": "2017-10-22T11:54:25Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "3 cl Gin",
+    "3 cl Wermut (rot)",
+    "3 cl Campari"
+   ],
+   "steps": [
+    "Old-Fashioned-Glas mit Eis füllen",
+    "Zutaten ins Glas geben und langsam umrühren"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Wodka Lemon",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Wodka_Lemon",
+   "revid": "659648",
+   "revisedAt": "2013-01-11T21:47:23Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Wodka abmessen, und in ein Longdrinkglas (0,2 l) geben. Mit Bitter Lemon auffüllen.",
+   "ingredients": [
+    "4 cl Wodka",
+    "Bitter Lemon (Lemon Soda, Limetten-, Zitronensaft)",
+    "..."
+   ],
+   "steps": [
+    "Wodka abmessen, und in ein Longdrinkglas (0,2 l) geben.",
+    "Mit Bitter Lemon auffüllen.",
+    "Für ein Whiskeyglas nur 2 cl Wodka verwenden und mit Bitter Lemon aufschütten.",
+    "Anschließend frische Limetten oder einen Schuss Limettensaft hinzufügen - fertig.",
+    "Je nach Geschmack 2-4 Eiswürfel dazugeben."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Lannmaderlo",
+   "url": "https://fr.wikibooks.org/wiki/Livre_de_cuisine/Boissons/Cocktails/Lannmaderlo",
+   "revid": "614815",
+   "revisedAt": "2019-04-21T19:15:01Z",
+   "language": "fr",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Cocktail à base de liqueur d'anis et de liqueur de menthe appelé aussi \"perroquet sauvage\".",
+   "ingredients": [
+    "2,5 cl de liqueur d'",
+    "1,5 cl de liqueur de menthe",
+    "eau"
+   ],
+   "steps": [
+    "Verser dans un verre à aperitif les liqueurs",
+    "Ajouter de l'eau"
+   ],
+   "bronNaam": "Wikibooks Boissons (Frans)"
+  },
+  {
+   "title": "Brandy Egg Nogg",
+   "url": "https://fr.wikibooks.org/wiki/Livre_de_cuisine/Boissons/Cocktails/Brandy_Egg_Nogg",
+   "revid": "517095",
+   "revisedAt": "2016-07-04T11:55:10Z",
+   "language": "fr",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "2 cl de",
+    "1",
+    "5 g de"
+   ],
+   "steps": [
+    "Frapper dans un shaker, verser dans un verre haut",
+    "Compléter de lait"
+   ],
+   "bronNaam": "Wikibooks Boissons (Frans)"
+  },
+  {
+   "title": "Mellow Yellow Bird",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Mellow_Yellow_Bird",
+   "revid": "659517",
+   "revisedAt": "2013-01-11T14:37:16Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alle Zutaten in den vorgekühlten Shaker geben und kurz und kräftig shaken.",
+   "ingredients": [
+    "2 cl Weißer Rum",
+    "2 cl Cointreau",
+    "2 cl Galliano",
+    "6 cl Ananassaft",
+    "6 dl Orangensaft",
+    "1 Dash Lime Juice"
+   ],
+   "steps": [
+    "Alle Zutaten in den vorgekühlten Shaker geben und kurz und kräftig shaken."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Appletini",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Appletini",
+   "revid": "516376",
+   "revisedAt": "2010-03-28T16:15:18Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alles zu gleichen Teilen im Shaker auf Eis gut durchschütteln. Dann abgießen und mit einer Apfelscheibe im Glas garnieren.",
+   "ingredients": [
+    "2cl Apfelkorn",
+    "2cl Vodka",
+    "2cl Apfelsaft",
+    "1 Spritzer Zitrone",
+    "Apfelscheiben"
+   ],
+   "steps": [
+    "Alles zu gleichen Teilen im Shaker auf Eis gut durchschütteln.",
+    "Dann abgießen und mit einer Apfelscheibe im Glas garnieren."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Devil",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Devil",
+   "revid": "1034715",
+   "revisedAt": "2024-06-01T19:14:07Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "2 cl Mangosirup",
+    "1 cl Grenadinsirup",
+    "6 cl Milch",
+    "4 cl Preiselbeersaft",
+    "6 cl Orangensaft"
+   ],
+   "steps": [
+    "Alles außer dem Grenadinsirup in einen Shaker mit Eis geben.",
+    "Danach in ein Glas mit ein oder zwei Eiswürfel einseihen.",
+    "Anschließend Grenadinsirup darüber geben."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Tequila Sunset",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Tequila_Sunset",
+   "revid": "659682",
+   "revisedAt": "2013-01-11T22:33:23Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Tequila mit Saft mischen und in ein Longdrinkglas geben. Blue Curaçao über einen Löffel auf den Boden des Glases laufen lassen.",
+   "ingredients": [
+    "4cl Tequila Gold",
+    "1 Schuss Blue Curaçao",
+    "6cl Orangensaft",
+    "6cl Maracuja- oder Mangosaft"
+   ],
+   "steps": [
+    "Tequila mit Saft mischen und in ein Longdrinkglas geben.",
+    "Blue Curaçao über einen Löffel auf den Boden des Glases laufen lassen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Eccentric Elmer",
+   "url": "https://en.wikibooks.org/wiki/Bartending/Cocktails/Eccentric_Elmer",
+   "revid": "939216",
+   "revisedAt": "2007-08-08T20:48:57Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "The Eccentric Elmer is a relatively smooth bourbon cocktail, sweet with a hint of bitterness. Note that it is important to use cranberry cocktail, not cranberry juice. If cranberry cocktail is not available in your area, substitute cranberry juice and add 1 tbsp of superfine sugar to the drink befor",
+   "ingredients": [
+    "1 oz bourbon",
+    "1/2 oz triple sec",
+    "3 oz cranberry cocktail",
+    "dash angostura bitters",
+    "Lime wedge"
+   ],
+   "steps": [
+    "Fill a cocktail shaker halfway with ice.",
+    "Add bourbon, triple sec, bitters, and cranberry cocktail to shaker.",
+    "Shake well.",
+    "Put a few ice cubes into an old-fashioned glass.",
+    "Strain cocktail into glass.",
+    "Garnish with lime wedge."
+   ],
+   "bronNaam": "Wikibooks Bartending (Engels)"
+  },
+  {
+   "title": "B-54",
+   "url": "https://en.wikibooks.org/wiki/Bartending/Cocktails/B-54",
+   "revid": "3583000",
+   "revisedAt": "2019-10-04T00:07:18Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "1 part Kahlua",
+    "1 part Irish Cream",
+    "1 part Grand Marnier",
+    "1 part Green Crème de Menthe"
+   ],
+   "steps": [
+    "Shake with ice.",
+    "Strain into shot glass."
+   ],
+   "bronNaam": "Wikibooks Bartending (Engels)"
+  },
+  {
+   "title": "Sanfter Engel",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Sanfter_Engel",
+   "revid": "595734",
+   "revisedAt": "2011-08-05T23:10:51Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "5 cl Blue Curaçao",
+    "1 Glas Orangensaft",
+    "1 Kugel Vanilleis"
+   ],
+   "steps": [
+    "Zutaten in der obigen Reihenfolge in ein hohes Glas geben"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Kiss of the Lightning",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Kiss_of_the_Lightning",
+   "revid": "596904",
+   "revisedAt": "2011-08-14T11:54:25Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Zuerst die Eiswürfel(können ruhig mehrere sein)in ein Longdrink-Glas geben, dann den Vodka langsam darüber leeren.",
+   "ingredients": [
+    "4 Teile Wodka (z.B. Eristoff)",
+    "2 Teile Galliano",
+    "1 Teil goldenen Rum (z.B. Captain Morgan)",
+    "5 Teile Bitter Lemon",
+    "Eiswürfel"
+   ],
+   "steps": [
+    "Zuerst die Eiswürfel(können ruhig mehrere sein)in ein Longdrink-Glas geben, dann den Vodka langsam darüber leeren.",
+    "Die restlichen Schnäpse, dann das Bitter Lemon hinzugeben."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Swimming Pool",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Swimming_Pool",
+   "revid": "776780",
+   "revisedAt": "2015-12-05T11:48:43Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Im Shaker auf crushed ice kräftig schütteln, in großes Becherglas auf crushed ice abseihen, Curacao darübergleiten lassen.",
+   "ingredients": [
+    "2 cl süße Sahne",
+    "2 cl Kokosnusscrème",
+    "6 cl Ananassaft",
+    "2 cl Wodka",
+    "2 cl Rum weiß",
+    "1 cl Blue Curaçao",
+    "Stielkirsche",
+    "Ananas",
+    "4cl Wodka",
+    "2cl Blue Curaçao",
+    "2cl Sahne",
+    "12 cl Ananassaft",
+    "2cl Cream of Coconut"
+   ],
+   "steps": [
+    "Im Shaker auf crushed ice kräftig schütteln, in großes Becherglas auf crushed ice abseihen, Curacao darübergleiten lassen.",
+    "Geben Sie alle Zutaten in einen Elektromixer mit Crushed Ice (oder in einen Shaker mit normalem Eis).",
+    "Gießen Sie den Drink in ein Fancyglas auf Crushed Ice."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Hemingway",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Hemingway",
+   "revid": "546427",
+   "revisedAt": "2010-09-16T19:39:57Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Die Zutaten auf Cubeeis kräftig schütteln, in das mit Eiswürfeln gefüllte Highball abseihen.",
+   "ingredients": [
+    "6 cl Gin",
+    "6 cl Grapefruitsaft",
+    "1 cl Grenadinesirup",
+    "1 Barlöffel Puderzucker",
+    "1 cl Maraschino",
+    "4 cl weißer Rum",
+    "4 cl Grapefruitsaft (nach belieben auch mehr)",
+    "1 cl Limettensaft"
+   ],
+   "steps": [
+    "Die Zutaten auf Cubeeis kräftig schütteln, in das mit Eiswürfeln gefüllte Highball abseihen.",
+    "Mit zerstoßenem Eis im Shaker mixen, in einem Champagnerkelch servieren."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Three Dollar Shoes",
+   "url": "https://en.wikibooks.org/wiki/Bartending/Cocktails/Three_Dollar_Shoes",
+   "revid": "4285854",
+   "revisedAt": "2023-05-01T07:05:24Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "\"Three Dollar Shoes\" is a gin cocktail made with Seagram's and Bombay Sapphire brand gin. It also includes Margarita mixer for sweetness, and grenadine to give the drink a pink tint.",
+   "ingredients": [
+    "3 parts Seagram's brand Gin",
+    "2 parts Bombay Sapphire brand Gin",
+    "2 parts (or to taste) chilled margarita mixer",
+    "1 part Grenadine"
+   ],
+   "steps": [
+    "Add all ingredients, gin first, into the plastic bottle or mixer.",
+    "Shake for 10 seconds, or until well blended.",
+    "Drink directly from water-bottle, or pour into a large glass. It may also be served as is, chilled, or on the rocks."
+   ],
+   "bronNaam": "Wikibooks Bartending (Engels)"
+  },
+  {
+   "title": "April Shower",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Brandy_alapú_koktélok/April_Shower",
+   "revid": "517686",
+   "revisedAt": "2025-10-01T03:20:13Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "1 cl brandy,",
+    "3 cl Bénédictine,",
+    "6 cl narancslé,",
+    "szódavíz,",
+    "jég"
+   ],
+   "steps": [
+    "A poharat félig megtöltjük jéggel, ráöntjük a brandyt, a Bénédictine-t és a narancslét.",
+    "Összekeverjük, és kiegészítjük szódavízzel."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Beach of Paradais",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Beach_of_Paradais",
+   "revid": "1033120",
+   "revisedAt": "2024-05-16T19:05:17Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Um ein verwässern zu vermeiden kann man statt Wassereis gefrorenen Ananassaft verwenden.",
+   "ingredients": [
+    "2 cl Blue Curaçao (alkoholfrei)",
+    "2 cl Sahne",
+    "2 cl Kokossirup",
+    "14 cl Ananassaft"
+   ],
+   "steps": [
+    "Alle Zutaten in einen Shaker mit Eis geben und mixen.",
+    "Anschließend in ein Glas mit 1 bis 2 Eiswürfeln abseihen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Bourbon Mint Julep",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Whisky_alapú_koktélok/Bourbon_Mint_Julep",
+   "revid": "517734",
+   "revisedAt": "2025-10-01T03:44:28Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "9 cl Bourbon,",
+    "4-5 mentalevél,",
+    "1 kiskanál porcukor,",
+    "néhány csepp víz,",
+    "jégkása"
+   ],
+   "steps": [
+    "A mentaleveleket és a cukrot a pohár alján néhány csepp vízzel gyengéden összenyomkodjuk.",
+    "A poharat tört jéggel csaknem színültig töltjük, és ráöntjük a bourbont.",
+    "A mentaágacskával díszítjük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "B-51",
+   "url": "https://en.wikibooks.org/wiki/Bartending/Cocktails/B-51",
+   "revid": "3595219",
+   "revisedAt": "2019-11-10T05:31:25Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "1 part Kahlua",
+    "1 part Irish Cream",
+    "1 part rum (traditionally a 151 proof, hence B-51)"
+   ],
+   "steps": [
+    "Make pousse-café"
+   ],
+   "bronNaam": "Wikibooks Bartending (Engels)"
+  },
+  {
+   "title": "Coconut Kiss",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Coconut_Kiss",
+   "revid": "1034714",
+   "revisedAt": "2024-06-01T18:57:10Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "und anschließend in ein Glas mit ein oder zwei Eiswürfel einseihen.",
+   "ingredients": [
+    "2 cl Sahne",
+    "2 cl Kirschsaft",
+    "1 cl Kokossirup",
+    "14 cl Ananassirup"
+   ],
+   "steps": [
+    "Alle Zutaten in einen Shaker mit Eis geben und anschließend in ein Glas mit ein oder zwei Eiswürfel einseihen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Duncan MacLeod",
+   "url": "https://fr.wikibooks.org/wiki/Livre_de_cuisine/Boissons/Cocktails/Duncan_MacLeod",
+   "revid": "452523",
+   "revisedAt": "2014-10-31T20:13:26Z",
+   "language": "fr",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Nommé d'après un personnage de fiction de la série Highlander, où un acteur américain (représentant de la société Coca-Cola) joue un immortel \"Scotsman\" (le whisky écossais), possédant un sabre japonais (le saké).",
+   "ingredients": [
+    "2 cl de saké",
+    "2 cl de",
+    "soda au cola"
+   ],
+   "steps": [
+    "Mélanger dans un tumbler le saké et le whisky",
+    "Ajouter de la glace",
+    "Compléter au soda"
+   ],
+   "bronNaam": "Wikibooks Boissons (Frans)"
+  },
+  {
+   "title": "Macca",
+   "url": "https://fr.wikibooks.org/wiki/Livre_de_cuisine/Boissons/Cocktails/Macca",
+   "revid": "452553",
+   "revisedAt": "2014-10-31T20:14:28Z",
+   "language": "fr",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Le Macca est un cocktail de la catégorie long drink, c'est un « before lunch » .",
+   "ingredients": [
+    "2 cl de vermouth dry",
+    "2 cl de vermouth Italien",
+    "2 cl de gin",
+    "1 cl de",
+    "Soda"
+   ],
+   "steps": [
+    "Verser les alcools dans un tumbler rempli de glace",
+    "Remuer",
+    "Compléter de soda"
+   ],
+   "bronNaam": "Wikibooks Boissons (Frans)"
+  },
+  {
+   "title": "Flat Liner",
+   "url": "https://en.wikibooks.org/wiki/Bartending/Cocktails/Flat_Liner",
+   "revid": "3621792",
+   "revisedAt": "2019-12-09T07:09:05Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Flat liner is a layered cocktail which is drunk from a shooter glass. Tabasco sauce lies between two layers of spirits forming a line between them. In Estonia, this drink is also known under the name \"Millimalikas\" which is Estonian for \"Jellyfish\".",
+   "ingredients": [
+    "1 oz. Sambuca",
+    "1 oz. Tequila",
+    "1 dash Tabasco sauce"
+   ],
+   "steps": [
+    "Add one ounce of Sambuca to a shot glass.",
+    "Shake several drops of Tobasco sauce onto the surface of the Sambuca.",
+    "Hold an inverted teaspoon in the glass and carefully layer the tequila over the Sambuca.",
+    "Serve."
+   ],
+   "bronNaam": "Wikibooks Bartending (Engels)"
+  },
+  {
+   "title": "Whiskey Sour",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Whiskey_Sour",
+   "revid": "598029",
+   "revisedAt": "2011-08-19T19:37:59Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Whisky Sour on the rocks: Inhalt in ein Old-Fashionglas mit Eiswürfeln seihen",
+   "ingredients": [
+    "4½ cl Bourbon Whiskey",
+    "3 cl frischer Zitronensaft",
+    "1½ cl Läuterzucker"
+   ],
+   "steps": [
+    "Old-Fashioned-Glas oder Cobblerglas vorkühlen",
+    "Zutaten mit Eis in den Shaker geben und gut schütteln",
+    "Inhalt ins Glas seihen"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Chicago Freestyle",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Chicago_Freestyle",
+   "revid": "220253",
+   "revisedAt": "2006-11-22T19:03:42Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Diese werden in einem Shaker auf Eis geschüttelt und in einem Cocktailglas serviert. Eine Orangenscheibe als Dekoration auf den Glasrand stecken.",
+   "ingredients": [
+    "2 cl Wodka",
+    "2 cl Gin",
+    "2 cl Rum weiß",
+    "2 cl Southern Comfort",
+    "2 cl Blue Curaçao",
+    "2 cl Limettensirup",
+    "2 cl Zitronensaft",
+    "2 cl Ananassaft",
+    "4 cl Orangensaft."
+   ],
+   "steps": [
+    "Diese werden in einem Shaker auf Eis geschüttelt und in einem Cocktailglas serviert.",
+    "Eine Orangenscheibe als Dekoration auf den Glasrand stecken."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Frejus",
+   "url": "https://fr.wikibooks.org/wiki/Livre_de_cuisine/Boissons/Cocktails/Frejus",
+   "revid": "452530",
+   "revisedAt": "2014-10-31T20:13:40Z",
+   "language": "fr",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Verser dans un verre à aperitif l'angostura, le cuaraçao et l'anis",
+   "ingredients": [
+    "2,5 cl de liqueur d'",
+    "1 cl d' angostura",
+    "1 cl de curaçao",
+    "eau"
+   ],
+   "steps": [
+    "Verser dans un verre à aperitif l'angostura, le cuaraçao et l'anis",
+    "Ajouter de l'eau"
+   ],
+   "bronNaam": "Wikibooks Boissons (Frans)"
+  },
+  {
+   "title": "Tim",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Tim",
+   "revid": "659692",
+   "revisedAt": "2013-01-11T22:55:15Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alle Zutaten gut vermischen,in ein 0,3l Glas geben und mit Crushed Ice auffüllen.",
+   "ingredients": [
+    "6cl Wodka",
+    "8cl Bananensaft",
+    "8cl Kirschsaft"
+   ],
+   "steps": [
+    "Alle Zutaten gut vermischen,in ein 0,3l Glas geben und mit Crushed Ice auffüllen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Veneziano",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Veneziano",
+   "revid": "1032023",
+   "revisedAt": "2024-04-24T04:47:48Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Den Prosecco in einen Weißweinkelch füllen, Eiswürfel dazu geben und den Aperol darüber geben, die Orangenscheibe ins Glas geben und leicht untermischen.",
+   "ingredients": [
+    "10 cl Prosecco trocken",
+    "2 cl Aperol",
+    "½ Scheibe Orange (Frucht)"
+   ],
+   "steps": [
+    "Den Prosecco in einen Weißweinkelch füllen, Eiswürfel dazu geben und den Aperol darüber geben, die Orangenscheibe ins Glas geben und leicht untermischen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Baltimore Eggnog",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Baltimore_Eggnog",
+   "revid": "531923",
+   "revisedAt": "2010-06-25T16:07:06Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "1 Ei",
+    "2 Teelöffel Zucker",
+    "2 cl Brandy",
+    "2 cl Brauner Rum",
+    "2 cl Madeira",
+    "Milch",
+    "Muskatnuss"
+   ],
+   "steps": [
+    "Alle Zutaten, außer der Milch, im Shaker mit Eis schütteln.",
+    "Im Glas dann mit kalter Milch auffüllen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Rob Roy",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Rob_Roy",
+   "revid": "431530",
+   "revisedAt": "2009-02-04T21:07:13Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "4½ cl Scotch Whisky",
+    "1½ Wermut, Rot",
+    "1 Dash Angostura-Bitter"
+   ],
+   "steps": [
+    "Cocktailglas vorkühlen",
+    "Zutaten und Eiswürfel ins Rührglas geben und gut umrühren",
+    "Inhalt ins Glas seihen"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "B61",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_B61",
+   "revid": "516393",
+   "revisedAt": "2010-03-28T16:59:56Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "colspan=\"2\" align=\"center\" | Bild Der B61 besteht aus Schokoladenlikör, Vanillelikör und Rum.",
+   "ingredients": [
+    "2 cl Schokoladenlikör",
+    "2 cl Vanillelikör",
+    "1 cl hochprozentigen Rum"
+   ],
+   "steps": [
+    "Die Zutaten in der obigen Reihenfolge über einen Löffel in ein Schnapsglas geben. Angezündet mit einem Strohhalm und einem Bierdeckel servieren."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "B53",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_B53",
+   "revid": "516384",
+   "revisedAt": "2010-03-28T16:53:43Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "colspan=\"2\" align=\"center\" | Bild Der B53 besteht aus Kaffeelikör, Irish Cream und Wodka.",
+   "ingredients": [
+    "2 cl Kaffeelikör",
+    "2 cl Irish Cream",
+    "1 cl Wodka"
+   ],
+   "steps": [
+    "Die Zutaten in der obigen Reihenfolge über einen Löffel in ein Schnapsglas geben."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "De Schuetz",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_De_Schuetz",
+   "revid": "595916",
+   "revisedAt": "2011-08-06T22:48:16Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Sämtliche Zutaten ausser der Mini-Karotte in einen Shaker geben und kräftig schütteln. Alles in die Cocktailschale geben und mit der Mini-Karotte dekorieren.",
+   "ingredients": [
+    "2 cl Absinth",
+    "2 cl Kümmerling",
+    "1 cl Martini",
+    "1 cl Inländerrum (Stroh)",
+    "1 Mini-Karotte"
+   ],
+   "steps": [
+    "Sämtliche Zutaten ausser der Mini-Karotte in einen Shaker geben und kräftig schütteln.",
+    "Alles in die Cocktailschale geben und mit der Mini-Karotte dekorieren."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Moulin",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Brandy_alapú_koktélok/Moulin",
+   "revid": "517679",
+   "revisedAt": "2025-10-01T03:15:40Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "6 cl brandy,",
+    "9 cl friss ananászlé,",
+    "fehér habzóbor jól lehűtve,",
+    "jég"
+   ],
+   "steps": [
+    "A poharat félig megtöltjük jéggel, ráöntjük a brandyt és az ananászlét, majd kiegészítjük a borral.",
+    "Könnyebb, kevésbé alkoholos italhoz a bor helyett használjunk ásványvizet.",
+    "Díszítés: egy szelet ananász, ananászlevelek, egy fél szelet narancs és egy cseresznye."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Blue Sun",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Blue_Sun",
+   "revid": "532251",
+   "revisedAt": "2010-06-27T12:00:49Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Erst Eiswürfel, dann Wodka, dann Limo und dann den Blue Curacao.",
+   "ingredients": [
+    "2 cl Blue Curaçao",
+    "1 cl Wodka",
+    "Zitronenlimonade"
+   ],
+   "steps": [
+    "Erst Eiswürfel, dann Wodka, dann Limo und dann den Blue Curacao."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Bacao",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Bacao",
+   "revid": "518297",
+   "revisedAt": "2010-04-06T12:17:05Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alle Zutaten (außer dem Eis) nach und nach in ein hohes Glas geben. Nach Belieben shaken oder mixen. Eine Kugel Vanilleeis dazu geben. Mit Kakaopulver bestäuben. Servieren.",
+   "ingredients": [
+    "1 Teil Rum (Bacardi)",
+    "3 Teile Baileys",
+    "Kakao",
+    "Vanilleeis",
+    "etwas Kakaopulver"
+   ],
+   "steps": [
+    "Alle Zutaten (außer dem Eis) nach und nach in ein hohes Glas geben.",
+    "Nach Belieben shaken oder mixen.",
+    "Eine Kugel Vanilleeis dazu geben.",
+    "Mit Kakaopulver bestäuben."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Abendsonne",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Abendsonne",
+   "revid": "1033344",
+   "revisedAt": "2024-05-19T18:25:53Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Crushed Ice in ein Glas füllen, Sahne & Saft ordentlich shaken und ins Glas geben.",
+   "ingredients": [
+    "8 cl Sahne",
+    "2 cl Grenadine",
+    "4 cl Bananensaft",
+    "Crushed Ice"
+   ],
+   "steps": [
+    "Crushed Ice in ein Glas füllen, Sahne & Saft ordentlich shaken und ins Glas geben.",
+    "Danach Grenadine über einen Löffelrücken ins Glas abseihen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Miau",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Miau",
+   "revid": "659519",
+   "revisedAt": "2013-01-11T14:38:38Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Barack, Teqilla, Ananassaft, Orangensaft und Zitronensaft auf Eis im Shaker schütteln, in Hurricaneglas mit Eiswürfeln abseihen. Cranberrysirup über einen verkehrt gehaltenen, am inneren Glasrand anliegenden Barlöffel ins Glas gießen",
+   "ingredients": [
+    "2 cl Barack",
+    "2 cl Tequila, weiß",
+    "6 cl Ananassaft",
+    "6 cl Orangensaft",
+    "2 cl Zitronensaft",
+    "1 cl Cranberrysirup"
+   ],
+   "steps": [
+    "Barack, Teqilla, Ananassaft, Orangensaft und Zitronensaft auf Eis im Shaker schütteln, in Hurricaneglas mit Eiswürfeln abseihen. Cranberrysirup über einen verkehrt gehaltenen, am inneren Glasrand anliegenden Barlöffel ins Glas gießen"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Sea Waves",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Vodka_alapú_koktélok/Sea_Waves",
+   "revid": "517718",
+   "revisedAt": "2025-10-01T03:36:21Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "5 cl vodka,",
+    "1,5 cl száraz vermut,",
+    "1,5 cl Blue Curaçao,",
+    "1,5 cl Galliano,",
+    "jég"
+   ],
+   "steps": [
+    "Az alapanyagokat a jéggel félig megtöltött pohárba öntjük, jól összekeverjük és díszítjük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Adios Motherfucker",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Adios_Motherfucker",
+   "revid": "618146",
+   "revisedAt": "2011-12-30T23:12:33Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alkoholika in ein gekühltes Highball Glas füllen und dann die Eiswürfel dazugeben.",
+   "ingredients": [
+    "1½ cl Wodka",
+    "1½ cl Rum",
+    "1½ cl Tequila",
+    "1½ cl Gin",
+    "1½ cl Curaçao (blau)",
+    "6 cl Zitronenlimonade"
+   ],
+   "steps": [
+    "http://www.webtender.com/db/drink/5629",
+    "http://www.drinksmixer.com/drink734.html",
+    "http://www.droogle.ca/drinks/9515-Adios_Motherfucker_",
+    "http://www.drinknation.com/drink/Adios-Motherfucker-151"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Monsoon",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Monsoon",
+   "revid": "632370",
+   "revisedAt": "2012-03-28T19:36:42Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alle Zutaten außer Myer's Dark Rum mit Eiswürfeln mit Eis shaken",
+   "ingredients": [
+    "4 cl Rum, weiß",
+    "2 cl Myer's Dark Rum",
+    "3 cl Maracujasaft",
+    "3 cl Ananassaft",
+    "12 cl Sweet & Sour mix"
+   ],
+   "steps": [
+    "Hurricane-Glas vorkühlen",
+    "Alle Zutaten außer Myer's Dark Rum mit Eiswürfeln mit Eis shaken",
+    "Inhalt ins Glas seihen",
+    "Mit Myer's Dark Rum toppen"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "French 68",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_French_68",
+   "revid": "532529",
+   "revisedAt": "2010-06-28T19:28:46Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Zutaten ohne den Champagner gut schütteln, in das Glas abseihen. Mit Champagner auffüllen.",
+   "ingredients": [
+    "1,5 cl Calvados",
+    "1,5 cl Brandy",
+    "1 cl Zitronensaft",
+    "nach Belieben Zuckersirup oder Grenadinesirup",
+    "Champagner"
+   ],
+   "steps": [
+    "Zutaten ohne den Champagner gut schütteln, in das Glas abseihen.",
+    "Mit Champagner auffüllen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Dry Manhattan",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Whisky_alapú_koktélok/Dry_Manhattan",
+   "revid": "517735",
+   "revisedAt": "2025-10-01T03:44:54Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "6 cl rye whisky,",
+    "3 cl száraz francia vermut,",
+    "egy öntet gyomorkeserű,",
+    "jég"
+   ],
+   "steps": [
+    "Egy keverőpohárba jeget teszünk, ráöntjük a whiskyt, a vermutot és a gyomorkeserűt, majd jól összekeverjük.",
+    "Leszűrjük a koktélos pohárba, és díszítjük.",
+    "Hagyományos Manhattanhez a száraz vermut helyett használjunk édes, piros vermutot, és adjunk hozzá három öntet gyomorkeserűt.",
+    "Díszítés: egy maraschino cseresznye és citromhéj-csík"
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Saketini",
+   "url": "https://en.wikibooks.org/wiki/Bartending/Cocktails/Saketini",
+   "revid": "3267979",
+   "revisedAt": "2017-08-16T16:07:40Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "1.5 oz. gin",
+    "0.5 oz. sake",
+    "1 green olive",
+    "ice"
+   ],
+   "steps": [
+    "Stir gin, sake and ice in a mixing glass.",
+    "Strain into a Martini glass.",
+    "Garnish with a green olive.",
+    "Makes 1 serving."
+   ],
+   "bronNaam": "Wikibooks Bartending (Engels)"
+  },
+  {
+   "title": "Picon biére",
+   "url": "https://fr.wikibooks.org/wiki/Livre_de_cuisine/Boissons/Cocktails/Picon_biére",
+   "revid": "647557",
+   "revisedAt": "2020-10-11T09:25:03Z",
+   "language": "fr",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Verser le picon, le sirop de citron et le cointreau dans un verre à bière",
+   "ingredients": [
+    "4 cl picon",
+    "1 cl sirop de",
+    "2 cl cointreau"
+   ],
+   "steps": [
+    "Verser le picon, le sirop de citron et le cointreau dans un verre à bière",
+    "Remuer",
+    "Compléter de bière."
+   ],
+   "bronNaam": "Wikibooks Boissons (Frans)"
+  },
+  {
+   "title": "Raspberry Mojito",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Raspberry_Mojito",
+   "revid": "906364",
+   "revisedAt": "2020-03-08T15:51:28Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Zitronengras gut Muddeln und mit dem Himbeerpüree aufkochen, sodass der Himbeerpüree den Geschmack vom Zitronengras bekommt dazu etwas Bacardi Razz, Zucker nach Geschmack dazu geben.",
+   "ingredients": [
+    "1 l Himbeerpüree",
+    "2 Bund Zitronengras",
+    "6 cl Bacardi Razz",
+    "3 cl Frischer Limettensaft",
+    "ca 2 Minzezweige je nach Minze (größe Aroma etc)",
+    "1 EL Puderzucker",
+    "Schuss Soda",
+    "Gelatine je nach Größe vom Sahnesyphon 2-4 Blatt",
+    "Sahnesyphon"
+   ],
+   "steps": [
+    "Zitronengras gut Muddeln und mit dem Himbeerpüree aufkochen, sodass der Himbeerpüree den Geschmack vom Zitronengras bekommt dazu etwas Bacardi Razz, Zucker nach Geschmack dazu geben.",
+    "Gelatine einweichen und kurz heizen direkt mit Himbeerzitronengraspüree in den Syphon.",
+    "Schließen und schnell Stickstoffkapseln zugeben.",
+    "Schütteln und wieder holen bis 3–4 bis Kapseln zugefügt wurden, je nach Syphongröße.",
+    "Minze in einem großen Tumbler zugeben wie beim Mojito.",
+    "Ein EL Puderzucker, dazu 3 cl Limettensaft mit Dash Soda und einem Mörser leicht muddeln, sodass sich der Puderzucker löst, aber die Minze nicht reißt.",
+    "Am besten mit kleinem Mörser ums Glas rühren.",
+    "Dann Eiswürfel und 6cl Bacardi Razz zugeben.",
+    "Mit einem Stirrer gut Rühren, sodass sich alles gut vermischt und das Getränk gut gekühlt ist.",
+    "Es muss ca 1 cm Platz vom Glasrand geben, um die Espuma hinzuzufügen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Aperol Sprizz",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Aperol_Sprizz",
+   "revid": "516364",
+   "revisedAt": "2010-03-28T16:02:56Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Er zeigt eine wunderbare, orange-rote Färbung, mit einem charakteristischen fruchtigherben Geschmack",
+   "ingredients": [
+    "4cl - Aperol",
+    "2cl - Soda / Mineralwasser",
+    "6cl - Prosecco",
+    "1 Scheibe Orange"
+   ],
+   "steps": [
+    "In ein großes Longdrinkglas mit Eiswürfeln den Aperol, gekühlten Prosecco und den Soda einfüllen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "momosa",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_momosa",
+   "revid": "1032832",
+   "revisedAt": "2024-05-13T19:04:18Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Tee mit ca. 70 Grad heißem Wasser aufgießen und 3 min ziehen lassen,",
+   "ingredients": [
+    "3 cl Orangensaft",
+    "4 cl weißer Pfirsichsaft",
+    "3 cl grüner Tee mit Zitronengras (siehe unten)",
+    "2 cl Kokosmilch",
+    "Chiasamen (Dekoration)"
+   ],
+   "steps": [
+    "Tee mit ca. 70 Grad heißem Wasser aufgießen und 3 min ziehen lassen, anschließend eine Stange Zitronengras einlegen und das ganze 20 min ruhenlassen 1 Tl Chiasamen mit 10 Tl Wasser aufsetzen und ca. 20 min stehen lassen 3.",
+    "Orangensaft, Pfirsichsaft und Kokosmilch in ein Glas geben, dann mit 4.",
+    "Als letztes den Teelöffel Chiasamen hinzufügen und fertig"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Aperol Sour",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Aperol_Sour",
+   "revid": "516357",
+   "revisedAt": "2010-03-28T15:50:00Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "3 cl Orangensaft",
+    "2 cl Zitronensaft",
+    "Dash Orangenbitter",
+    "5 cl Aperol"
+   ],
+   "steps": [
+    "Shaken, und im Tumbler auf Eiswürfel abseihen. Servieren.",
+    "Shaken, und im Tumbler auf Eiswürfel abseihen. Servieren"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Acapulco",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Acapulco",
+   "revid": "618145",
+   "revisedAt": "2011-12-30T23:11:18Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alle Zutaten im Shaker mit Eis schütteln, dann in das mit Eiswürfeln gefüllte Glas abseihen.",
+   "ingredients": [
+    "2 cl brauner Rum",
+    "3 cl Tequila (silver)",
+    "10 cl Ananassaft",
+    "3 cl Grapefruitsaft"
+   ],
+   "steps": [
+    "Alle Zutaten im Shaker mit Eis schütteln, dann in das mit Eiswürfeln gefüllte Glas abseihen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "B-52 with Bombay Doors",
+   "url": "https://en.wikibooks.org/wiki/Bartending/Cocktails/B-52_with_Bombay_Doors",
+   "revid": "540444",
+   "revisedAt": "2006-07-29T07:29:24Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "The B-52 with Bombay Doors is a layered and part of the B-50 series.",
+   "ingredients": [
+    "1 part Coffee Liqueur",
+    "1 part Irish Cream",
+    "1 part Grand Marnier",
+    "1 part Bombay Gin"
+   ],
+   "steps": [
+    "Make pousse-café"
+   ],
+   "bronNaam": "Wikibooks Bartending (Engels)"
+  },
+  {
+   "title": "Fango",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Fango",
+   "revid": "595921",
+   "revisedAt": "2011-08-06T23:00:25Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Zuerst ein Whiskeyglas mit Eiswürfeln füllen. Dann Whiskey und Amaretto zugeben, mit Apfelsaft auffüllen - fertig.",
+   "ingredients": [
+    "3 cl Whiskey",
+    "1 cl Amaretto",
+    "Apfelsaft (100%)",
+    "Eiswürfel"
+   ],
+   "steps": [
+    "Zuerst ein Whiskeyglas mit Eiswürfeln füllen.",
+    "Dann Whiskey und Amaretto zugeben, mit Apfelsaft auffüllen - fertig."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Canari",
+   "url": "https://fr.wikibooks.org/wiki/Livre_de_cuisine/Boissons/Cocktails/Canari",
+   "revid": "452505",
+   "revisedAt": "2014-10-31T20:12:36Z",
+   "language": "fr",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "2,5 cl de liqueur d'",
+    "1,5 cl de sirop de citron",
+    "Eau"
+   ],
+   "steps": [
+    "Verser dans un verre à aperitif le sirop et l'anis",
+    "Ajouter de l'eau"
+   ],
+   "bronNaam": "Wikibooks Boissons (Frans)"
+  },
+  {
+   "title": "Death in the Afternoon",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Death_in_the_Afternoon",
+   "revid": "532413",
+   "revisedAt": "2010-06-28T08:32:50Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "3cl Mata Hari [http://de.wikibooks.org/wiki/Cocktails/_Zutaten/_Absinth| Absinth]",
+   "ingredients": [
+    "3cl Mata Hari [http://de.wikibooks.org/wiki/Cocktails/_Zutaten/_Absinth| Absinth]",
+    "Champagner/Sekt",
+    "Sektflöte"
+   ],
+   "steps": [
+    "Danach mit Sekt bzw.",
+    "Champagner auffüllen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Between the Sheets",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Between_the_Sheets",
+   "revid": "532049",
+   "revisedAt": "2010-06-26T19:49:58Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "2 cl weißer Rum",
+    "2 cl Brandy",
+    "2 cl Zitronensaft",
+    "1 cl Triple sec",
+    "1 EL Puderzucker (nicht gehäuft)"
+   ],
+   "steps": [
+    "alle Zutaten im Shaker schütteln",
+    "in gekühlte Cocktailschale abseihen"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Springtime Cooler",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Springtime_Cooler",
+   "revid": "597097",
+   "revisedAt": "2011-08-14T20:23:36Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alle Zutaten und einige Eiswürfel im Shaker mixen und in ein Longdrinkglas abseihen.",
+   "ingredients": [
+    "4cl Wodka",
+    "2cl Blue Curaçao",
+    "1cl Rohrzuckersirup",
+    "3cl Zitronensaft",
+    "5cl Orangensaft"
+   ],
+   "steps": [
+    "Alle Zutaten und einige Eiswürfel im Shaker mixen und in ein Longdrinkglas abseihen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Beauty",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Beauty",
+   "revid": "1033121",
+   "revisedAt": "2024-05-16T19:12:50Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Bananensaft und Sahne in einen Shaker mit Eis geben und anschließend in",
+   "ingredients": [
+    "14 cl Bananensaft",
+    "2 cl Sahne",
+    "1 cl Grenadinsirup"
+   ],
+   "steps": [
+    "Bananensaft und Sahne in einen Shaker mit Eis geben und anschließend in einem Glas mit 1 bis 2 Eiswürfeln abseihen.",
+    "Danach den Grenadinsirup darüber geben"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Haiti",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Haiti",
+   "revid": "515438",
+   "revisedAt": "2010-03-22T22:56:50Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Zuerst Erdbeeren in Vodka einlegen,ca. 2h. Dann die Erdbeeren herausnehmen und pürieren. Orangensaft mit Ananassaft und Erdbeersirup mischen.",
+   "ingredients": [
+    "Orangensaft 1 liter",
+    "Ananassaft 1 liter",
+    "Citronensaft halbe Zitrone",
+    "Erdbeersirup 2dl",
+    "frische Erdbeeren 500g",
+    "Vodka... 70cl"
+   ],
+   "steps": [
+    "Zuerst Erdbeeren in Vodka einlegen,ca. 2h.",
+    "Dann die Erdbeeren herausnehmen und pürieren.",
+    "Orangensaft mit Ananassaft und Erdbeersirup mischen.",
+    "Dann den Vodka hinzufügen.",
+    "Am Ende kommt die pürierten Erdbeeren obenauf."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "American Revolution",
+   "url": "https://en.wikibooks.org/wiki/Bartending/Cocktails/American_Revolution",
+   "revid": "2564187",
+   "revisedAt": "2013-10-07T16:50:25Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "The American Revolution is a strong lowball cocktail served on the rocks. It contains gin and bourbon and is meant to mellow as its ice melts. Its alcoholic strength depends upon the specific liquors used. \"Standard\" proof bourbon and gin (40 proof) produces a \"2 unit\" cocktail (USA units), while co",
+   "ingredients": [
+    "Gin, 1.5 oz",
+    "Bourbon, 1.5 oz",
+    "Bitters, 2 dashes",
+    "Orange peel",
+    "Sour cherries, do not use maraschino if you can get sour cherries."
+   ],
+   "steps": [
+    "Muddle orange peel in 1 oz of the gin.",
+    "Add the remainder of the gin, the bourbon, the bitters, and ice to the glass.",
+    "Stir 30 seconds (until aromatics of the liquors are awakened).",
+    "Strain into Old Fashioned glass and fill glass with ice.",
+    "Garnish with sour cherries."
+   ],
+   "bronNaam": "Wikibooks Bartending (Engels)"
+  },
+  {
+   "title": "Blue River",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Blue_River",
+   "revid": "598028",
+   "revisedAt": "2011-08-19T19:36:37Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Im Shaker mit einigen Eiswürfeln gut schütteln und in ein Longdrinkglas abgießen.",
+   "ingredients": [
+    "4 cl Blue Curacau Sirup",
+    "8 cl Ananassaft",
+    "8 cl Maracujasaft"
+   ],
+   "steps": [
+    "Im Shaker mit einigen Eiswürfeln gut schütteln und in ein Longdrinkglas abgießen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Pimm's Cup Nr 1",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Pimm's_Cup_Nr_1",
+   "revid": "656531",
+   "revisedAt": "2012-12-12T22:17:49Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Statt Ginger Ale kann auch eine andere Limonade gebraucht werden (z.B. Sprite, Seven Up, etc.)",
+   "ingredients": [
+    "4-5 cl Pimm's Nr 1",
+    "Ginger Ale",
+    "Orangenscheibe",
+    "Zitronenscheibe",
+    "Gurkenscheibe",
+    "Frische Pfefferminzblätter"
+   ],
+   "steps": [
+    "Longdrinkglas etwa zur Hälfte mit Eis füllen",
+    "Pimm's Nr 1 dazu geben",
+    "Mit Ginger Ale auffüllen",
+    "Früchte, Gurke und Pfefferminz hinzufügen"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Electric Lemonade",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Electric_Lemonade",
+   "revid": "839652",
+   "revisedAt": "2018-03-01T07:57:18Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Weizenglas etwa bis zur Hälfte mit Eis füllen, dann die vier Schnäpse darübergeben. Mit Limo fast ganz auffüllen und einen guten Schuss Zitronensirup dazu geben.",
+   "ingredients": [
+    "2cl Gin",
+    "2cl Tequila",
+    "2cl Weißer Rum",
+    "2cl Wodka",
+    "Zitronenlimonade",
+    "Zitronensirup"
+   ],
+   "steps": [
+    "Weizenglas etwa bis zur Hälfte mit Eis füllen, dann die vier Schnäpse darübergeben.",
+    "Mit Limo fast ganz auffüllen und einen guten Schuss Zitronensirup dazu geben."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Green Moon",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Green_Moon",
+   "revid": "550660",
+   "revisedAt": "2010-10-07T18:22:55Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "1. Alle Zutaten mit 4 Eiswürfeln in den Shaker geben, Shaker verschließen und etwa 15 Sekunden kräftig schütteln.",
+   "ingredients": [
+    "3 cl Grappa",
+    "2 cl Orangenlikör (z.B. Cointreau)",
+    "2 cl Rose's Lime Juice",
+    "1 Spritzer Pfefferminzsirup"
+   ],
+   "steps": [
+    "1. Alle Zutaten mit 4 Eiswürfeln in den Shaker geben, Shaker verschließen und etwa 15 Sekunden kräftig schütteln.",
+    "2. Den Inhalt des Shakers durch das Barsieb in die Cocktailschale gießen, mit einigen Minzblättern bestreuen und sofort servieren."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Triple S",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Triple_S",
+   "revid": "920906",
+   "revisedAt": "2020-08-10T13:31:51Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Als Dekoration kann man eine Orangen- und eine Zitronenscheibe im Glas eingeben",
+   "ingredients": [
+    "2 cl Bacardi Black",
+    "3 cl Cointreau",
+    "4 cl Zitronensaft",
+    "2 cl Zuckersirup",
+    "Orangensaft"
+   ],
+   "steps": [
+    "Alle Zutaten im Gästeglas shaken"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Blue Brain Fur",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Blue_Brain_Fur",
+   "revid": "532237",
+   "revisedAt": "2010-06-27T11:53:50Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Den Martini, den Blue Curaçao, den Gin und das Eis in einen Cocktailshaker geben und gut schütteln. Die Erdbeeren in ein Martiniglas geben. Dann den Inhalt des Cocktailshakers ohne das Eis über die Erdbeeren gießen und servieren.",
+   "ingredients": [
+    "4 cl Martini Bianco",
+    "4 cl Blue Curaçao",
+    "2 cl Gin",
+    "2-3 Erdbeeren",
+    "Eiswürfel"
+   ],
+   "steps": [
+    "Den Martini, den Blue Curaçao, den Gin und das Eis in einen Cocktailshaker geben und gut schütteln.",
+    "Die Erdbeeren in ein Martiniglas geben.",
+    "Dann den Inhalt des Cocktailshakers ohne das Eis über die Erdbeeren gießen und servieren."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Wild Raspberry",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Wild_Raspberry",
+   "revid": "659651",
+   "revisedAt": "2013-01-11T21:53:34Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Wer möchte kann die 3cl Maracujanektar durch frischen Maracujanektar ersetzten.",
+   "ingredients": [
+    "3cl Havana 7 Anos",
+    "3cl Bols Raspberry Likör",
+    "3cl Maracujanektar",
+    "1cl frischer Limettensaft",
+    "0.5 cl Maraschino"
+   ],
+   "steps": [
+    "Zubereitung: Alle zutaten im Shaker auf Eiswürfel mixen"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Stix-Mix",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Stix-Mix",
+   "revid": "597095",
+   "revisedAt": "2011-08-14T20:22:44Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Tumbler mit Crushed Ice vorkühlen. Wodka, Maracujasaft, Orangensaft, Grapefruitsaft und Eis gut schütteln und in das Glas seihen. Dann mit Tonic Water auffüllen und Grenandine dazu.",
+   "ingredients": [
+    "4 cl Wodka",
+    "4 cl Maracujasaft",
+    "4 cl Orangensaft",
+    "1 cl Grapefruitsaft",
+    "1 BL Grenadinesirup",
+    "6 cl Tonic Water",
+    "Eis"
+   ],
+   "steps": [
+    "Tumbler mit Crushed Ice vorkühlen.",
+    "Wodka, Maracujasaft, Orangensaft, Grapefruitsaft und Eis gut schütteln und in das Glas seihen.",
+    "Dann mit Tonic Water auffüllen und Grenandine dazu."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Ricorico",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Ricorico",
+   "revid": "632360",
+   "revisedAt": "2012-03-28T19:32:55Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alle Zutaten abmessen und verrühren, Eiswürfel in ein Longdrinkglas geben, auffüllen, fertig.",
+   "ingredients": [
+    "Orangensaft 5cl",
+    "Mangosaft 5cl",
+    "Ananassaft 2cl",
+    "Grapefruitsaft 2cl",
+    "Havanna-Club 2cl",
+    "Red Orange (Bols)2cl",
+    "Grenadinesirup 2cl"
+   ],
+   "steps": [
+    "Alle Zutaten abmessen und verrühren, Eiswürfel in ein Longdrinkglas geben, auffüllen, fertig."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Blubb Zisch und Hey",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Blubb_Zisch_und_Hey",
+   "revid": "532230",
+   "revisedAt": "2010-06-27T11:48:01Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Campari und Weinbrand in ein Longdrinkglas füllen und mit Sekt aufgießen.",
+   "ingredients": [
+    "2 cl Campari",
+    "2 cl Weinbrand",
+    "Sekt oder Prosecco"
+   ],
+   "steps": [
+    "Campari und Weinbrand in ein Longdrinkglas füllen und mit Sekt aufgießen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Haui Bing Bong",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Haui_Bing_Bong",
+   "revid": "595967",
+   "revisedAt": "2011-08-07T10:30:47Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Limettenachtel in ein Rum-Cocktailglas geben, mit dem Limettenstampfer leicht quetschen. Mit Eiswürfeln auffüllen. Anschließend 4 cl kubanischen Rum (z. B. Havana Club, Ron Varadero oder Legendario) eingießen. 4 cl Orangensaft dazugießen und mit Mangosaft auffüllen. Mit einen Schuss Galliano toppen.",
+   "ingredients": [
+    "4 cl kubanischer Rum",
+    "4 cl Orangensaft",
+    "8 cl Mangosaft",
+    "1 cl Galliano Vanilla",
+    "2/8 Limette",
+    "Eiswürfel"
+   ],
+   "steps": [
+    "Limettenachtel in ein Rum-Cocktailglas geben, mit dem Limettenstampfer leicht quetschen.",
+    "Mit Eiswürfeln auffüllen.",
+    "Anschließend 4 cl kubanischen Rum (z.",
+    "Havana Club, Ron Varadero oder Legendario) eingießen. 4 cl Orangensaft dazugießen und mit Mangosaft auffüllen.",
+    "Mit einen Schuss Galliano toppen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Kumparinha",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Kumparinha",
+   "revid": "920907",
+   "revisedAt": "2020-08-10T13:32:35Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Kumquats waschen und zwischen den Händen rollen, um das Aroma zu entfalten. Dann vierteln und in einem zum Shaken geeigneten Glas mit einem Stössel zerdrücken. Mit Eis auffüllen und restliche Zutaten hinzufügen. Kurz und kräftig shaken und anschliessend in einem kurzen Tumbler ausleeren. Mit einem B",
+   "ingredients": [
+    "4 cl Campari",
+    "2 cl Triple Sec",
+    "1 cl Zuckersirup",
+    "4 Kumquats"
+   ],
+   "steps": [
+    "Kumquats waschen und zwischen den Händen rollen, um das Aroma zu entfalten. Dann vierteln und in einem zum Shaken geeigneten Glas mit einem Stössel zerdrücken. Mit Eis auffüllen und restliche Zutaten hinzufügen. Kurz und kräftig shaken und anschliessend in einem kurzen Tumbler ausleeren. Mit einem Barlöffel kurz rühren, um die Früchte gleichmässig zu verteilen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "French 75",
+   "url": "https://en.wikibooks.org/wiki/Bartending/Cocktails/French_75",
+   "revid": "1374552",
+   "revisedAt": "2009-01-07T21:24:26Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "The French 75 is a cocktail of gin and champagne flavoured with lemon,",
+   "ingredients": [
+    "1½ ozs. (40 ml) gin",
+    "2 tsp. caster (superfine) sugar",
+    "1 tbs. lemon juice",
+    "Champagne"
+   ],
+   "steps": [
+    "In a flute or Collins glass add the gin.",
+    "Top with a half flute of sparkling wine or champagne.",
+    "Add sugar (it will fizz up so make sure the flute isn't full yet) then top off with more sparkling wine."
+   ],
+   "bronNaam": "Wikibooks Bartending (Engels)"
+  },
+  {
+   "title": "Gimlet",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Gin_alapú_koktélok/Gimlet",
+   "revid": "517693",
+   "revisedAt": "2025-10-01T03:24:08Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "6 cl gin,",
+    "1,5 cl citromlé,",
+    "jég"
+   ],
+   "steps": [
+    "A gint és a lime-lét a jéggel félig megtöltött keverőpohárba öntjük, és jól összekeverjük.",
+    "A koktélos pohárba szűrjük, és egy szelet lime-mal díszítjük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Draquecito",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Draquecito",
+   "revid": "532409",
+   "revisedAt": "2010-06-28T08:28:27Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Der Draquecito (El Draque) ist der Vorläufer des Mojito. Seinen Namen hat der Draquecito von Sir Francis Drake (span. El Draque). Offensichtlich war dies sein Lieblingsdrinks vor Schlachten in der karibischen See. Der Drink hat also eine lange Geschichte. Deshalb ist es klar, dass das Rezept weder S",
+   "ingredients": [
+    "6 cl Cachaça (Aguadente de Cana)",
+    "2 cl frisch gepressten Limettensaft",
+    "6 cl kohlensäurefreies Wasser",
+    "2 BL weißen Rohrzucker",
+    "6 Blätter einer Hemingway-Minze (Yerba Buena)"
+   ],
+   "steps": [
+    "Minze mit einem Holzstößel im Glas zerstampfen.",
+    "Zucker, Limettensaft und Cachaça dazu geben.",
+    "Mit Wasser aufgießen.",
+    "Eventuell garnieren.",
+    "Mit einem Strohhalm servieren."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Angel Blue",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Angel_Blue",
+   "revid": "618104",
+   "revisedAt": "2011-12-30T21:32:32Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Wodka und Blue Curaçao mit Eis in einem Shaker mixen, in ein Glas mit Eis abseihen und mit min. 10 cl Sprite auffüllen.",
+   "ingredients": [
+    "3 cl Wodka",
+    "3 cl Blue Curaçao",
+    "Sprite"
+   ],
+   "steps": [
+    "Wodka und Blue Curaçao mit Eis in einem Shaker mixen, in ein Glas mit Eis abseihen und mit min. 10 cl Sprite auffüllen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Sabrina",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Sabrina",
+   "revid": "597109",
+   "revisedAt": "2011-08-14T20:39:18Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Wodka und Jägermeister in einen Tumbler mit Eiswürfeln geben.",
+   "ingredients": [
+    "2cl Wodka",
+    "2cl Jägermeister",
+    "Cola"
+   ],
+   "steps": [
+    "Wodka und Jägermeister in einen Tumbler mit Eiswürfeln geben.",
+    "Mit Cola auffüllen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Martini",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Gin_alapú_koktélok/Martini",
+   "revid": "517689",
+   "revisedAt": "2025-10-01T03:22:27Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "9 cl gin,",
+    "3 cl száraz vermut,",
+    "jég"
+   ],
+   "steps": [
+    "A gint, a vermutot és a jeget keverőpohárban összekeverjük.",
+    "Az italt leszűrjük a martinospohárba és díszítjük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Chi Chi 1",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Chi_Chi_1",
+   "revid": "532355",
+   "revisedAt": "2010-06-27T19:50:00Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alle Zutaten im Shaker mit Eiswürfeln kräftig schütteln und durch das Barsieb in ein Longdrinkglas auf Crushed Ice abgießen.",
+   "ingredients": [
+    "2 cl Sahne",
+    "4 cl Wodka (Absolut)",
+    "12 cl Ananassaft",
+    "6 cl Batida de Coco"
+   ],
+   "steps": [
+    "Alle Zutaten im Shaker mit Eiswürfeln kräftig schütteln und durch das Barsieb in ein Longdrinkglas auf Crushed Ice abgießen.",
+    "Ein Ananasstück mit einer Cocktailkirsche an den Glasrand stecken.",
+    "Trinkhalme dazugeben."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "El Presidente",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_El_Presidente",
+   "revid": "532420",
+   "revisedAt": "2010-06-28T08:52:51Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Zutaten im Rührglas auf viel Eis gut verrühren, in vorgekühlte Cocktailschale abgießen.",
+   "ingredients": [
+    "4 cl weißer Rum",
+    "1 cl Curacao Triple Sec",
+    "2 cl Vermouth Dry",
+    "1 cl Vermouth Rosso",
+    "1 Spritzer Grenadinesirup"
+   ],
+   "steps": [
+    "Zutaten im Rührglas auf viel Eis gut verrühren, in vorgekühlte Cocktailschale abgießen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Queen's Aperol",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Queen's_Aperol",
+   "revid": "852779",
+   "revisedAt": "2018-06-06T14:23:57Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Queen's Aperol ist ein Drink mit leichtem Bittergeschmack, enthält wenig Alkohol und ist als Aperitif bei Frauen sehr beliebt.",
+   "ingredients": [
+    "3 cl Gin (Bombay)",
+    "6 cl Aperol",
+    "3 cl Mandelsirup (Giffard)",
+    "3 cl Zitronensaft (frisch)",
+    "3 cl Orangensaft"
+   ],
+   "steps": [
+    "Alle Zutaten werden mit einigen Eiswürfeln im Shaker kräftig geschüttelt und mit Hilfe eines Strainer in einem mit 2-3 Eiswürfeln gefülltem Longdrink-Glas serviert.",
+    "Der Zitronensaft sollte bestmöglich frisch gepresst sein."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Red Apple",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Red_Apple",
+   "revid": "545243",
+   "revisedAt": "2010-09-10T17:59:49Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "4 cl Wodka",
+    "2 cl Apricot Brandy",
+    "3 cl Grüner Apfel Sirup",
+    "1 cl Grenadinesirup",
+    "Apfelsaft/Johannisbeersaft/Kirschsaft zu gleichen Teilen"
+   ],
+   "steps": [
+    "Alles einem Shaker kräftig schütteln und in ein Glas geben"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Mint Royal",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Brandy_alapú_koktélok/Mint_Royal",
+   "revid": "517680",
+   "revisedAt": "2025-10-01T03:16:19Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "5 cl brandy,",
+    "5 cl mentás csokoládélikőr,",
+    "5 cl citromlé,",
+    "1 tojás fehérje,",
+    "jég."
+   ],
+   "steps": [
+    "Az alapanyagokat shakerbe öntjük, összerázzuk, majd leszűrjük a pohárba.",
+    "Díszítés: egy fél szelet citrom, mentalevelek"
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Bloody Freddy",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Bloody_Freddy",
+   "revid": "532063",
+   "revisedAt": "2010-06-26T20:06:23Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Wie bei dem Stammgetränk Bloody Marry alle flüssigen Zutaten in einem Longdrinkglas verrühren",
+   "ingredients": [
+    "4 cl Wodka",
+    "1 cl Zitronensaft",
+    "8 cl Tomatensaft",
+    "1 El Essig",
+    "2 Spritzer Tabasco",
+    "1 Prise Pfeffer",
+    "1 Prise Salz"
+   ],
+   "steps": [
+    "Wie bei dem Stammgetränk Bloody Marry alle flüssigen Zutaten in einem Longdrinkglas verrühren"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Atholl Brose",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Atholl_Brose",
+   "revid": "531914",
+   "revisedAt": "2010-06-25T15:37:26Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Dieses ist der einzige in Schottland legitime Cocktail auf Basis von Scotch, der traditionell zu Silvester serviert wird. Er geht auf eine Legende aus dem Jahre 1475 zurück. Der Herzog von Atholl soll die Trinkwasserquelle seines Feindes damit versetzt haben.",
+   "ingredients": [
+    "250 g Heidehonig",
+    "250 g Hafermehl (Haferflocken)",
+    "1,5 l Scotch"
+   ],
+   "steps": [
+    "Den Honig und das Hafermehl (Haferflocken) glattrühren.",
+    "Nach und nach den Whiskey beimengen und fleißig weiterrühren.",
+    "Danach alles mit Hilfe des Trichters in die Flaschen füllen und 2 Tage lang stehen lassen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Jim Julep",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Jim_Julep",
+   "revid": "277601",
+   "revisedAt": "2007-04-22T17:23:27Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Die Orangenscheiben achteln und zusammen mit dem Minzezweig und dem Zucker in einem Longdrink-Glas mit einem Stößel zerdrücken. Glas mit Crushed Ice füllen, Bourbon Whiskey aufgießen. Mit Ginger Ale auffüllen. Mit Trinkhalm servieren.",
+   "ingredients": [
+    "6 cl Bourbon Whiskey",
+    "4 Orangenscheiben",
+    "1 Minzezweig",
+    "1 Teelöffel brauner Zucker",
+    "Ginger Ale zum auffüllen"
+   ],
+   "steps": [
+    "Die Orangenscheiben achteln und zusammen mit dem Minzezweig und dem Zucker in einem Longdrink-Glas mit einem Stößel zerdrücken.",
+    "Glas mit Crushed Ice füllen, Bourbon Whiskey aufgießen.",
+    "Mit Ginger Ale auffüllen.",
+    "Mit Trinkhalm servieren."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Tanga",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Tanga",
+   "revid": "536079",
+   "revisedAt": "2010-07-22T20:51:48Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alle Zutaten mit Crushed Ice in einem Shaker mixen und in ein Longdrinkglas giessen.",
+   "ingredients": [
+    "2 1/2 cl Gin",
+    "2 1/2 cl Wermut",
+    "2 1/2 cl Cointreau",
+    "Orangensaft"
+   ],
+   "steps": [
+    "Alle Zutaten mit Crushed Ice in einem Shaker mixen und in ein Longdrinkglas giessen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Ipanema",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Ipanema",
+   "revid": "595974",
+   "revisedAt": "2011-08-07T10:41:24Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Eine unbehandelte Limette gründlich abwaschen und abtrocknen. Die Spitzen mit einem Messer entfernen und die Limette der Länge nach teilen. Nun die Limette achteln und den weißen Fruchtstamm entfernen. Die geschnittene Limette in einen Tumbler oder ein Becherglas füllen und braunen Rohrzucker darübe",
+   "ingredients": [
+    "1 Limette",
+    "2 BL Rohrzucker, braun",
+    "1 cl Lime Juice",
+    "Ginger Ale"
+   ],
+   "steps": [
+    "Eine unbehandelte Limette gründlich abwaschen und abtrocknen.",
+    "Die Spitzen mit einem Messer entfernen und die Limette der Länge nach teilen.",
+    "Nun die Limette achteln und den weißen Fruchtstamm entfernen.",
+    "Die geschnittene Limette in einen Tumbler oder ein Becherglas füllen und braunen Rohrzucker darüber streuen.",
+    "Mit Lime Juice aufgießen und danach mit einem Stößel den Glasinhalt zerstoßen.",
+    "Das Glas mit Crushed Ice füllen und mit der Ginger Ale vollständig füllen und umrühren."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Monsoon Sherry",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Monsoon_Sherry",
+   "revid": "596929",
+   "revisedAt": "2011-08-14T13:04:11Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "East Indian mit trockenem Wermut (z.B. Martini Extra Dry) im Shaker ohne Garnitur",
+   "ingredients": [
+    "3 cl Sherry",
+    "3 cl Wermut, weiß (Martini bianco)",
+    "2 Dashs Orangebitter"
+   ],
+   "steps": [
+    "Martini- oder Cocktailglas vorkühlen",
+    "Zutaten mit Eiswürfeln in ein Rührglas geben und umrühren",
+    "Inhalt ins Glas seihen"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Orgasm",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Orgasm",
+   "revid": "536111",
+   "revisedAt": "2010-07-22T21:20:23Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "In ein Cocktailglas Eiswürfel füllen, danach den Cointreau darüber gießen, ein bisschen warten und dann vorsichtig den Irish Cream Likör dazu geben.",
+   "ingredients": [
+    "3 cl Cointreau",
+    "3 cl Irish Cream Likör",
+    "Eiswürfel"
+   ],
+   "steps": [
+    "In ein Cocktailglas Eiswürfel füllen, danach den Cointreau darüber gießen, ein bisschen warten und dann vorsichtig den Irish Cream Likör dazu geben."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Bikini Starlet",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Bikini_Starlet",
+   "revid": "705983",
+   "revisedAt": "2014-06-28T15:26:08Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Tequila, Vanillesirup, Blaubersuppe auf Eis im Shaker schütteln",
+   "ingredients": [
+    "4 cl Tequila, golden",
+    "2 cl Vanillesirup",
+    "4 cl Blaubeersuppe (Heidelbeersaft)",
+    "1 dash Angosturabitter",
+    "Soda"
+   ],
+   "steps": [
+    "Collinsglas zur Hälfte mit Eiswürfeln füllen",
+    "Tequila, Vanillesirup, Blaubersuppe auf Eis im Shaker schütteln",
+    "Schmelzwasser im Collinsglas mithilfe eines Barsiebs ausgießen",
+    "Geschüttelte Zutaten ins Glas gießen",
+    "Mit Sodawasser auffüllen"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Corretto Brandy Flip",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Corretto_Brandy_Flip",
+   "revid": "920908",
+   "revisedAt": "2020-08-10T13:43:18Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "1 Eigelb",
+    "2 cl Rahm",
+    "2 cl Kahlúa",
+    "4 cl Brandy",
+    "1 cl Zuckersirup"
+   ],
+   "steps": [
+    "Alles heftig mit Eis shaken",
+    "Abseihen in Cocktailglas"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Likör 43 mit Milch",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Likör_43_mit_Milch",
+   "revid": "656510",
+   "revisedAt": "2012-12-12T21:37:33Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Zuerst gibt man den Likör 43 in das Glas (welches Glas ist egal), danach die Milch. Dann umrühren. Dann etwas Zimt darüber streuen.",
+   "ingredients": [
+    "2 cl Likör 43",
+    "8 cl Milch",
+    "eine Prise Zimt"
+   ],
+   "steps": [
+    "Zuerst gibt man den Likör 43 in das Glas (welches Glas ist egal), danach die Milch.",
+    "Dann etwas Zimt darüber streuen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Golden Cadillac",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Golden_Cadillac",
+   "revid": "561362",
+   "revisedAt": "2010-12-17T15:00:46Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Golden Cadillac ist ein Cocktail, der hauptsächlich auf Parties und manchmal als Digestif konsumiert wird.",
+   "ingredients": [
+    "2 cl Creme de Cacao (weiss)",
+    "2 cl Galliano",
+    "2 cl Orangensaft",
+    "2 cl Sahne",
+    "Muskat Gewürz"
+   ],
+   "steps": [
+    "Geben Sie alle flüssigen Zutaten in einen Shaker und schütteln Sie das ganze mit viel Eis gut durch.",
+    "Seihen Sie den Drink in eine Cocktailschale oder eine Champagnerflöte ab.",
+    "Mit etwas Sahne wird dieser Drink schön cremig.",
+    "Zum Schluss wird ein Hauch Muskat auf den Coktail gestreut."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Singapur Sling",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Singapur_Sling",
+   "revid": "867389",
+   "revisedAt": "2019-01-11T12:44:14Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Der Singapore Sling wurde Anfang des 20. Jahrhunderts von Ngiam Tong Boon für das Raffles Hotel in Singapur erfunden.",
+   "ingredients": [
+    "3 cl Gin",
+    "1½ cl Cherry Brandy",
+    "12 cl Ananassaft",
+    "1½ cl Limettensaft",
+    "¾ cl Cointreau",
+    "¾ cl Bénédictine D.O.M.",
+    "1 cl Grenadinesirup",
+    "1 Spritzer Angostura-Bitter"
+   ],
+   "steps": [
+    "Collinsglas vorkühlen",
+    "Zutaten mit Eis in den Shaker geben und ein paar Sekunden lang schnell schütteln",
+    "Kühleis im Gästeglas durch frische Eiswürfel ersetzen",
+    "Inhalt ins Glas seihen"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Singapore Sling",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Gin_alapú_koktélok/Singapore_Sling",
+   "revid": "517688",
+   "revisedAt": "2025-10-01T03:22:00Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "6 cl gin,",
+    "3 cl friss citromlé,",
+    "3 cl Cherry Brandy,",
+    "szódavíz,",
+    "jég"
+   ],
+   "steps": [
+    "Az alapanyagokat a jéggel félig megtöltött pohárba öntjük.",
+    "Megkeverjük, és kiegészítjük szódavízzzel.",
+    "Díszítés: narancs- és citromszeletek, maraschino cseresznye és mentalevél"
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "B55",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_B55",
+   "revid": "516387",
+   "revisedAt": "2010-03-28T16:56:34Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "colspan=\"2\" align=\"center\" | Bild Der B55 besteht aus Kaffeelikör, Irish Cream und Absinth.",
+   "ingredients": [
+    "2 cl Kaffeelikör",
+    "2 cl Irish Cream",
+    "1 cl Absinth"
+   ],
+   "steps": [
+    "Die Zutaten in der obigen Reihenfolge über einen Löffel in ein Schnapsglas geben. Angezündet mit einem Strohhalm und einem Bierdeckel servieren."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Feuille morte",
+   "url": "https://fr.wikibooks.org/wiki/Livre_de_cuisine/Boissons/Cocktails/Feuille_morte",
+   "revid": "452528",
+   "revisedAt": "2014-10-31T20:13:36Z",
+   "language": "fr",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "2,5 cl de liqueur d'",
+    "1 cl de sirop de grenadine",
+    "1 cl de sirop de menthe",
+    "eau"
+   ],
+   "steps": [
+    "Versez dans un verre à aperitif les sirops et l'anis",
+    "Ajoutez de l'eau"
+   ],
+   "bronNaam": "Wikibooks Boissons (Frans)"
+  },
+  {
+   "title": "Bahama Mama",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Bahama_Mama",
+   "revid": "516465",
+   "revisedAt": "2010-03-28T21:03:55Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alle Zutaten mit Crushed Ice im Shaker schütteln und mit ein paar Eiswürfel in ein Longdrinkglas geben, anschließend dekorieren.",
+   "ingredients": [
+    "2cl Brauner Rum",
+    "2cl Weißer Rum",
+    "2cl Havana Club 3 Jahre",
+    "2cl Malibu",
+    "4cl Ananassaft",
+    "4cl Orangensaft",
+    "1cl Zitronensaft",
+    "2-3 Spritzer Grenadine"
+   ],
+   "steps": [
+    "Alle Zutaten mit Crushed Ice im Shaker schütteln und mit ein paar Eiswürfel in ein Longdrinkglas geben, anschließend dekorieren."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Five o´clock",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Five_o´clock",
+   "revid": "545263",
+   "revisedAt": "2010-09-10T18:45:31Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alle Zutaten nacheinander mit Eiswürfeln in ein Longdrinkglas geben.",
+   "ingredients": [
+    "2cl Rum (weiß, dry)",
+    "2cl Gin (dry)",
+    "2cl Martini (weiß, dry)",
+    "2cl Orangensaft"
+   ],
+   "steps": [
+    "Alle Zutaten nacheinander mit Eiswürfeln in ein Longdrinkglas geben."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "French 76",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_French_76",
+   "revid": "532531",
+   "revisedAt": "2010-06-28T19:32:06Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alle Zutaten außer Champagner mit Eis in einem Shaker mixen und in ein Champagnerglas abseihen. Danach das Glas mit Champagner auffüllen.",
+   "ingredients": [
+    "3 cl Wodka",
+    "1 cl Zitronensaft",
+    "1 cl Zuckersirup",
+    "Champagner"
+   ],
+   "steps": [
+    "Alle Zutaten außer Champagner mit Eis in einem Shaker mixen und in ein Champagnerglas abseihen.",
+    "Danach das Glas mit Champagner auffüllen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Smoothie",
+   "url": "https://fr.wikibooks.org/wiki/Livre_de_cuisine/Boissons/Cocktails_sans_alcool/Smoothie",
+   "revid": "452480",
+   "revisedAt": "2014-10-31T20:11:51Z",
+   "language": "fr",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Les smoothies ont été commercialisés à la fin des années 1960, quand les vendeurs de glace et les magasins diététiques ont commencé à en vendre. Les smoothies se sont démocratisés dans les années 1990 et 2000.",
+   "ingredients": [
+    "1",
+    "1",
+    "1 yaourt nature"
+   ],
+   "steps": [
+    "Mixer le tout"
+   ],
+   "bronNaam": "Wikibooks Boissons (Frans)"
+  },
+  {
+   "title": "Fuzzy Navel",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Vodka_alapú_koktélok/Fuzzy_Navel",
+   "revid": "517721",
+   "revisedAt": "2025-10-01T03:37:58Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "3 cl vodka,",
+    "3 cl őszibarack snapsz,",
+    "12 cl frissen facsart narancslé,",
+    "jég"
+   ],
+   "steps": [
+    "A jéggel félig megtöltött pohárban összekeverjük az alapanyagokat, és díszítjük.",
+    "Díszítés: egy szelet őszibarack és egy szelet narancs"
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Southern Comfort Sour",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Southern_Comfort_Sour",
+   "revid": "536075",
+   "revisedAt": "2010-07-22T20:49:06Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Die flüssigen Zutaten mit einigen Eiswürfeln in den Shaker geben und kräftig schütteln. Die Mischung durch das Barsieb auf weitere Eiswürfel in eine Cocktailschale abgießen.",
+   "ingredients": [
+    "5cl Southern Comfort",
+    "1cl Zuckersirup",
+    "4cl Zitronensaft"
+   ],
+   "steps": [
+    "Die flüssigen Zutaten mit einigen Eiswürfeln in den Shaker geben und kräftig schütteln.",
+    "Die Mischung durch das Barsieb auf weitere Eiswürfel in eine Cocktailschale abgießen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Munich Mule",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Munich_Mule",
+   "revid": "536109",
+   "revisedAt": "2010-07-22T21:18:52Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Die Salatgurke entsaften, 4 cl Gurkensaft in einen Shaker geben, Wodka dazu gießen, schütteln.",
+   "ingredients": [
+    "Salatgurke (entsaften, 4 Cl)",
+    "4cl Wodka (Smirnoff o.ä.)",
+    "Gingerale (6 cl)"
+   ],
+   "steps": [
+    "Die Salatgurke entsaften, 4 cl Gurkensaft in einen Shaker geben, Wodka dazu gießen, schütteln.",
+    "Mixtur in ein Latte-Macciato-Glas füllen und mit Gingerale aufgießen.",
+    "Sollte der Cocktail nicht \"grasgrün\" sein, noch Gurkensaft nachfüllen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Blue Lady",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Blue_Lady",
+   "revid": "532239",
+   "revisedAt": "2010-06-27T11:55:19Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Nicht dass er sich dadurch auszeichnet, Damen abzufüllen, aber seine meeresblaue Farbe hat schon so manche Frau verführt.",
+   "ingredients": [
+    "3cl Gin",
+    "3cl Zitronensaft",
+    "2cl Zuckersirup",
+    "2cl Blue Curaçao",
+    "Eis"
+   ],
+   "steps": [
+    "Ein paar Eiswürfel mit dem Gin, Zitronensaft, Blue Curacao und dem Zuckersirup in den Shaker geben und kräftig schütteln.",
+    "Danach durch ein Sieb in ein Tumbler- oder Shortdrinkglas geben."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Virgin Mary",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Virgin_Mary",
+   "revid": "592626",
+   "revisedAt": "2011-07-16T16:53:00Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Den Tomatensaft in ein großes Becherglas auf Eiswürfel gießen, würzen und verrühren. Zum Servieren Stangensellerie hinzufügen.",
+   "ingredients": [
+    "14 cl Tomatensaft",
+    "ein Spritzer Zitronensaft",
+    "ein Spritzer Worchestershiresauce",
+    "Salz, frisch gemahlener Pfeffer",
+    "Sellerie"
+   ],
+   "steps": [
+    "Den Tomatensaft in ein großes Becherglas auf Eiswürfel gießen, würzen und verrühren.",
+    "Zum Servieren Stangensellerie hinzufügen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "pop that cherry",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_pop_that_cherry",
+   "revid": "1033343",
+   "revisedAt": "2024-05-19T18:24:23Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alles in einen Shaker mit Eis geben, dann in gekühltes Glas mit ein oder zwei Eiswürfel einseihen.",
+   "ingredients": [
+    "3 cl Amaretti (alkoholfreier Amaretto)",
+    "4 cl Expresso",
+    "3 cl Mandelmilch",
+    "2 cl Vanilliesirup"
+   ],
+   "steps": [
+    "Alles in einen Shaker mit Eis geben, dann in gekühltes Glas mit ein oder zwei Eiswürfel einseihen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Frozen Daiquiri",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Frozen_Daiquiri",
+   "revid": "532581",
+   "revisedAt": "2010-06-29T08:04:00Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Zutaten mit Crushed Ice im Blender bei mixen, bis alles fein und matschig ist",
+   "ingredients": [
+    "4½ cl Rum, weiß",
+    "2 cl Zitronensaft- oder Limettensaft",
+    "½ cl Läuterzucker"
+   ],
+   "steps": [
+    "Gobletglas vorkühlen",
+    "Zutaten mit Crushed Ice im Blender bei mixen, bis alles fein und matschig ist",
+    "In ein Glas füllen"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Bob Dylan",
+   "url": "https://en.wikibooks.org/wiki/Bartending/Cocktails/Bob_Dylan",
+   "revid": "2760790",
+   "revisedAt": "2015-02-02T13:28:15Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "12oz Surge",
+    "4oz Jägermeister",
+    "16oz Ice"
+   ],
+   "steps": [
+    "Blend ingredients in blender until smooth."
+   ],
+   "bronNaam": "Wikibooks Bartending (Engels)"
+  },
+  {
+   "title": "Banana Frozen Daiquiri",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Banana_Frozen_Daiquiri",
+   "revid": "531926",
+   "revisedAt": "2010-06-25T16:19:41Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alle Zutaten mit Crushed Ice in den Aufsatzmixer geben und gut vermischen, bis alles matschig ist",
+   "ingredients": [
+    "4½ cl Rum, weiß",
+    "2 cl frisch gepresster Zitronensaft- oder Limettensaft",
+    "½ cl Läuterzucker",
+    "½ frische Banane"
+   ],
+   "steps": [
+    "Gobletglas vorkühlen",
+    "Alle Zutaten mit Crushed Ice in den Aufsatzmixer geben und gut vermischen, bis alles matschig ist",
+    "Den gesamten Inhalt ins Gobletglas gießen"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Mazout",
+   "url": "https://fr.wikibooks.org/wiki/Livre_de_cuisine/Boissons/Cocktails/Mazout",
+   "revid": "452560",
+   "revisedAt": "2014-10-31T20:14:43Z",
+   "language": "fr",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "10 cl de vin rouge",
+    "10 cl de soda",
+    "4 g de"
+   ],
+   "steps": [
+    "Verser dans un tumbler le sucre le vin et le soda",
+    "Remuer"
+   ],
+   "bronNaam": "Wikibooks Boissons (Frans)"
+  },
+  {
+   "title": "Batida de Coco",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Batida_de_Coco",
+   "revid": "545247",
+   "revisedAt": "2010-09-10T18:13:15Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alle Zutaten gleichzeitig in den Shaker geben und gut durchschütteln.",
+   "ingredients": [
+    "2 Messbecher Cachaça oder weißen Rum",
+    "2 Messbecher Gin",
+    "2 Tassen Kokosmilch",
+    "2 Esslöffel Zucker",
+    "Eiswürfel"
+   ],
+   "steps": [
+    "Alle Zutaten gleichzeitig in den Shaker geben und gut durchschütteln.",
+    "Anschließend in die Gläser seihen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Strawberry Margarita",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Strawberry_Margarita",
+   "revid": "431527",
+   "revisedAt": "2009-02-04T20:58:38Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Zuckerrand: Den Rand der Cocktailschale in einem Zitronenviertel drehen und in eine mit Zucker gefüllte Schale tauchen.",
+   "ingredients": [
+    "6cl Tequila (weiss)",
+    "3cl Triple Sec Curaçao",
+    "5 gefrostete Erdbeeren",
+    "Saft einer Limette",
+    "5TL Rohrzucker"
+   ],
+   "steps": [
+    "Zuckerrand: Den Rand der Cocktailschale in einem Zitronenviertel drehen und in eine mit Zucker gefüllte Schale tauchen.",
+    "Alle Zutaten im Elektromixer mixen, eine Erdbeere zum Garnieren zurückbehalten.",
+    "Eiswürfel in den Mixer werfen, nochmal etwas durchmixen und in das zurvor vorbereitete Glas abseihen.",
+    "Die aufgehobene Erdbeere an den Glasrand stecken."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Virgin Strawberry Daiquiri",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Rum_alapú_koktélok/Virgin_Strawberry_Daiquiri",
+   "revid": "517707",
+   "revisedAt": "2025-10-01T03:31:33Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "12 cl friss eperlé vagy 25 dkg eperpép,",
+    "15 cl frissen facsart narancslé,",
+    "egy öntet lime-lé,",
+    "egy öntet citromlé,",
+    "2 csésze tört jég"
+   ],
+   "steps": [
+    "A gyümölcsleveket egy csésze jéggel turmixgépbe töltjük, és a legerősebb fokozaton nagyon rövid ideig turmixoljuk.",
+    "Kiöntjük a másik csésze jéggel megtöltött pohárba, és díszítjük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Caipi Blue",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Caipi_Blue",
+   "revid": "595905",
+   "revisedAt": "2011-08-06T21:59:17Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Die Limone in acht Stücke schneiden und mit dem Zucker in ein Glas geben und mit einem Stößel zerstampfen.",
+   "ingredients": [
+    "1 Limone",
+    "1 Limonenscheibe",
+    "1 TL Brauner Rohrzucker",
+    "3 cl Blue Curaçao",
+    "3 cl Weißer Rum",
+    "Crushed Ice"
+   ],
+   "steps": [
+    "Die Limone in acht Stücke schneiden und mit dem Zucker in ein Glas geben und mit einem Stößel zerstampfen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Bloodshot",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Vodka_alapú_koktélok/Bloodshot",
+   "revid": "517729",
+   "revisedAt": "2025-10-01T03:41:45Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "3 cl vodka,",
+    "9 cl erős marhahúsleves,",
+    "6 cl paradicsomlé,",
+    "egy öntet lime-lé,",
+    "egy öntet Worcestershire-szósz,",
+    "egy öntet erős chiliszósz,",
+    "őrölt bors",
+    "zelleres só ízlés szerint,",
+    "jég"
+   ],
+   "steps": [
+    "Az alapanyagokat shakerben összerázzuk.",
+    "Az italt kitöltjük a jéggel félig megtöltött pohárba és díszítjük.",
+    "A Bullshot koktél ugyanezekkel az alapanyagokkal és módszerrel készül, csak a paradicsomlevet hagyjuk ki belőle.",
+    "Díszítés: két apró paradicsom egy karika uborkával"
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Tiefseetaucher",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Tiefseetaucher",
+   "revid": "776989",
+   "revisedAt": "2015-12-07T13:50:33Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Der nicht sehr verbreitete Cocktail wurde 1984 von erfunden und gehört, zusammen mit Leichtmatrose und Schwermatrose, zu einer Trilogie von Rum-Punches mit Namen aus dem nautischen Bereich .",
+   "ingredients": [
+    "6 cl hochprozentiger Brauner Rum",
+    "6 cl Brauner Rum",
+    "2 cl Weißer Rum",
+    "2 cl Cointreau",
+    "1-2 Barlöffel Puderzucker",
+    "1 cl Limettensirup",
+    "Saft einer Limette oder 4 cl Zitronensaft"
+   ],
+   "steps": [
+    "Im Shaker auf gestoßenem Eis kräftig schütteln.",
+    "In ein Super-Longdrink-Glas gießen, mit gestoßenem Eis auffüllen, ausgepresstes Limettenviertel dazu geben."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Lectric Lemonade",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Lectric_Lemonade",
+   "revid": "656513",
+   "revisedAt": "2012-12-12T21:44:14Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Garnitur: Zitronenscheibe am Glasrand, 2 Limettenachtel und 1 Cocktailkirsche ins Glas geben",
+   "ingredients": [
+    "2 cl Wodka",
+    "2 cl Weißer Rum",
+    "2 cl Tequila",
+    "2 cl Gin",
+    "2 cl Triple Sec",
+    "1 cl Lime Juice",
+    "1 cl Lemon Squash",
+    "Mit Sprite auffüllen",
+    "Schuss Bitter Lemon hinzufügen"
+   ],
+   "steps": [
+    "Eis in längliches Glas geben",
+    "Erst Lime & Lemon einfüllen (setzt sich am Boden ab)",
+    "Spirituosen hinzugeben",
+    "Mit Sprite auffüllen",
+    "Schuss Bitter Lemon zum Schluss dazu geben"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Claridge",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Claridge",
+   "revid": "532359",
+   "revisedAt": "2010-06-27T19:56:49Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Zutaten auf Eis im Rührglas kräftig rühren, in die Cocktailschale gießen",
+   "ingredients": [
+    "2 cl Gin",
+    "2 cl Vermouth Dry",
+    "1 cl Apricot Brandy",
+    "1 cl Triple Sec"
+   ],
+   "steps": [
+    "Zutaten auf Eis im Rührglas kräftig rühren, in die Cocktailschale gießen --Slartibartfass 20:30, 7."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Salty dog",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Vodka_alapú_koktélok/Salty_dog",
+   "revid": "517716",
+   "revisedAt": "2025-10-01T03:35:38Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "6 cl vodka,",
+    "friss grapefruitlé,",
+    "jég"
+   ],
+   "steps": [
+    "A vodkát öntjük rá a jégre a sós szélű pohárban.",
+    "Töltsük rá a grepefruitlét, és díszítsük.",
+    "Díszítés: vonjuk be a pohár peremét sóval, és tegyünk bele egy szelet citromot"
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Flying Kangaroo",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Flying_Kangaroo",
+   "revid": "532524",
+   "revisedAt": "2010-06-28T19:20:59Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Zutaten auf Crushed Ice kräftig schütteln, in mit Crushed Ice halb gefülltes Tropical-Glas abseihen.",
+   "ingredients": [
+    "3 cl Wodka",
+    "3 cl weißer Rum",
+    "1 cl Galliano",
+    "2 cl Sahne",
+    "2 cl Kokoscreme",
+    "2 cl Orangensaft",
+    "4 cl Ananassaft"
+   ],
+   "steps": [
+    "Zutaten auf Crushed Ice kräftig schütteln, in mit Crushed Ice halb gefülltes Tropical-Glas abseihen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Blue Ocean",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Blue_Ocean",
+   "revid": "532247",
+   "revisedAt": "2010-06-27T11:59:50Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alle Spirituosen in einen Shaker geben und gut schütteln. Danach in das Glas mit dem Eis geben und mit Sprite auffüllen.",
+   "ingredients": [
+    "1 Teil Blue Curaçao",
+    "1 Teil Weißer Rum",
+    "1 Teil Wodka",
+    "1 Teil Gin",
+    "4 Teile Sprite",
+    "Crushed Ice"
+   ],
+   "steps": [
+    "Alle Spirituosen in einen Shaker geben und gut schütteln.",
+    "Danach in das Glas mit dem Eis geben und mit Sprite auffüllen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Blue Heaven",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Rum_alapú_koktélok/Blue_Heaven",
+   "revid": "517705",
+   "revisedAt": "2025-10-01T03:30:42Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "5 cl fehér rum,",
+    "1,5 Amaretto,",
+    "1,5 cl Blue Curaçao,",
+    "1,5 cl friss lime-lé,",
+    "9-10 cl ananászlé,",
+    "jég"
+   ],
+   "steps": [
+    "Az alapanyagokat shakerbe öntjük, összerázzuk, de nem szűrjük le.",
+    "Kitöltjük a pohárba, és díszítjük.",
+    "Díszítés: ananászlevelek, egy szelet lime és egy cseresznye"
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Nektarini",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Nektarini",
+   "revid": "656516",
+   "revisedAt": "2012-12-12T21:49:02Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alles in einen Shaker schütten und gut durchshaken. Danach den Cocktail unbedingt in einem Martiniglas (evtl. mit Zuckerrand) servieren.",
+   "ingredients": [
+    "2 cl Wodka",
+    "1 cl Braunen Rum",
+    "4 cl Nektarinensaft",
+    "2 Eiswürfel"
+   ],
+   "steps": [
+    "Alles in einen Shaker schütten und gut durchshaken.",
+    "Danach den Cocktail unbedingt in einem Martiniglas (evtl. mit Zuckerrand) servieren."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Cornichon",
+   "url": "https://fr.wikibooks.org/wiki/Livre_de_cuisine/Boissons/Cocktails/Cornichon",
+   "revid": "452515",
+   "revisedAt": "2014-10-31T20:12:56Z",
+   "language": "fr",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "2,5 cl de liqueur d'",
+    "1,5 cl de sirop de banane",
+    "Eau"
+   ],
+   "steps": [
+    "Verser dans un verre à aperitif le sirop et l'anis",
+    "Ajouter de l'eau"
+   ],
+   "bronNaam": "Wikibooks Boissons (Frans)"
+  },
+  {
+   "title": "Coconut Lips",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Coconut_Lips",
+   "revid": "1034711",
+   "revisedAt": "2024-06-01T18:49:47Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "und anschließend in ein Glas mit ein oder zwei Eiswürfel einseihen.",
+   "ingredients": [
+    "2 cl Himbeersirup",
+    "2 cl Kokossirup",
+    "16 cl Ananassirup"
+   ],
+   "steps": [
+    "Alle Zutaten in einen Shaker mit Eis geben und anschließend in ein Glas mit ein oder zwei Eiswürfel einseihen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Strawberry Cup",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Strawberry_Cup",
+   "revid": "616862",
+   "revisedAt": "2011-12-21T15:14:06Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Crushed Ice in einen Shaker geben. Die restlichen Zutaten hinzugeben und kräftig schütteln.",
+   "ingredients": [
+    "1cl Bar-Sirup Erdbeere",
+    "1cl Bar-Sirup Kokos",
+    "2cl Sahne",
+    "15cl Ananassaft",
+    "Erdbeere zum Verzieren"
+   ],
+   "steps": [
+    "Crushed Ice in einen Shaker geben.",
+    "Die restlichen Zutaten hinzugeben und kräftig schütteln."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Charlie Brown",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Charlie_Brown",
+   "revid": "1034712",
+   "revisedAt": "2024-06-01T18:53:30Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "und anschließend in ein Glas mit ein oder zwei Eiswürfel einseihen.",
+   "ingredients": [
+    "7 cl Milch",
+    "7 cl Ananassirup",
+    "2 cl Schokoladensirup"
+   ],
+   "steps": [
+    "DIe Milch und den Ananassirup in einen Shaker mit Eis geben und anschließend in ein Glas mit ein oder zwei Eiswürfel einseihen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Flaming Bob Marley",
+   "url": "https://en.wikibooks.org/wiki/Bartending/Cocktails/Flaming_Bob_Marley",
+   "revid": "2996460",
+   "revisedAt": "2015-09-24T11:18:37Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Fill the lowest third with grenadine syrup, the middle third with creme de menthe, and float the 151 in the top third.",
+   "ingredients": [
+    "Grenadine syrup",
+    "Crème de menthe",
+    "151º proof rum"
+   ],
+   "steps": [
+    "Divide a tall shot glass into thirds",
+    "Fill the lowest third with grenadine syrup, the middle third with creme de menthe, and float the 151 in the top third.",
+    "Wet a thin straw, light the 151 by passing a lighter over it.",
+    "Plunge the straw to the bottom of the glass into the grenadine syrup and suck. If done rapidly and correctly the straw will not melt, and you can observe flames travelling up the inside of it. Stop sucking when the flame is inside the straw.",
+    "Serve in a shot glass."
+   ],
+   "bronNaam": "Wikibooks Bartending (Engels)"
+  },
+  {
+   "title": "Surfer's Paradise",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Surfer's_Paradise",
+   "revid": "632363",
+   "revisedAt": "2012-03-28T19:33:27Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Zutaten mit Eiswürfeln in einen Shaker geben, fertig geshakten Cocktail in ein zur Hälfte mit Eiswürfel gefülltes Fancyglas oder Tumbler abseien und servieren.",
+   "ingredients": [
+    "4cl Wodka",
+    "2cl Creme de Bananas",
+    "2cl Blue Curaçao",
+    "8cl Ananassaft"
+   ],
+   "steps": [
+    "Zutaten mit Eiswürfeln in einen Shaker geben, fertig geshakten Cocktail in ein zur Hälfte mit Eiswürfel gefülltes Fancyglas oder Tumbler abseien und servieren."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Octopussy",
+   "url": "https://en.wikibooks.org/wiki/Bartending/Cocktails/Octopussy",
+   "revid": "3262983",
+   "revisedAt": "2017-08-12T02:14:23Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Strain over ice into a large glass, garnish with a slice of pineapple and/or a fresh cherry with the stem intact.",
+   "ingredients": [
+    "5 oz. Sour cherry juice",
+    "5 oz. Pineapple juice",
+    "1 oz. Lemon juice",
+    "1 oz. Grenadine",
+    "Ice"
+   ],
+   "steps": [
+    "Shake the ingredients, don't stir.",
+    "Strain over ice into a large glass, garnish with a slice of pineapple and/or a fresh cherry with the stem intact."
+   ],
+   "bronNaam": "Wikibooks Bartending (Engels)"
+  },
+  {
+   "title": "Polish Martini",
+   "url": "https://en.wikibooks.org/wiki/Bartending/Cocktails/Polish_Martini",
+   "revid": "938727",
+   "revisedAt": "2007-08-08T01:58:28Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "A Polish Martini tastes of honey due to the addition of Krupnik which is a honey-based liqueur.",
+   "ingredients": [
+    "1 1/2 measures of Zubrowka vodka",
+    "1 1/2 measures of Krupnik liqueur",
+    "2 measures of Apple Juice"
+   ],
+   "steps": [
+    "Take Zubrowka and Krupnik from the freezer",
+    "Shake with crushed ice and strain the ingredients.",
+    "Serve in an ice-cold 5oz Martini glass, no garnish."
+   ],
+   "bronNaam": "Wikibooks Bartending (Engels)"
+  },
+  {
+   "title": "Poolitchi",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Poolitchi",
+   "revid": "656526",
+   "revisedAt": "2012-12-12T22:06:17Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Wahlweise können 2cl Lime Juice dazugegeben werden (wird sehr süß)",
+   "ingredients": [
+    "2 cl Litchilikör",
+    "1 cl Triple Sec",
+    "3 cl Wodka",
+    "1 cl Mangosirup",
+    "12 cl Ananassaft",
+    "zweimal 1/8 Limette"
+   ],
+   "steps": [
+    "Alle Zutaten auf Eis in einen Shaker geben",
+    "Limette darüber ausdrücken und zugeben, kräftig schütteln",
+    "In ein Collins- oder Fancyglas auf Eiswürfel abseihen"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Kefir",
+   "url": "https://fr.wikibooks.org/wiki/Livre_de_cuisine/Boissons/Kefir",
+   "revid": "327791",
+   "revisedAt": "2011-05-08T14:13:22Z",
+   "language": "fr",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Boisson d'origine caucasienne à base de ferments lactique, on le nomme aussi « Champagne du Caucase ».",
+   "ingredients": [
+    "un récipient de 2 litres,",
+    "3 cuillères à soupe de (roux de préférence),",
+    "3 cuillères à soupe de ,",
+    "1,5 litre d’eau de source de préférence,",
+    "2 ,",
+    "1/2 ou pressé,",
+    "En été, quelques si vous le désirez."
+   ],
+   "steps": [
+    "Mélangez les ingrédients dans le récipient."
+   ],
+   "bronNaam": "Wikibooks Boissons (Frans)"
+  },
+  {
+   "title": "Irish Coctail",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Whisky_alapú_koktélok/Irish_Coctail",
+   "revid": "517737",
+   "revisedAt": "2025-10-01T03:45:45Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "5 cl ír whiskey,",
+    "6 öntet zöld Creme de Menthe,",
+    "3 öntet zöld Chartreuse,",
+    "jég"
+   ],
+   "steps": [
+    "Az alapanyagokat shakerbe öntjük, összerázzuk, és leszűrjük a koktélos pohárba.",
+    "Díszítés: egy zöld és egy piros cseresznye"
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Ipamara",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Ipamara",
+   "revid": "578146",
+   "revisedAt": "2011-04-21T13:38:26Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "1. Limette in 8 Teile teilen und 4 Stücke in ein Cocktailglas geben.",
+   "ingredients": [
+    "4cl Lime Juice",
+    "Maracujasaft",
+    "1 Limette",
+    "2 1/2 Teelöffel Brauner Zucker",
+    "Crushed Ice"
+   ],
+   "steps": [
+    "Limette in 8 Teile teilen und 4 Stücke in ein Cocktailglas geben. 5.",
+    "Anschließend mit dem Crusched-Ice auffüllen 6.",
+    "Und als letztes den Maracujasaft ins Glas schütten, bis der Saft auf gleicher Höhe mit dem Crushed-Ice ist."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Wasted Time",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Wasted_Time",
+   "revid": "597122",
+   "revisedAt": "2011-08-14T21:00:31Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alles mit 3 Eiswürfeln im Shaker durchschütteln, ins Cocktailglas geben, fertig",
+   "ingredients": [
+    "3cl Malibu",
+    "2cl Rum",
+    "Schuss Limejuice",
+    "Maracujasaft"
+   ],
+   "steps": [
+    "Alles mit 3 Eiswürfeln im Shaker durchschütteln, ins Cocktailglas geben, fertig"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Copabanana",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Copabanana",
+   "revid": "532372",
+   "revisedAt": "2010-06-27T20:13:45Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Die Banane schälen und in grobe Stücke schneiden. Zusammen mit den anderen Zutaten und Crushed Ice im Mixer mixen und in ein Longdrinkglas füllen.",
+   "ingredients": [
+    "1 Banane",
+    "2 cl Amaretto",
+    "2 cl brauner Rum",
+    "4 cl Ananassaft",
+    "2 cl Cream of Coconut",
+    "2 El Vanilleeis"
+   ],
+   "steps": [
+    "Die Banane schälen und in grobe Stücke schneiden.",
+    "Zusammen mit den anderen Zutaten und Crushed Ice im Mixer mixen und in ein Longdrinkglas füllen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Blubb Babb und Hey",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Blubb_Babb_und_Hey",
+   "revid": "598027",
+   "revisedAt": "2011-08-19T19:34:48Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Dieser Cocktail ist eine Abwandlung des Campari Orange. Durch die Hinzunahme von Weinbrand oder Whiskey wird der bittere Geschmack des Campari gut überspielt.",
+   "ingredients": [
+    "2 cl Campari",
+    "2 cl Weinbrand oder Single Malt Whiskey",
+    "Orangensaft",
+    "Eis"
+   ],
+   "steps": [
+    "Campari und Weinbrand mit Eis in ein Longdrinkglas füllen und mit Orangensaft aufgießen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Wookie",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Wookie",
+   "revid": "592596",
+   "revisedAt": "2011-07-16T16:14:26Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alle Zutaten mit 3 Eiswürfeln in den Shaker geben und shaken bis er beschlägt, dann in eine Cocktailschale mit Strohhalm.",
+   "ingredients": [
+    "6 cl Bananennektar",
+    "6 cl Kirschsaft",
+    "3 cl Wodka"
+   ],
+   "steps": [
+    "Alle Zutaten mit 3 Eiswürfeln in den Shaker geben und shaken bis er beschlägt, dann in eine Cocktailschale mit Strohhalm."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Car Punch",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Car_Punch",
+   "revid": "1033345",
+   "revisedAt": "2024-05-19T18:39:30Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Den Drink mit Ananasstücken oder eine Zitronenscheibe dekorieren.",
+   "ingredients": [
+    "1 cl Zitronensaft",
+    "8 cl Orangensaft",
+    "6 cl Ananassaft",
+    "4 cl Maracujasaft",
+    "1 cl Grenadinsirup"
+   ],
+   "steps": [
+    "Alles in einen Shaker mit Eis geben und mischen.",
+    "Danach in ein Glas mit ein oder zwei Eiswürfel einseihen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Sør Money Highlander! Cocktail",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Sør_Money_Highlander!_Cocktail",
+   "revid": "650336",
+   "revisedAt": "2012-09-20T20:16:35Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Der Sør Money Highlander! Cocktail wurde vom Oliver Helf im Jahr 2008 für den Künstler Sør Money Highlander! kreiert. Er schmeckt süßlich und fruchtig.",
+   "ingredients": [
+    "12 cl ACE-Saft",
+    "8 cl Ananassaft",
+    "4 cl Wodka",
+    "2 cl Amaretto",
+    "2 cl Maracujasirup",
+    "Eis"
+   ],
+   "steps": [
+    "Alle Zutaten werden zusammen in einem Shaker gut durchgemixt und in ein mit Eiswürfeln befülltes Longdrinkglas gegeben."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Franzis Tee",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Franzis_Tee",
+   "revid": "532526",
+   "revisedAt": "2010-06-28T19:23:25Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Zuerst die Alkoholika und dann den Maracujasaft ins Glas geben. Umrühren damit sich die Säure des Safts gut verteilt.",
+   "ingredients": [
+    "5cl Bacardi (oder anderer weißer Rum)",
+    "2cl Ramazotti",
+    "7cl Maracujasaft"
+   ],
+   "steps": [
+    "Zuerst die Alkoholika und dann den Maracujasaft ins Glas geben.",
+    "Umrühren damit sich die Säure des Safts gut verteilt."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Sand Dance",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Whisky_alapú_koktélok/Sand_Dance",
+   "revid": "517738",
+   "revisedAt": "2025-10-01T03:46:11Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "5 cl blended whisky (pl. 7 Crown),",
+    "3 cl Cherry Brandy,",
+    "6 cl áfonyalé,",
+    "jég"
+   ],
+   "steps": [
+    "A poharat megtöltjük jéggel, ráöntjük az alapanyagokat, és jól összekeverjük.",
+    "Hosszabb, könnyebb italt kapunk, ha 6 cl helyett 12 cl áfonyalét adunk hozzá, és szódavízzel kiegészítjük."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Fluffy Duck",
+   "url": "https://hu.wikibooks.org/wiki/Szakácskönyv/Italok/Koktélok/Gin_alapú_koktélok/Fluffy_Duck",
+   "revid": "517701",
+   "revisedAt": "2025-10-01T03:27:48Z",
+   "language": "hu",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "6 cl gin,",
+    "6 cl Advocaat (tojáslikőr kordiál),",
+    "3 cl Cointreau,",
+    "3 cl narancslé,",
+    "szódavíz,",
+    "jég"
+   ],
+   "steps": [
+    "Az alapanyagokat a jéggel megtöltött pohárba öntjük, jól összekeverjük, és kiegészítjük a szódavízzel."
+   ],
+   "bronNaam": "Wikibooks Szakácskönyv (Hongaars)"
+  },
+  {
+   "title": "Tschunk",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Tschunk",
+   "revid": "532607",
+   "revisedAt": "2010-06-29T08:30:04Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Die Limonen würfelförmig schneiden. Die Würfel im Glas, zusammen mit dem braunen Zucker, durch einen Holzstempel zerdrücken. Zerstossenes Eis und Rum hinzugeben. Mit Mate auffüllen.",
+   "ingredients": [
+    "6cl Rum",
+    "Limonen",
+    "zerstossenes Eis",
+    "Mate",
+    "brauner Zucker"
+   ],
+   "steps": [
+    "Die Limonen würfelförmig schneiden.",
+    "Die Würfel im Glas, zusammen mit dem braunen Zucker, durch einen Holzstempel zerdrücken.",
+    "Zerstossenes Eis und Rum hinzugeben.",
+    "Mit Mate auffüllen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Santo Libre",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Santo_Libre",
+   "revid": "337832",
+   "revisedAt": "2007-12-01T07:31:08Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Die halbe Limette vierteln oder 6teln, in ein Glas geben (am besten ein Caipi-Glas), leicht anstoßen. Eiswürfel darauf geben, 4 cl Havana Club 3Jh. hinzugeben und dann das Glas mit Sprite auffüllen, Strohhalm und Cocktailrührer ins Glas, gegebenenfals eine Limettenscheibe als Deko an den Glasrand hi",
+   "ingredients": [
+    "1/2 Limette",
+    "4 cl Havana Club 3Jh.",
+    "Sprite"
+   ],
+   "steps": [
+    "Die halbe Limette vierteln oder 6teln, in ein Glas geben (am besten ein Caipi-Glas), leicht anstoßen.",
+    "Eiswürfel darauf geben, 4 cl Havana Club 3Jh. hinzugeben und dann das Glas mit Sprite auffüllen, Strohhalm und Cocktailrührer ins Glas, gegebenenfals eine Limettenscheibe als Deko an den Glasrand hinzugeben und servieren."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Eucazini",
+   "url": "https://en.wikibooks.org/wiki/Bartending/Cocktails/Eucazini",
+   "revid": "3268113",
+   "revisedAt": "2017-08-16T20:03:19Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "The Eukazini is a cocktail invented on the December 17, 2006. It was invented by bartender Kaz Santiago and customer Euan Morse in Edinburgh's Ryan's Bar.",
+   "ingredients": [
+    "1 oz or jigger of Vodka",
+    "1 oz or jigger of Cointreau",
+    "1 oz or jigger of Midori",
+    "1 oz or jigger of Pimms"
+   ],
+   "steps": [
+    "Fill a shaker with ice, then add all ingredients.",
+    "Shake ingredients till shaker is frosted, (shake very vigorously).",
+    "Then strain into a chilled martini glass.",
+    "Garnish with orange and serve."
+   ],
+   "bronNaam": "Wikibooks Bartending (Engels)"
+  },
+  {
+   "title": "Golden Girl",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Golden_Girl",
+   "revid": "532706",
+   "revisedAt": "2010-06-29T16:30:48Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Im Shaker mit Eiswürfeln gut schütteln und in eine Cocktailschale giessen.",
+   "ingredients": [
+    "3cl Apricot Brandy",
+    "3cl Wodka",
+    "6cl Orangensaft"
+   ],
+   "steps": [
+    "Im Shaker mit Eiswürfeln gut schütteln und in eine Cocktailschale giessen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Mango Colada",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Mango_Colada",
+   "revid": "659508",
+   "revisedAt": "2013-01-11T14:25:34Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "4 cl Weißer Rum",
+    "3 cl Kokossirup",
+    "14 cl Mangosaft",
+    "4 cl Sahne (Obers)"
+   ],
+   "steps": [
+    "Hurricaneglas vorkühlen",
+    "Alle Zutaten mit Eis in den Shaker geben und gut schütteln",
+    "Kühleis im Glas durch drei Eiswürfel ersetzen",
+    "Inhalt in das Glas seihen"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Absinth Sunset",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Absinth_Sunset",
+   "revid": "932321",
+   "revisedAt": "2020-10-16T13:06:57Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Glas zur Hälfte mit gestoßenem Eis füllen. Absinth, Cassis und Zitronensaft darüber gießen.",
+   "ingredients": [
+    "3 cl Absinth",
+    "2 cl Crème de Cassis",
+    "1 cl Zitronensaft",
+    "Zitronenlimonade"
+   ],
+   "steps": [
+    "Glas zur Hälfte mit gestoßenem Eis füllen.",
+    "Absinth, Cassis und Zitronensaft darüber gießen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Chi Chi",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Chi_Chi",
+   "revid": "634375",
+   "revisedAt": "2012-04-16T23:26:07Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "",
+   "ingredients": [
+    "5 cl Wodka",
+    "8 cl Ananassaft",
+    "2 cl Limettensaft",
+    "4 cl Kokossirup",
+    "2 cl Sahne",
+    "4 Eiswürfel"
+   ],
+   "steps": [
+    "Zutaten mit Eiswürfeln in einen Shaker geben und schütteln."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Tiger Friday",
+   "url": "https://en.wikibooks.org/wiki/Bartending/Cocktails/Tiger_Friday",
+   "revid": "3569778",
+   "revisedAt": "2019-09-07T01:44:50Z",
+   "language": "en",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Strain an ounce of Pineapple Schnapps, an ounce of Triple Sec, Sweet and Sour Mix, and two ounces of TY KU Black Premium Sake into a glass.",
+   "ingredients": [
+    "Pineapple Schnapps",
+    "Sweet and Sour Mix",
+    "Triple Sec",
+    "cayenne pepper",
+    "TY KU Black premium Sake"
+   ],
+   "steps": [
+    "Strain an ounce of Pineapple Schnapps, an ounce of Triple Sec, Sweet and Sour Mix, and two ounces of TY KU Black Premium Sake into a glass.",
+    "Add a dash of cayenne pepper powder on top.",
+    "Serve"
+   ],
+   "bronNaam": "Wikibooks Bartending (Engels)"
+  },
+  {
+   "title": "Claudias Harvey",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Claudias_Harvey",
+   "revid": "532360",
+   "revisedAt": "2010-06-27T19:58:30Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Vodka, Cointreau und Zuckersirup im Gästeglas mit Eis eingeben",
+   "ingredients": [
+    "2 cl Vodka",
+    "2 cl Cointreau",
+    "1 cl Zuckersirup",
+    "Grapefruitsaft",
+    "Galliano"
+   ],
+   "steps": [
+    "Vodka, Cointreau und Zuckersirup im Gästeglas mit Eis eingeben",
+    "Mit Grapefruitsaft auffüllen",
+    "Shaken und im Gästeglas zurückgeben",
+    "Mit Galliano toppen"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Alien",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Alien",
+   "revid": "1032472",
+   "revisedAt": "2024-05-05T16:03:36Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Alle Zutaten in einen Mixer geben, kein Eis. Nach dem Mischen in ein Glas mit zwei Eiswürfeln geben.",
+   "ingredients": [
+    "5 Erdbeeren",
+    "2 cl Blue Curaçao (alkoholfrei)",
+    "1 cl Erdbeersirup",
+    "1 cl Zitronensaft",
+    "1 cl Limettensaft",
+    "1 Tl brauner Zucker"
+   ],
+   "steps": [
+    "Alle Zutaten in einen Mixer geben, kein Eis.",
+    "Nach dem Mischen in ein Glas mit zwei Eiswürfeln geben.",
+    "Zur Dekortion empfiehlt sich eine Erdbeere am Rand, ggfs mit Strohhalm servieren."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Matador",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Matador",
+   "revid": "659516",
+   "revisedAt": "2013-01-11T14:35:57Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Brandy, Milch, Zuckersirup und Eiswürfel in einem Shaker leicht schaumig schlagen. Durch ein Barsieb in eine Cocktailschale seien und mit Zimtpulver und frisch geriebener Muskatnuss bestreuen.",
+   "ingredients": [
+    "4 Eiswürfel",
+    "2 cl Brandy",
+    "8 cl Milch",
+    "1-3 cl Zuckersirup",
+    "Zimtpulver",
+    "frische Muskatnuss"
+   ],
+   "steps": [
+    "Brandy, Milch, Zuckersirup und Eiswürfel in einem Shaker leicht schaumig schlagen.",
+    "Durch ein Barsieb in eine Cocktailschale seien und mit Zimtpulver und frisch geriebener Muskatnuss bestreuen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Fresh Jungle",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Fresh_Jungle",
+   "revid": "573328",
+   "revisedAt": "2011-03-15T01:13:18Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "Ananassaft, Limettensaft und Pfefferminzsirup in ein mit Eiswürfeln befülltes Glas geben und umrühren.",
+   "ingredients": [
+    "6 cl Ananassaft",
+    "2 cl Limettensaft",
+    "2 cl grüner Pfefferminzsirup",
+    "Tonic Water zum Auffüllen"
+   ],
+   "steps": [
+    "Ananassaft, Limettensaft und Pfefferminzsirup in ein mit Eiswürfeln befülltes Glas geben und umrühren.",
+    "Zum Schluss mit kaltem Tonic Water auffüllen."
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  },
+  {
+   "title": "Mulata",
+   "url": "https://de.wikibooks.org/wiki/Cocktails/_Mulata",
+   "revid": "515404",
+   "revisedAt": "2010-03-22T22:30:03Z",
+   "language": "de",
+   "countryCode": null,
+   "time": null,
+   "servings": null,
+   "description": "3 Barlöffel Läuterzucker (1 Barlöffel entspricht 1 Teelöffel)",
+   "ingredients": [
+    "4cl Gold Rum (Jamaica)",
+    "2cl Cointreau",
+    "3 Barlöffel Läuterzucker (1 Barlöffel entspricht 1 Teelöffel)",
+    "2cl Limettensaft"
+   ],
+   "steps": [
+    "Shaker"
+   ],
+   "bronNaam": "Wikibooks Cocktails (Duits)"
+  }
+ ]
+}

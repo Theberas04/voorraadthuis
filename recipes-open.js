@@ -12,6 +12,8 @@ const wikibooksPlData = require('./recipe-data/wikibooks-pl-recipes.json');
 const wikibooksSvData = require('./recipe-data/wikibooks-sv-recipes.json');
 const wikibooksNbData = require('./recipe-data/wikibooks-nb-recipes.json');
 const wikibooksFiData = require('./recipe-data/wikibooks-fi-recipes.json');
+const wikibooksCocktailsData = require('./recipe-data/wikibooks-cocktails-recipes.json');
+const wikibooksBorrelhapjesData = require('./recipe-data/wikibooks-borrelhapjes-recipes.json');
 const translationsData = require(process.env.TRANSLATIONS_FILE||'./recipe-data/translations-nl.json');
 // Vertalingen staan op een vaste bronsleutel (bron + titel), niet op het volgnummer:
 // daardoor kan de selectie groeien zonder dat bestaande vertalingen losraken.
@@ -22,7 +24,7 @@ function normalizedName(value) {
   return key||String(value??'').trim().toLowerCase();
 }
 
-const BRONTAAL_KORT={en:'Engels',es:'Spaans',de:'Duits',fr:'Frans',it:'Italiaans',ca:'Catalaans',pt:'Portugees',ja:'Japans',pl:'Pools',sv:'Zweeds',nb:'Noors',fi:'Fins'};
+const BRONTAAL_KORT={en:'Engels',es:'Spaans',de:'Duits',fr:'Frans',it:'Italiaans',ca:'Catalaans',pt:'Portugees',ja:'Japans',pl:'Pools',sv:'Zweeds',nb:'Noors',fi:'Fins',hu:'Hongaars'};
 
 function dutchRecipe(recipe) {
   const translation = dutchTranslations.get(recipe.sourceKey)||dutchTranslations.get(String(recipe.id));
@@ -260,8 +262,8 @@ function generiekeWikiRecipe(record, index, metadata, idBase) {
 
 // Aantal recepten dat uit de open bronnen komt; de app start niet als dat aantal
 // onverwacht verandert, zodat een halve import nooit stilletjes live gaat.
-const EXPECTED_IMPORTS=9435;
-const EXPECTED_TOTAL=9550;
+const EXPECTED_IMPORTS=9692;
+const EXPECTED_TOTAL=9807;
 // Diagnosemodus, alleen voor ontwikkeling en geautomatiseerde controles van
 // onderdelen die losstaan van de recepten (profielen, sms, kledingkast). Zet
 // deze variabele nooit in productie: dan start de app met nog niet vertaalde
@@ -294,6 +296,10 @@ function collectImports(existingRecipes) {
   wikibooksSvData.recipes.forEach((record,index)=>add(generiekeWikiRecipe(record,index,{...wikibooksSvData.source,sourceKeyPrefix:'wikibooks-sv'},26000)));
   wikibooksNbData.recipes.forEach((record,index)=>add(generiekeWikiRecipe(record,index,{...wikibooksNbData.source,sourceKeyPrefix:'wikibooks-nb'},27000)));
   wikibooksFiData.recipes.forEach((record,index)=>add(generiekeWikiRecipe(record,index,{...wikibooksFiData.source,sourceKeyPrefix:'wikibooks-fi'},28000)));
+  // Cocktails en borrelhapjes krijgen hun eigen keuken, zodat ze met één klik in het
+  // landenfilter bij elkaar staan in plaats van verspreid over veertien talen.
+  wikibooksCocktailsData.recipes.forEach((record,index)=>{const r=generiekeWikiRecipe(record,index,{...wikibooksCocktailsData.source,sourceKeyPrefix:'wikibooks-cocktails'},29000);r.cuisine='Cocktails';if(record.language==='nl')r.alNederlands=true;add(r);});
+  wikibooksBorrelhapjesData.recipes.forEach((record,index)=>{const r=generiekeWikiRecipe(record,index,{...wikibooksBorrelhapjesData.source,sourceKeyPrefix:'wikibooks-borrelhapjes'},31000);r.cuisine='Borrelhapjes';if(record.language==='nl')r.alNederlands=true;add(r);});
   // Selectie en ontdubbeling gebeuren op de brontekst, zodat de vertaling de keuze
   // nooit kan veranderen.
   if(!DEV_MODE&&imported.length!==EXPECTED_IMPORTS)throw new Error(`Expected ${EXPECTED_IMPORTS} licensed recipe imports, found ${imported.length}`);

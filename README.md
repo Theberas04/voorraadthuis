@@ -4,7 +4,7 @@
 
 [![Node.js](https://img.shields.io/badge/Node.js-22.5%2B-5fa04e?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![Tests](https://img.shields.io/badge/tests-node%3Atest-1f6848)](test/app.test.js)
-[![Recepten](https://img.shields.io/badge/recepten-9.550-1f6848)](recipe-data/README.md)
+[![Recepten](https://img.shields.io/badge/recepten-9.807-1f6848)](recipe-data/README.md)
 [![Taal](https://img.shields.io/badge/taal-Nederlands-1f6848)](recipe-data/README.md)
 [![Receptenbron](https://img.shields.io/badge/receptenbron-CC%20BY--SA%204.0-ef9421)](https://creativecommons.org/licenses/by-sa/4.0/)
 [![Kledingkast](https://img.shields.io/badge/kledingkast-garderobe-2a6f7f)](wardrobe.js)
@@ -12,7 +12,7 @@
 [![PWA](https://img.shields.io/badge/PWA-installeerbaar-1f6848)](public/manifest.webmanifest)
 [![Proxmox](https://img.shields.io/badge/Proxmox-LXC-e57000?logo=proxmox&logoColor=white)](deploy/proxmox/README.md)
 
-Eén Nederlandstalige app voor thuis: voorraad, 9.550 recepten in het Nederlands, boodschappenlijst, maaltijd- en werkplanning én je garderobe met combineeradvies. Alles draait rechtstreeks als service in een Proxmox LXC, met de gegevens in SQLite op persistente opslag. De webpagina is gebouwd voor de telefoon en werkt ook als installeerbare app. Een gescande barcode wordt meteen herkend via Open Food Facts.
+Eén Nederlandstalige app voor thuis: voorraad, 9.807 recepten in het Nederlands, boodschappenlijst, maaltijd- en werkplanning én je garderobe met combineeradvies. Alles draait rechtstreeks als service in een Proxmox LXC, met de gegevens in SQLite op persistente opslag. De webpagina is gebouwd voor de telefoon en werkt ook als installeerbare app. Een gescande barcode wordt meteen herkend via Open Food Facts.
 
 [![Rondleiding door VoorraadThuis: klik om de video te openen](docs/img/rondleiding-poster.jpg)](docs/img/voorraadthuis-rondleiding.mp4)
 
@@ -30,7 +30,7 @@ Eén Nederlandstalige app voor thuis: voorraad, 9.550 recepten in het Nederlands
 
 - Vijf navigatieknoppen op één rij, ook op een scherm van 360 px breed (op smalle schermen heet de lijstknop **Lijst**).
 - Invoervelden op 16 px, zodat iOS niet inzoomt bij het typen; knoppen en velden zijn minimaal 44 px hoog.
-- Recepten komen in delen van 48 van de server, met **Nog … recepten laden**; zoeken en filteren gebeurt op de server en ingrediënten worden pas bij het openklappen opgehaald, zodat de pagina ook met 9.550 recepten vlot blijft.
+- Recepten komen in delen van 48 van de server, met **Nog … recepten laden**; zoeken en filteren gebeurt op de server en ingrediënten worden pas bij het openklappen opgehaald, zodat de pagina ook met 9.807 recepten vlot blijft.
 - Veilige marges voor toestellen met een inkeping (`viewport-fit=cover` en `env(safe-area-inset-bottom)`).
 
 ### Camera: https in plaats van http
@@ -111,15 +111,15 @@ Open de app op je telefoon en kies **Toevoegen aan startscherm** (iOS/Safari) of
 
 ### Receptenboek
 
-- **9.550 recepten**: 115 Nederlandstalige, zelfgeschreven thuisvarianten uit 55 landen, aangevuld met **9.435 recepten uit veertien open bronnen** — het Wikibooks-kookboek in het Engels (3.393), Spaans (664), Duits (407), Nederlands (450), Frans (986), Italiaans (583), Catalaans (673), Portugees (237), Japans (276), Pools (863), Zweeds (313), Noors (79) en Fins (11), plus 500 recepten uit UniTools World Recipes. De 450 Nederlandse kookboekrecepten zijn al Nederlands en hebben dus geen vertaling nodig. De collectie is per land gegroepeerd waar de bron dat aangeeft; overige gerechten staan onder **Internationaal**. Je kunt filteren op land en zoeken op gerecht of ingrediënt; ingrediënten gaan rechtstreeks naar de boodschappenlijst.
-- Alle 8.985 buitenlandse geïmporteerde recepten zijn naar het Nederlands vertaald: naam, omschrijving, ingrediënten en bereidingsstappen. Hoeveelheden, eenheden, bereidingstijden en porties blijven exact zoals de bron ze geeft, en id, bron-URL en licentie blijven ongewijzigd — een recept in de app verwijst dus nog steeds naar zijn origineel. Zulke recepten dragen het label **Vertaald** en bij de bronvermelding staat uit welke taal ze komen (Engels, Spaans, Duits, Frans, Italiaans, Catalaans, Portugees, Japans, Pools, Zweeds, Noors of Fins). De 450 recepten uit het Nederlandse Wikibooks-kookboek zijn van zichzelf al Nederlands en houden dus geen vertaallabel. De app weigert te starten zolang één vertaling ontbreekt.
-- **Snel, ook met 9.550 recepten**: de lijst komt in stukjes van 48 van de server (gecomprimeerd), zoeken en filteren gebeurt op de server, en ingrediënten en bereiding worden pas opgehaald als je een recept openklapt. Zonder die aanpak stuurde elke paginaweergave bijna 20 MB aan receptgegevens naar de browser.
-- Alle 9.435 geïmporteerde recepten tonen per recept de bron en CC BY-SA 4.0-licentie. Het is een groeiende, niet-uitputtende selectie; de inhoud is niet afkomstig van Albert Heijn of Picnic. Zie [`recipe-data/README.md`](recipe-data/README.md) voor bronvermelding, licenties, de reproduceerbare import en de vertaalmethode.
+- **9.807 recepten**: 115 Nederlandstalige, zelfgeschreven thuisvarianten uit 55 landen, aangevuld met **9.692 recepten uit zestien open bronnen** — het Wikibooks-kookboek in het Engels (3.393), Spaans (664), Duits (407), Nederlands (450), Frans (986), Italiaans (583), Catalaans (673), Portugees (237), Japans (276), Pools (863), Zweeds (313), Noors (79) en Fins (11), plus 500 recepten uit UniTools World Recipes, en **257 cocktails en borrelhapjes** uit het Wikibooks Cocktails-boek (Duits 141, Hongaars 23, Engels 20, Frans 17) en uit de borrelhapjes-categorieën (Hongaars 39, Engels 12, Portugees 3, Nederlands 1, Pools 1). Cocktails en borrelhapjes hebben een eigen filter, zodat je ze met één klik bij elkaar hebt. De 450 Nederlandse kookboekrecepten zijn al Nederlands en hebben dus geen vertaling nodig. De collectie is per land gegroepeerd waar de bron dat aangeeft; overige gerechten staan onder **Internationaal**. Je kunt filteren op land en zoeken op gerecht of ingrediënt; ingrediënten gaan rechtstreeks naar de boodschappenlijst.
+- Alle 9.241 buitenlandse geïmporteerde recepten zijn naar het Nederlands vertaald: naam, omschrijving, ingrediënten en bereidingsstappen. Hoeveelheden, eenheden, bereidingstijden en porties blijven exact zoals de bron ze geeft, en id, bron-URL en licentie blijven ongewijzigd — een recept in de app verwijst dus nog steeds naar zijn origineel. Zulke recepten dragen het label **Vertaald** en bij de bronvermelding staat uit welke taal ze komen (Engels, Spaans, Duits, Frans, Italiaans, Catalaans, Portugees, Japans, Pools, Zweeds, Noors, Fins of Hongaars). De 450 recepten uit het Nederlandse Wikibooks-kookboek zijn van zichzelf al Nederlands en houden dus geen vertaallabel. De app weigert te starten zolang één vertaling ontbreekt.
+- **Snel, ook met 9.807 recepten**: de lijst komt in stukjes van 48 van de server (gecomprimeerd), zoeken en filteren gebeurt op de server, en ingrediënten en bereiding worden pas opgehaald als je een recept openklapt. Zonder die aanpak stuurde elke paginaweergave bijna 20 MB aan receptgegevens naar de browser.
+- Alle 9.692 geïmporteerde recepten tonen per recept de bron en CC BY-SA 4.0-licentie. Het is een groeiende, niet-uitputtende selectie; de inhoud is niet afkomstig van Albert Heijn of Picnic. Zie [`recipe-data/README.md`](recipe-data/README.md) voor bronvermelding, licenties, de reproduceerbare import en de vertaalmethode.
 - De 115 eigen thuisvarianten zijn geen volledige inventaris van alle gerechten uit de genoemde landen; traditionele bereidingswijzen kunnen per regio en huishouden verschillen.
 
 | ![Receptenboek op desktop](docs/img/receptenboek-desktop.png) | ![Receptenboek op de telefoon](docs/img/receptenboek-mobiel.jpg) |
 | --- | --- |
-| Het receptenboek met 9.550 recepten, filters en bronvermelding per recept. | Dezelfde tab op de telefoon; recepten komen per land binnen. |
+| Het receptenboek met 9.807 recepten, filters en bronvermelding per recept. | Dezelfde tab op de telefoon; recepten komen per land binnen. |
 
 ### Kalender en werkrooster
 
@@ -207,7 +207,7 @@ Neem beide mee in je back-up. Lokaal staan ze standaard in `data/`.
 Node.js 22.5+ is vereist (gebruikt de ingebouwde `node:sqlite`; er zijn geen npm-dependencies).
 
 ```sh
-npm test     # 77 tests: voorraad, boodschappen, recepten, vertaling, planning, garderobe, kledingkasten en barcodeherkenning
+npm test     # 94 tests: voorraad, boodschappen, recepten, vertaling, planning, garderobe, kledingkasten en barcodeherkenning
 npm start    # http://localhost:3000
 ```
 
@@ -220,7 +220,7 @@ npm start    # http://localhost:3000
 | `public/index.html` | De hele webpagina: opmaak, mobiele indeling en app-logica van alle tabs. |
 | `public/manifest.webmanifest`, `public/sw.js`, `public/favicon.svg`, `public/icon-*.png` | Pictogrammen en webapp-manifest voor installatie op de telefoon. |
 | `recipes-international.js` | 110 eigen Nederlandstalige thuisvarianten. |
-| `recipes-open.js` | Normalisatie én Nederlandse vertaling van de 9.435 geïmporteerde recepten, met bron en licentie. |
+| `recipes-open.js` | Normalisatie én Nederlandse vertaling van de 9.692 geïmporteerde recepten, met bron en licentie. |
 | `recipe-data/` | Brondata, gepinde revisies, bronvermelding en de Nederlandse vertaling (`translations-nl.json`). |
 | `barcodes.js` | Barcodeherkenning: vier open databanken, de huismerktabel, winkelherkenning aan de barcode en de lokale opslag. |
 | `product-data/` | Huismerken van Nederlandse supermarkten en de barcode-reeksen per winkel (uit Open Food Facts, ODbL 1.0). |
