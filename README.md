@@ -58,8 +58,15 @@ Open de app op je telefoon en kies **Toevoegen aan startscherm** (iOS/Safari) of
 | --- | --- | --- |
 | ![Barcodeherkenning op de telefoon](docs/img/mobiel-barcode.jpg) | ![Product toevoegen op mobiel](docs/img/mobiel-voorraad.jpg) | ![Barcodeherkenning op desktop](docs/img/desktop-barcode.jpg) |
 
+**Aantal stuks per product** — vul in hoeveel stuks je in huis hebt en stel het later bij met **−** en **+**:
+
+| Op desktop | Op de telefoon |
+| --- | --- |
+| ![Aantal stuks per product op desktop](docs/img/aantal-stuks-desktop.png) | ![Aantal stuks per product op mobiel](docs/img/aantal-stuks-mobiel.png) |
+
 - Twee lijsten: **In huis** en **Niet meer in huis**.
-- Product handmatig invoeren met naam, aantal, eenheid en optionele barcode.
+- Product handmatig invoeren met naam, hoeveelheid per stuk, eenheid, **aantal in huis** en optionele barcode.
+- **Aantal stuks per product**: elk product heeft naast de inhoud van één stuk (bijv. 1500 ml) een aantal — hoeveel stuks je ervan hebt. Bijstellen kan met **−** en **+** of door het getal direct te typen; op nul gaat het product naar de boodschappenlijst. De statistiekkaart telt de stuks mee.
 - Barcode scannen met de camera (browser `BarcodeDetector`, vereist camera-toestemming en een beveiligde context) of handmatig invoeren.
 - **Barcodeherkenning**: zodra er een volledige code staat (gescand of getypt) zoekt de app het product op en vult naam, hoeveelheid en eenheid vast in — bijvoorbeeld `5449000000996` → *Coca-Cola Original · 330 ml*. Wat je zelf invult blijft leidend.
 - De opzoeking gaat langs vier open databanken: **Open Food Facts** (voeding), **Open Products Facts** (huishoud- en schoonmaakproducten), **Open Beauty Facts** (verzorging) en **Open Pet Food Facts** (dierenvoeding). Zo worden ook Nederlandse schoonmaak- en verzorgingsproducten herkend die in de voedingsdatabank niet staan.
