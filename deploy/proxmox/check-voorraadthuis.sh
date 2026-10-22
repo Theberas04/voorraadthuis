@@ -63,7 +63,7 @@ binnen journalctl -b -n 12 --no-pager | sed 's/^/    /'
 kop "9. De bestanden en de gegevens"
 binnen ls -la "$SITE" 2>&1 | sed 's/^/    /'
 printf 'public:\n'; binnen ls "$SITE/public" 2>&1 | head -20 | sed 's/^/    /'
-printf 'gegevensbank:\n'; binnen ls -la /var/lib/voorraadthuis/voorraad.db* 2>&1 | sed 's/^/    /'
+printf 'gegevensbank:\n'; binnen_bash 'ls -la /var/lib/voorraadthuis/ 2>&1 | sed "s/^/    /"'
 printf 'ruimte in de container:\n'; binnen df -h / | sed 's/^/    /'
 
 kop "10. De laatste systeemsprong (Debian 12 -> 13)"

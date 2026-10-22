@@ -213,3 +213,36 @@ test('de pagina heeft geen dubbele id-s en de platenfilters staan erin',()=>{
   for(const id of ['plaatGenre','plaatArtiestFilter','plaatDecennium','plaatVan','plaatTot','plaatWisFilters']) assert.ok(script.includes(`#${id}`),`de filters verwijzen niet naar #${id}`);
   assert.ok(script.includes('#plaatZoekVak'),'het zoekresultaatvak heet plaatZoekVak');
 });
+
+test('het bijwerkscript zet elk bestand dat het inrichten plaatst ook echt in de container',()=>{
+  // Deze test bestaat omdat platen.js wel werd opgehaald maar nooit in de container
+  // gezet: de nieuwe server.js zocht './platen', de dienst viel om en de bijwerking
+  // rolde terug. Zo'n bestand hoort hier op te vallen en niet in de container.
+  const map=path.join(__dirname,'..','deploy','proxmox');
+  const lees=(n)=>fs.readFileSync(path.join(map,n),'utf8');
+  const groepen=(tekst)=>{
+    const uit={};
+    for(const regel of tekst.split('\n')){
+      const m=regel.match(/for f in (.*?); do pct push/);
+      if(!m) continue;
+      const sub=(regel.match(/\$(?:APP_DIR|TMP)\/([a-z-]+)\/\$f/)||[])[1]||'';
+      const namen=m[1].replace(/\$\{ASSETS\[@\]\}/g,'').replace(/"/g,'').split(/\s+/).filter(Boolean);
+      uit[sub]=new Set([...(uit[sub]||[]),...namen]);
+    }
+    return uit;
+  };
+  const provision=groepen(lees('provision-voorraadthuis.sh'));
+  const update=groepen(lees('update-from-github.sh'));
+  const assets=(lees('update-from-github.sh').match(/^ASSETS=\((.*?)\)$/m)||['',''])[1].replace(/"/g,'').split(/\s+/).filter(Boolean);
+  assert.ok(Object.keys(provision).length>=3,`verwacht meerdere push-lussen, gevonden ${Object.keys(provision).length}`);
+  const gezet=[];
+  for(const [sub,namen] of Object.entries(provision)){
+    for(const naam of namen){
+      gezet.push(naam);
+      const doel=(update[sub]&&update[sub].has(naam))||assets.includes(naam);
+      assert.ok(doel,`het bijwerkscript zet ${sub?sub+'/':''}${naam} niet in de container, terwijl het inrichten dat wel doet`);
+    }
+  }
+  assert.ok(gezet.includes('platen.js'),'de platenmodule hoort in de lijst te staan');
+  assert.ok(gezet.includes('public/platen.js'),'en de platenpagina ook');
+});
