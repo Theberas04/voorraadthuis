@@ -20,6 +20,10 @@ let stub, server, db, base;
 test.before(async () => {
   stub = http.createServer((req, res) => {
     const url = req.url || '';
+    if (url.startsWith('/release-group/')) {
+      res.writeHead(200, {'content-type': 'application/json'});
+      return res.end(JSON.stringify({id: 'rg-1', genres: [{name: 'progressive rock', count: 3}, {name: 'rock', count: 7}], tags: [{name: 'psychedelic', count: 1}]}));
+    }
     if (url.startsWith('/release/') && !url.includes('?query=')) {
       caaVerzoeken += 1;
       if (url.includes('geenhoes')) { res.writeHead(404); return res.end('{}'); }
@@ -39,7 +43,7 @@ test.before(async () => {
             'artist-credit': [{ name: 'Pink Floyd' }],
             'label-info': [{ label: { name: 'Harvest' }, 'catalog-number': 'SHVL 804' }],
             media: [{ format: '12" Vinyl', 'track-count': 10 }],
-            'release-group': { 'primary-type': 'Album' },
+            'release-group': { id: 'rg-1', 'primary-type': 'Album' },
           },
         ],
       }));
@@ -73,7 +77,7 @@ test('een gescande barcode levert de plaat op, met hoes', async () => {
   assert.equal(uitkomst.body.label, 'Harvest');
   assert.match(uitkomst.body.formaat, /Vinyl/);
   assert.match(uitkomst.body.formaat, /10 nummers/);
-  assert.equal(uitkomst.body.genre, 'Album');
+  assert.equal(uitkomst.body.genre, 'Rock', 'het genre komt uit de uitgave-groep, niet het soort uitgave');
   assert.equal(uitkomst.body.hoes, 'http://hoes.test/voor-500.jpg', 'de voorplaat hoort gekozen te worden');
   assert.equal(uitkomst.body.bron, 'MusicBrainz');
 });
@@ -187,4 +191,86 @@ test('de verzameling is ook zonder internet te bekijken', async () => {
     assert.ok(overzicht.body.totaal >= 1);
     assert.ok(overzicht.body.platen.every(p => p.titel), 'elke plaat houdt zijn titel');
   } finally { mbStoring = false }
+});
+
+// --- Filteren op genre, artiest en jaartal ---
+const nu = (gegevens) => stuur('/api/platen', 'POST', gegevens);
+const titels = (body) => body.platen.map((p) => p.titel).sort();
+
+test('je kunt filteren op genre, locatie, artiest en jaartal', async () => {
+  await nu({ barcode: '', titel: 'Rumours', artiest: 'Fleetwood Mac', jaar: '1977', label: 'Warner', formaat: '12" Vinyl', genre: 'Rock', locatie: 'Zolder', aantal: 1 });
+  await nu({ barcode: '', titel: 'Thriller', artiest: 'Michael Jackson', jaar: '1982', label: 'Epic', formaat: '12" Vinyl', genre: 'Pop', locatie: 'Woonkamer', aantal: 1 });
+  await nu({ barcode: '', titel: 'Kind of Blue', artiest: 'Miles Davis', jaar: '1959', label: 'Columbia', formaat: '12" Vinyl', genre: 'Jazz', locatie: 'Zolder', aantal: 1 });
+  await nu({ barcode: '', titel: 'Onbekende plaat', artiest: 'Iemand Anders', jaar: '', label: '', formaat: '', genre: '', locatie: 'Zolder', aantal: 1 });
+
+  const rock = await api('/api/platen?genre=Rock');
+  assert.deepEqual(titels(rock.body), ['Rumours'], 'op genre filteren geeft precies die platen');
+  assert.equal(rock.body.filters.genre, 'Rock', 'de gebruikte filters komen terug in het antwoord');
+
+  const klein = await api('/api/platen?genre=rock');
+  assert.deepEqual(titels(klein.body), ['Rumours'], 'filteren maakt geen verschil tussen hoofd- en kleine letters');
+
+  const artiest = await api('/api/platen?artiest=miles%20davis');
+  assert.deepEqual(titels(artiest.body), ['Kind of Blue'], 'op artiest filteren werkt ook met kleine letters');
+
+  const decennium = await api('/api/platen?decennium=1970');
+  assert.deepEqual(titels(decennium.body), ['Rumours'], 'een decennium pakt het hele tiental');
+
+  const jaren = await api('/api/platen?van=1975&tot=1985');
+  assert.deepEqual(titels(jaren.body), ['Rumours', 'Thriller'], 'van en tot werken samen');
+
+  const alleenVanaf = await api('/api/platen?van=1980');
+  assert.ok(alleenVanaf.body.platen.every((p) => Number(p.jaar) >= 1980), 'vanaf een jaar laat niets ouders door');
+
+  const onbekendGenre = await api('/api/platen?genre=onbekend');
+  assert.ok(onbekendGenre.body.platen.some((p) => p.titel === 'Onbekende plaat'), 'je kunt juist de platen zonder genre opzoeken');
+  assert.ok(onbekendGenre.body.platen.every((p) => !String(p.genre || '').trim()), 'en er zit geen plaat met genre tussen');
+
+  const onbekendJaar = await api('/api/platen?decennium=onbekend');
+  assert.ok(onbekendJaar.body.platen.some((p) => p.titel === 'Onbekende plaat'));
+  assert.ok(onbekendJaar.body.platen.every((p) => !/\d{4}/.test(String(p.jaar || ''))));
+
+  const gecombineerd = await api('/api/platen?locatie=Zolder&genre=Jazz');
+  assert.deepEqual(titels(gecombineerd.body), ['Kind of Blue'], 'locatie en genre werken tegelijk');
+});
+
+test('de pagina krijgt keuzelijsten met aantallen om op te filteren', async () => {
+  const uitkomst = await api('/api/platen');
+  const keuzes = uitkomst.body.keuzelijsten;
+  assert.ok(keuzes, 'het antwoord bevat keuzelijsten');
+  const rock = keuzes.genres.find((g) => g.naam === 'Rock');
+  assert.ok(rock && rock.aantal >= 1, 'elk genre heeft een aantal');
+  assert.ok(keuzes.artiesten.some((a) => a.naam === 'Fleetwood Mac'), 'de artiesten staan erin');
+  assert.ok(keuzes.decennia.some((d) => d.naam === '1970' && /1970 – 1979/.test(d.label)), 'decennia hebben een leesbaar label');
+  assert.ok(keuzes.decennia.some((d) => d.naam === 'onbekend'), 'ontbrekende jaartallen zijn ook te kiezen');
+  assert.ok(keuzes.locaties.some((l) => l.sleutel === 'Zolder' && l.aantal >= 1), 'de locaties komen mee met aantallen');
+  const jazz = keuzes.genres.find((g) => g.naam === 'Jazz');
+  assert.ok(jazz.aantal >= 1);
+  // De keuzelijsten komen uit de hele verzameling: filteren mag ze niet laten krimpen.
+  const gefilterd = await api('/api/platen?genre=Jazz');
+  assert.deepEqual(titels(gefilterd.body), ['Kind of Blue']);
+  assert.equal(gefilterd.body.keuzelijsten.genres.length, keuzes.genres.length, 'de keuzelijsten blijven volledig na het filteren');
+});
+
+test('een filter dat nergens op past geeft een lege lijst en geen fout', async () => {
+  const uitkomst = await api('/api/platen?genre=Polka&van=2200');
+  assert.equal(uitkomst.status, 200);
+  assert.equal(uitkomst.body.totaal, 0);
+  assert.ok(Array.isArray(uitkomst.body.platen));
+  assert.ok(uitkomst.body.keuzelijsten.genres.length > 0, 'de keuzelijsten blijven bruikbaar');
+});
+
+test('het genre komt uit MusicBrainz zelf en is te filteren', async () => {
+  const uitkomst = await api(`/api/platen/zoek/${EAN}?force=1`);
+  assert.equal(uitkomst.body.genre, 'Rock', 'het meest gebruikte genre van de uitgave wordt gekozen');
+  const toegevoegd = await stuur('/api/platen', 'POST', {barcode: EAN, titel: uitkomst.body.titel, artiest: uitkomst.body.artiest, jaar: uitkomst.body.jaar, genre: uitkomst.body.genre, locatie: 'Woonkamer', aantal: 1});
+  assert.equal(toegevoegd.status, 201);
+  const gefilterd = await api('/api/platen?genre=Rock');
+  assert.ok(gefilterd.body.platen.some((p) => p.titel === 'The Dark Side of the Moon'), 'op dat genre kun je filteren');
+  assert.ok(gefilterd.body.platen.every((p) => String(p.genre).toLowerCase() === 'rock'));
+});
+
+test('zonder genres bij de uitgave valt het genre terug op het soort uitgave', async () => {
+  const uitkomst = await api('/api/platen/zoek/602547077750');   // onbekend: geen uitgave
+  assert.equal(uitkomst.body.gevonden, false);
 });
