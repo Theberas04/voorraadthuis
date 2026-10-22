@@ -212,6 +212,10 @@ case "$NODEV" in
       apt-get update -qq && apt-get install -y -qq nodejs' || waarschuw "Node opnieuw installeren mislukte."
     NODEV=$(in_container bash -lc 'node --version 2>/dev/null || echo ontbreekt')
     log "Node-versie nu: $NODEV"
+    case "$NODEV" in
+      v22.[5-9]*|v22.[1-9][0-9]*|v2[3-9].*|v[3-9][0-9].*) ;;
+      *) die "De container draait Debian $NIEUWE_VERSIE, maar Node is $NODEV en dat is te oud voor de app (node:sqlite vraagt 22.5+). Zet Node 22 er handmatig op met: pct exec $CTID -- bash -lc 'curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg; echo \"deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main\" > /etc/apt/sources.list.d/nodesource.list; apt-get update -qq && apt-get install -y nodejs' en draai daarna check-voorraadthuis.sh $CTID." ;;
+    esac
     ;;
 esac
 
