@@ -23,13 +23,27 @@ from pathlib import Path
 UA = 'VoorraadThuis/1.0 (self-hosted huishoudapp; https://github.com/Theberas04/voorraadthuis)'
 MERKEN = ['albert-heijn', 'jumbo', 'lidl', 'aldi', 'plus', 'dirk', 'coop-nl', 'vomar',
           'spar', 'hoogvliet', 'dekamarkt', 'poiesz', 'jan-linders', 'boni', 'mcd',
-          'digros', 'bas-van-der-heijden']
+          'digros', 'bas-van-der-heijden',
+          # Huismerken van Lidl en Aldi staan in de databank onder hun eigen merknaam
+          # (bijv. milbona, k-classic). Zonder deze merken blijft het grootste deel van
+          # die schappen onbekend; ze worden hierna aan de juiste keten gekoppeld.
+          'ah', 'jumbo-extra', 'milbona', 'freeway', 'pilos', 'dulano', 'vitasia', 'italiamo',
+          'combino', 'belbake', 'cien', 'w5', 'sondey', 'alesto', 'solevita', 'crownfield',
+          'snack-day', 'chef-select', 'tradizionale', 'maribel', 'gut-bio', 'milsani',
+          'berghoff', 'k-classic', 'golden-river', 'aldi-nord', 'netto', 'norma']
 NAMEN = {
     'albert-heijn': 'Albert Heijn', 'jumbo': 'Jumbo', 'lidl': 'Lidl', 'aldi': 'Aldi',
     'plus': 'PLUS', 'dirk': 'Dirk', 'coop-nl': 'Coop', 'vomar': 'Vomar', 'spar': 'Spar',
     'hoogvliet': 'Hoogvliet', 'dekamarkt': 'DekaMarkt', 'poiesz': 'Poiesz',
     'jan-linders': 'Jan Linders', 'boni': 'Boni', 'mcd': 'MCD', 'digros': 'Digros',
     'bas-van-der-heijden': 'Bas van der Heijden',
+    # Merknamen waaronder huismerken van Lidl en Aldi in de databank staan.
+    'ah': 'Albert Heijn', 'jumbo-extra': 'Jumbo', 'milbona': 'Lidl', 'freeway': 'Lidl', 'pilos': 'Lidl',
+    'dulano': 'Lidl', 'vitasia': 'Lidl', 'italiamo': 'Lidl', 'combino': 'Lidl', 'belbake': 'Lidl', 'cien': 'Lidl',
+    'w5': 'Lidl', 'sondey': 'Lidl', 'alesto': 'Lidl', 'solevita': 'Lidl', 'crownfield': 'Lidl',
+    'snack-day': 'Lidl', 'chef-select': 'Lidl', 'tradizionale': 'Lidl', 'maribel': 'Lidl',
+    'gut-bio': 'Aldi', 'milsani': 'Aldi', 'berghoff': 'Aldi', 'k-classic': 'Aldi', 'golden-river': 'Aldi',
+    'aldi-nord': 'Aldi', 'netto': 'Netto', 'norma': 'Norma',
 }
 VELDEN = ('code,product_name,product_name_nl,generic_name,generic_name_nl,brands,quantity,'
           'categories_tags,image_front_small_url,lang')
@@ -100,12 +114,24 @@ def ophalen(pagina_grootte, rust):
     return producten
 
 
+def geldige_gtin(code):
+    """Alleen barcodes die een scanner echt kan lezen: lengte 8/12/13/14 en kloppend controlecijfer."""
+    if not (code.isdigit() and len(code) in (8, 12, 13, 14)):
+        return False
+    cijfers = [int(c) for c in code]
+    *rest, controle = cijfers
+    som = sum(cijfer * (3 if i % 2 == 0 else 1) for i, cijfer in enumerate(reversed(rest)))
+    return (10 - som % 10) % 10 == controle
+
+
 def wegschrijven(producten):
     per_winkel = collections.Counter(rij['w'] for rij in producten.values())
     tellers = {7: collections.defaultdict(collections.Counter), 6: collections.defaultdict(collections.Counter)}
     for code, rij in producten.items():
         # Naast gewone EAN-13 gebruiken supermarkten ook EAN-8 voor kleine artikelen.
-        if not (code.isdigit() and 8 <= len(code) <= 14):
+        # Een barcode met een verkeerd controlecijfer kan geen scanner produceren; die
+        # laten we weg zodat de tabel alleen codes bevat die je echt kunt scannen.
+        if not geldige_gtin(code):
             continue
         for lengte in (7, 6):
             tellers[lengte][code[:lengte]][rij['w']] += 1
