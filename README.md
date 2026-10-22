@@ -189,6 +189,8 @@ Onder **Platen** houd je je lp's bij. Je scant de barcode van een plaat — of t
 - **Zoeken en opruimen.** Zoek op titel, artiest, jaar of label, en haal een plaat met één knop uit de verzameling. Dezelfde plaat op dezelfde plek telt op in plaats van dubbel te verschijnen.
 - **Niemand hoeft dit te leren.** De app onthoudt wat je zelf invult; wat jij typt blijft leidend boven wat de databank zegt.
 
+Rondleiding in beeld: [**rondleiding-platen.mp4**](docs/video/rondleiding-platen.mp4) (89 seconden, met Nederlandse stem) — voorraad, recepten, de nieuwe platenpagina, het werkrooster met kleuren en de boodschappenlijst.
+
 | Platen op desktop | Platen op de telefoon |
 | --- | --- |
 | ![Platen op desktop](docs/img/platen-desktop.png) | ![Platen op de telefoon](docs/img/platen-mobiel.png) |
