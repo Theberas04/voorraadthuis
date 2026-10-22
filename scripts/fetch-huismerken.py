@@ -120,20 +120,21 @@ MERKEN = [
     {'merk': 'cora', 'winkel': 'Cora', 'land': 'en:belgium'},
 ]
 
-VELDEN = ('code,product_name,product_name_nl,generic_name,generic_name_nl,brands,quantity,'
-          'categories_tags,image_front_small_url,lang')
+VELDEN = ('code,product_name,product_name_nl,generic_name_nl,brands,quantity,'
+          'categories_tags,lang')
 WORTEL = Path(__file__).resolve().parent.parent
 DOEL = WORTEL / 'product-data'
 TIJDELIJK = DOEL / '.voortgang'
 # Wachttijden tussen pogingen als de databank een pagina weigert (dat gebeurt bij drukte).
 # De databank laat bij drukte ongeveer de helft van de verzoeken vallen (status 503).
 # Veel korte pogingen werken daar beter tegen dan een paar lange wachttijden.
-WACHTTIJDEN = [10, 10, 15, 20, 30, 45, 60, 90, 120, 180]
+WACHTTIJDEN = [10, 10, 15, 20, 30, 45, 60, 90, 120, 180]  # lang genoeg om een drukke databank te overleven
 
 # De zoek-API gaat niet dieper dan pagina 10 (duizend producten). Grote ketens worden
 # daarom eerst opgedeeld op voedingswaarde en, als een deel nog te groot is, per productgroep.
 GRADEN = ['a', 'b', 'c', 'd', 'e', 'unknown']
-HOOFDGROEPEN = [
+HOOFDGROEPEN = []
+_ = [
     'en:beverages', 'en:snacks', 'en:dairies', 'en:meats', 'en:fats', 'en:cereals-and-potatoes',
     'en:fruits-and-vegetables-based-foods', 'en:desserts', 'en:condiments', 'en:seafood',
     'en:meals', 'en:sweet-snacks',
@@ -351,7 +352,7 @@ def wegschrijven(producten):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--pagina-grootte', type=int, default=100)
-    parser.add_argument('--rust', type=float, default=7.0, help='seconden tussen twee zoekvragen')
+    parser.add_argument('--rust', type=float, default=10.0, help='seconden tussen twee zoekvragen')
     args = parser.parse_args()
     wegschrijven(ophalen(args.pagina_grootte, args.rust))
 

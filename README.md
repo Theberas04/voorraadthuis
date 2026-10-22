@@ -7,7 +7,7 @@
 [![Recepten](https://img.shields.io/badge/recepten-9.807-1f6848)](recipe-data/README.md)
 [![Taal](https://img.shields.io/badge/taal-Nederlands-1f6848)](recipe-data/README.md)
 [![Receptenbron](https://img.shields.io/badge/receptenbron-CC%20BY--SA%204.0-ef9421)](https://creativecommons.org/licenses/by-sa/4.0/)
-[![Kledingkast](https://img.shields.io/badge/kledingkast-garderobe-2a6f7f)](wardrobe.js)
+[![Kledingkast](https://img.shields.io/badge/kledingkast-garderobe-2a6f7f)](wardrobe.js) [![Platen](https://img.shields.io/badge/platen-lp--verzameling-5b4636)](platen.js)
 [![Barcodeherkenning](https://img.shields.io/badge/barcode-herkenning-2a6f7f)](barcodes.js)
 [![PWA](https://img.shields.io/badge/PWA-installeerbaar-1f6848)](public/manifest.webmanifest)
 [![Proxmox](https://img.shields.io/badge/Proxmox-LXC-e57000?logo=proxmox&logoColor=white)](deploy/proxmox/README.md)
@@ -178,6 +178,23 @@ Met een OpenAI-compatibele dienst (OpenAI, Ollama, LocalAI) kan de app een kledi
 
 > Productgegevens komen van [Open Food Facts](https://world.openfoodfacts.org/), beschikbaar onder de [Open Database License (ODbL) 1.0](https://opendatacommons.org/licenses/odbl/1-0/). Camera-scannen werkt in browsers die `BarcodeDetector` ondersteunen (Chrome op Android, Edge) en doorgaans alleen via HTTPS; op iOS typ je de code — die wordt ook meteen herkend.
 
+### Platen (lp-verzameling)
+
+Onder **Platen** houd je je lp's bij. Je scant de barcode van een plaat — of typt hem in — en de app zoekt de uitgave op in [MusicBrainz](https://musicbrainz.org/) (open data, CC0) en haalt de hoes bij het [Cover Art Archive](https://coverartarchive.org/). Titel, artiest, jaar, label, formaat en de hoes worden vast ingevuld.
+
+- **Toevoegen met de camera of met de hand.** De barcode wordt ook herkend als je hem typt; is een plaat onbekend, dan vul je de gegevens zelf in en onthoudt de app ze bij die barcode.
+- **Overzicht met alles erop.** Elke plaat staat als kaart met de hoes, artiest, jaar, formaat, label, eventuele notitie en het aantal exemplaren. Zonder bekende hoes krijg je een nette kaart met de beginletter.
+- **Hoezen worden lokaal bewaard.** De afbeelding wordt één keer opgehaald en daarna uit de eigen opslag geserveerd, zodat je verzameling ook zonder internet compleet is en op de telefoon meteen laadt.
+- **Meerdere locaties.** Elke plaat krijgt een plek mee (bijvoorbeeld *Woonkamer*, *Zolder* of *Mama*). Boven de verzameling staan tabs met het aantal per plek, zodat je per locatie kunt kijken wat er staat. Een plaat verplaats je met het keuzemenu onder de kaart — ook naar een plek die nog niet in de lijst staat.
+- **Zoeken en opruimen.** Zoek op titel, artiest, jaar of label, en haal een plaat met één knop uit de verzameling. Dezelfde plaat op dezelfde plek telt op in plaats van dubbel te verschijnen.
+- **Niemand hoeft dit te leren.** De app onthoudt wat je zelf invult; wat jij typt blijft leidend boven wat de databank zegt.
+
+| Platen op desktop | Platen op de telefoon |
+| --- | --- |
+| ![Platen op desktop](docs/img/platen-desktop.png) | ![Platen op de telefoon](docs/img/platen-mobiel.png) |
+
+*Barcodeherkenning voor platen*: `GET /api/platen/zoek?code=<barcode>` (met `?force=1` om opnieuw te zoeken). De opzoeking wordt lokaal bewaard, dus de tweede keer is het antwoord direct en werkt het ook zonder internet.
+
 ## Proxmox LXC installeren (zoals BeatSync)
 
 VoorraadThuis installeer je op dezelfde manier als BeatSync: voer op de Proxmox-host als root uit:
@@ -225,6 +242,7 @@ npm start    # http://localhost:3000
 | --- | --- |
 | `server.js` | HTTP-server, SQLite-schema, API en de gecombineerde receptenlijst; verwijst de garderoberoutes door. |
 | `wardrobe.js` | Het garderobe-onderdeel (Kledingkast): kledingkasten, kleding, was, setjes, draaghistorie en de adviesregels. |
+| `platen.js` | De platenverzameling: lp's met barcodeherkenning via MusicBrainz, hoezen uit het Cover Art Archive en de verzameling per locatie. |
 | `public/index.html` | De hele webpagina: opmaak, mobiele indeling en app-logica van alle tabs. |
 | `public/manifest.webmanifest`, `public/sw.js`, `public/favicon.svg`, `public/icon-*.png` | Pictogrammen en webapp-manifest voor installatie op de telefoon. |
 | `recipes-international.js` | 110 eigen Nederlandstalige thuisvarianten. |
@@ -248,6 +266,9 @@ npm start    # http://localhost:3000
 | `GET /api/recipes?country=` | De receptencollectie, optioneel per land. |
 | `GET/PUT/DELETE /api/planner/<datum>`, `GET /api/planner?month=` | Dagplanning met recept, landkeuken en diensten. |
 | `GET/POST/DELETE /api/shift-templates` | Herbruikbare diensten. |
+| `GET/POST /api/platen`, `PATCH/DELETE /api/platen/<id>` | De platenverzameling: lezen (met `?locatie=` of `?q=`), toevoegen, verplaatsen of wijzigen en verwijderen. |
+| `GET /api/platen/zoek?code=<barcode>`, `GET /api/platen/locaties` | Een plaat opzoeken bij MusicBrainz (met hoes) en de locaties met aantallen. |
+| `GET /api/platen/hoes/<id>` | De lokaal bewaarde hoesafbeelding. |
 | `GET /api/kast/config` | Categorieën, statussen, seizoenen, gelegenheden en of AI-tagging aanstaat. |
 | `GET/POST /api/kast/items`, `GET/PATCH/DELETE /api/kast/items/<id>` | Kledingstukken; `PATCH` met `action: analyze`, `wear` of een status. `GET ?wardrobe=<id>` of `?wardrobe=alle` filtert op kast. |
 | `GET/POST /api/kast/wardrobes`, `PATCH/DELETE /api/kast/wardrobes/<id>` | Kledingkasten: aanmaken, hernoemen en verwijderen; `DELETE ?moveTo=<id>` verplaatst de kledingstukken eerst. |
