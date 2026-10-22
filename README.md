@@ -129,6 +129,7 @@ Open de app op je telefoon en kies **Toevoegen aan startscherm** (iOS/Safari) of
 
 - Maandkalender om per dag een recept en landkeuken te plannen.
 - Meerdere benoemde diensten per dag met start- en eindtijd in 24-uursnotatie; `1930` wordt `19:30`.
+- **Eigen kleur per dienst**: kies uit acht kleuren (of juist geen). De kleur staat als balkje in de dagcel, als stip in de werkagenda en blijft bewaard bij een opgeslagen dienst (sjabloon). Nieuwe diensten krijgen automatisch een kleur die die dag nog niet gebruikt is.
 - **Werkagenda onder de kalender**: elke dag met diensten op een rij, met de naam, de tijden en de notitie, plus het totaal aantal uren van de maand. Een dag aanklikken in de agenda opent die dag in het formulier.
 - In de dagcellen staan **alle** diensten met hun tijden (tot drie; daarna `+N`), en de tooltip toont de namen en notities.
 - Tijden zonder dubbele punt worden goed gezet: `830` wordt `08:30`, `8` wordt `08:00`. Echt onmogelijke tijden zoals `24:00` blijven een foutmelding.
