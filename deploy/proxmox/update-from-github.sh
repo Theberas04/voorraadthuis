@@ -68,7 +68,7 @@ rollback(){ echo 'Bijwerken mislukt; eerdere versie wordt teruggezet.' >&2; pct 
 # Eerst alles klaarzetten en controleren; de draaiende app blijft ondertussen in de lucht.
 pct exec "$CTID" -- rm -rf "$STAGE"
 pct exec "$CTID" -- install -d -o voorraadthuis -g voorraadthuis "$STAGE/public" "$STAGE/recipe-data" "$STAGE/product-data"
-for f in server.js wardrobe.js barcodes.js profiles.js package.json recipes-international.js recipes-open.js public/index.html "${ASSETS[@]}"; do pct push "$CTID" "$TMP/$f" "$STAGE/$f" --perms 644; done
+for f in server.js wardrobe.js barcodes.js profiles.js platen.js package.json recipes-international.js recipes-open.js public/index.html "${ASSETS[@]}"; do pct push "$CTID" "$TMP/$f" "$STAGE/$f" --perms 644; done
 for f in unitools-recipes.json "wikibooks-en-recipes.json" "wikibooks-es-recipes.json" "wikibooks-de-recipes.json" "wikibooks-nl-recipes.json" "wikibooks-fr-recipes.json" "wikibooks-it-recipes.json" "wikibooks-ca-recipes.json" "wikibooks-pt-recipes.json" "wikibooks-ja-recipes.json" "wikibooks-pl-recipes.json" "wikibooks-sv-recipes.json" "wikibooks-nb-recipes.json" "wikibooks-fi-recipes.json" "wikibooks-cocktails-recipes.json" "wikibooks-borrelhapjes-recipes.json" translations-nl.json; do pct push "$CTID" "$TMP/recipe-data/$f" "$STAGE/recipe-data/$f" --perms 644; done
 # Huismerktabel van Nederlandse supermarkten (open data uit Open Food Facts).
 for f in nl-huismerken.json winkelprefixen.json; do pct push "$CTID" "$TMP/product-data/$f" "$STAGE/product-data/$f" --perms 644; done
