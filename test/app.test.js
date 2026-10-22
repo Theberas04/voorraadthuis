@@ -66,7 +66,15 @@ assert.match(html,/<button data-page="profielen">Profielen<\/button>/);
 assert.match(html,/id="smsRecipient"/);assert.match(html,/font-size:16px/);assert.match(html,/env\(safe-area-inset-bottom\)/);assert.match(html,/recipeLimit:24/);assert.match(html,/recipeMore/);assert.match(html,/serviceWorker/)});
 test('de kledingkast-tab hoort bij dezelfde app',async()=>{const html=await(await call('/')).text();assert.match(html,/<button data-page="kast">Kleding<\/button>/);assert.match(html,/<section class="view" id="page-kast" hidden>/);});
 test('de garderobe-config biedt categorieën aan met AI uit',async()=>{const r=await call('/api/kast/config');assert.equal(r.status,200);const config=await r.json();assert.ok(config.categories.includes('schoenen'));assert.equal(config.ai.enabled,false);});
-test('de JavaScript in de pagina is syntactisch correct',async()=>{const html=await(await call('/')).text();const script=html.match(/<script>([\s\S]*)<\/script>/);assert.ok(script);const vm=require('node:vm');assert.doesNotThrow(()=>new vm.Script(script[1],{filename:'public/index.html'}))});
+test('de JavaScript in de pagina is syntactisch correct',async()=>{const html=await(await call('/')).text();
+  // Elk blok met eigen JavaScript wordt apart gecontroleerd; scripts met een src horen
+  // als bestand in public/ te staan (en dus ook in de bestandslijst van de deploy).
+  const blokken=[...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g)].map(m=>m[1]);
+  assert.ok(blokken.length>=1,'de pagina hoort eigen JavaScript te bevatten');
+  const vm=require('node:vm');
+  blokken.forEach((code,i)=>{assert.doesNotThrow(()=>new vm.Script(code,{filename:`public/index.html#${i}`}))});
+  for(const m of html.matchAll(/<script[^>]*\bsrc="([^"]+)"/g)){const bestand=m[1].split('?')[0];assert.ok(require('node:fs').existsSync(require('node:path').join(__dirname,'..','public',bestand)),`${bestand} hoort in public/ te staan`)};
+});
 test('profielen met telefoonnummer worden via de API beheerd',async()=>{
   let r=await call('/api/profielen','POST',{name:'Tom Werdens',phone:'06 12345678',role:'boodschappen',email:'tom@voorbeeld.nl',smsRecipient:true});
   assert.equal(r.status,201);
