@@ -23,6 +23,25 @@ test('opgeslagen diensten kunnen worden aangemaakt, opgehaald en verwijderd',asy
 test('opgeslagen diensten weigeren een ongeldige naam of 24-uurs tijd',async()=>{for(const payload of [{name:'',startTime:'08:00',endTime:'16:00'},{name:'Nacht',startTime:'24:00',endTime:'06:00'},{name:'Nacht',startTime:'22:00',endTime:'25:00'}]){const r=await call('/api/shift-templates','POST',payload);assert.equal(r.status,400);}});
 test('de inrichtingsscripts hebben een kloppende bestandslijst',()=>{const {execFileSync}=require('node:child_process');const map=path.join(__dirname,'..','deploy','proxmox');for(const naam of ['install.sh','provision-voorraadthuis.sh','create-voorraadthuis-lxc.sh','update-from-github.sh']){const bestand=path.join(map,naam);execFileSync('bash',['-n',bestand],{stdio:'pipe'});const regels=fs.readFileSync(bestand,'utf8').split('\n');regels.forEach((regel,nummer)=>assert.equal((regel.match(/"/g)||[]).length%2,0,`${naam} regel ${nummer+1}: oneven aantal aanhalingstekens`));for(const stuk of ['wikibooks-cocktails-recipes.json','wikibooks-borrelhapjes-recipes.json'])assert.ok(regels.some(regel=>regel.includes(stuk)),`${naam} mist ${stuk}`);}});
 test('elke bestandsnaam in de bijwerklijst bestaat echt en staat los',()=>{const bestand=path.join(__dirname,'..','deploy','proxmox','update-from-github.sh');const regels=fs.readFileSync(bestand,'utf8').split('\n');const regel=regels.find(r=>r.startsWith('FILES='));assert.ok(regel,'geen bestandslijst gevonden');const onderdelen=(regel.match(/"[^"]*"|\S+/g)||[]).map(stuk=>stuk.replace(/^"|"$/g,'').replace(/^FILES=\(/,'')).filter(stuk=>stuk!=='${ASSETS[@]}'&&stuk!==')'&&stuk!=='');for(const stuk of onderdelen){assert.ok(!stuk.includes(' '),`bestandsnaam met een spatie in de lijst: ${stuk}`);assert.ok(fs.existsSync(path.join(__dirname,'..',stuk)),`bestand in de lijst bestaat niet: ${stuk}`);}assert.ok(onderdelen.length>=27,`verwacht een lange bestandslijst, gevonden ${onderdelen.length}`);});
+test('een verse installatie haalt alles op wat het inrichten nodig heeft',()=>{
+  const map=path.join(__dirname,'..','deploy','proxmox');
+  const provision=fs.readFileSync(path.join(map,'provision-voorraadthuis.sh'),'utf8');
+  const install=fs.readFileSync(path.join(map,'install.sh'),'utf8');
+  const update=fs.readFileSync(path.join(map,'update-from-github.sh'),'utf8');
+  const nodig=new Set();
+  for(const regel of provision.split('\n')){
+    const m=regel.match(/^for f in (.*?); do pct push/);
+    if(!m) continue;
+    const sub=(regel.match(/\$APP_DIR\/([a-z-]+)\/\$f/)||[])[1];
+    for(const naam of m[1].replace(/"/g,'').split(/\s+/)) if(naam) nodig.add(sub?`${sub}/${naam}`:naam);
+  }
+  for(const stuk of ['platen.js','public/platen.js']) nodig.add(stuk);
+  assert.ok(nodig.size>=30,`verwacht een flinke lijst, gevonden ${nodig.size}`);
+  for(const bestand of nodig){
+    assert.ok(install.includes(`"${bestand}"`),`install.sh haalt ${bestand} niet op, terwijl het inrichten dat wel nodig heeft`);
+    assert.ok(update.includes(bestand),`update-from-github.sh kent ${bestand} niet`);
+  }
+});
 test('elke dienst kan een eigen kleur krijgen',async()=>{const date='2026-11-10';const shifts=[{name:'Ochtenddienst',startTime:'07:00',endTime:'12:00',notes:'',color:'groen'},{name:'Avonddienst',startTime:'17:30',endTime:'23:00',notes:'',color:'blauw'}];let r=await call(`/api/planner/${date}`,'PUT',{shifts});assert.equal(r.status,200);let plan=await r.json();assert.deepEqual(plan.shifts.map(s=>s.color),['groen','blauw']);const plans=await(await call('/api/planner?month=2026-11')).json();assert.deepEqual(plans.find(x=>x.plan_date===date).shifts.map(s=>s.color),['groen','blauw'],'de kleur hoort ook in de maandlijst mee te komen');r=await call(`/api/planner/${date}`,'PUT',{shifts:[{name:'Fout',startTime:'09:00',endTime:'17:00',color:'regenboog'}]});assert.equal(r.status,400,'een onbekende kleur hoort geweigerd te worden');});
 test('een opgeslagen dienst houdt zijn kleur',async()=>{const r=await call('/api/shift-templates','POST',{name:'Nachtdienst',startTime:'23:00',endTime:'07:00',notes:'overdracht',color:'paars'});assert.equal(r.status,201);const sjabloon=await r.json();assert.equal(sjabloon.color,'paars');const lijst=await(await call('/api/shift-templates')).json();assert.equal(lijst.find(s=>s.id===sjabloon.id).color,'paars');const fout=await call('/api/shift-templates','POST',{name:'X',startTime:'09:00',endTime:'17:00',color:'neon'});assert.equal(fout.status,400);});
 test('de kleurenkiezer staat in de pagina en de kleur in de agenda',async()=>{const pagina=await(await call('/')).text();for(const stuk of ['const KLEUREN=','data-kleur-rij','const eersteVrijeKleur=','kleurstip','Kleur van deze dienst'])assert.ok(pagina.includes(stuk),`de pagina hoort ${stuk} te bevatten`);});

@@ -16,7 +16,31 @@ Alleen bestanden ophalen en controleren, zonder een container te maken:
 FETCH_ONLY=1 bash <(curl -fsSL https://raw.githubusercontent.com/Theberas04/voorraadthuis/main/deploy/proxmox/install.sh)
 ```
 
-Gebruik `bash <(curl ...)`, niet `curl ... | bash`. Het installatiescript haalt de bestanden van GitHub op, controleert ze en roept daarna de LXC-provisioning aan.
+Gebruik `bash <(curl ...)`, niet `curl ... | bash`. Het installatiescript haalt de bestanden van GitHub op, controleert ze en roept daarna de LXC-provisioning aan. Nieuwe containers worden op **Debian 13** gemaakt (`DEBIAN_MAJOR=12` voor een oude versie).
+
+## Een bestaande container naar Debian 13 brengen
+
+Draait je LXC nog op Debian 12, dan zet `upgrade-debian-13.sh` hem om naar Debian 13 (trixie); de app en de database blijven staan:
+
+```bash
+bash <(curl -fsSL -H 'Accept: application/vnd.github.raw' \
+  https://api.github.com/repos/Theberas04/voorraadthuis/contents/deploy/proxmox/upgrade-debian-13.sh) 120
+```
+
+Eerst alleen kijken (er wordt niets geïnstalleerd of herstart):
+
+```bash
+DROOG=1 bash <(curl -fsSL -H 'Accept: application/vnd.github.raw' \
+  https://api.github.com/repos/Theberas04/voorraadthuis/contents/deploy/proxmox/upgrade-debian-13.sh) 120
+```
+
+Het script maakt eerst een **momentopname** (`voor-debian13-<datum>`) en begint zonder die momentopname niet — dat is de enige echte terugweg. Daarna zet het een kopie van `voorraad.db` klaar in de container én op de host, werkt Debian 12 eerst helemaal bij, zet de pakketbronnen van `bookworm` naar `trixie` (bronnen zonder codenaam, zoals NodeSource, blijven staan), installeert Debian 13, start opnieuw op en controleert daarna de Node-versie (22.5+ voor `node:sqlite`, anders wordt Node 22 opnieuw gezet) en de app op poort 80 en 443. Lukt de app niet, dan komt de momentopname automatisch terug (uit te zetten met `GEEN_TERUG=1`). Noodluik zonder momentopname: `ZONDER_SNAPSHOT=1` — met waarschuwing.
+
+Terugzetten kan altijd handmatig:
+
+```bash
+pct stop <CTID> && pct rollback <CTID> voor-debian13-<datum> && pct start <CTID>
+```
 
 ## Netwerk en instellingen
 

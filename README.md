@@ -205,7 +205,7 @@ VoorraadThuis installeer je op dezelfde manier als BeatSync: voer op de Proxmox-
 bash <(curl -fsSL https://raw.githubusercontent.com/Theberas04/voorraadthuis/main/deploy/proxmox/install.sh)
 ```
 
-Het script haalt de installerbestanden rechtstreeks van GitHub, maakt een Debian 12 LXC aan en start de app als systemd-service. **De app serveert de pagina zelf op poort 80** — er zit geen nginx en geen certificaat tussen, zodat er ook niets meer mis kan gaan met een verkeerde webroot. `FETCH_ONLY=1` haalt de bestanden op en controleert ze zonder een container te maken.
+Het script haalt de installerbestanden rechtstreeks van GitHub, maakt een Debian 13 LXC aan en start de app als systemd-service. **De app serveert de pagina zelf op poort 80** — er zit geen nginx en geen certificaat tussen, zodat er ook niets meer mis kan gaan met een verkeerde webroot. `FETCH_ONLY=1` haalt de bestanden op en controleert ze zonder een container te maken.
 
 Standaard gebruikt de LXC `vmbr0` en DHCP. Vast IP kan bijvoorbeeld zo:
 ```bash
@@ -217,6 +217,33 @@ Na afloop opent de app op `http://<LXC-IP>/`. Bijwerken zonder je gegevens te wi
 bash <(curl -fsSL https://raw.githubusercontent.com/Theberas04/voorraadthuis/main/deploy/proxmox/update-from-github.sh) 120
 ```
 Vervang `120` door je CTID. De app heeft geen login en is bedoeld voor het vertrouwde LAN; stel hem niet rechtstreeks bloot aan internet.
+
+Nieuwe containers worden op **Debian 13** gemaakt; met `DEBIAN_MAJOR=12` maak je nog een oude versie.
+
+### Een bestaande container naar Debian 13 brengen
+
+Draait je LXC nog op Debian 12, dan zet dit script hem om naar **Debian 13 (trixie)** — de app en je gegevens blijven staan. Voer op de Proxmox-host uit:
+
+```bash
+bash <(curl -fsSL -H 'Accept: application/vnd.github.raw' https://api.github.com/repos/Theberas04/voorraadthuis/contents/deploy/proxmox/upgrade-debian-13.sh) 120
+```
+
+Wil je eerst alleen kijken wat er zou gebeuren (er wordt dan niets geïnstalleerd of herstart):
+
+```bash
+DROOG=1 bash <(curl -fsSL -H 'Accept: application/vnd.github.raw' https://api.github.com/repos/Theberas04/voorraadthuis/contents/deploy/proxmox/upgrade-debian-13.sh) 120
+```
+
+Wat het script doet, in deze volgorde:
+
+1. **Momentopname** van de container (`voor-debian13-<datum>`). Zonder momentopname begint het niet — dat is de enige echte terugweg bij een mislukte systeemsprong (`ZONDER_SNAPSHOT=1` is het noodluik, met waarschuwing).
+2. **Database veiligstellen**: de app stopt even, `voorraad.db` wordt in de container bewaard én naar de host gehaald (`/root/voorraadthuis-voor-debian13-<datum>.db`), plus een tar van de webroot.
+3. **Debian 12 eerst helemaal bijwerken**, daarna de pakketbronnen van `bookworm` naar `trixie` (zowel `sources.list` als deb822-bestanden; de oude worden bewaard). Een bron zonder codenaam — zoals die van NodeSource — blijft ongemoeid. Staat er daarna nog ergens `bookworm`, dan stopt het script met een duidelijke melding in plaats van te gokken.
+4. **Debian 13 installeren**, opnieuw opstarten en wachten tot de container terug is.
+5. **Node controleren**: de app heeft Node 22.5+ nodig (`node:sqlite`). Neemt Debian 13's eigen Node 20 het over, dan zet het script Node 22 er weer op.
+6. **De app controleren** op poort 80 (`/healthz` → `ok`) en op https/443. Lukt dat niet, dan komt de momentopname automatisch terug en draait de oude versie weer (`GEEN_TERUG=1` om dat uit te zetten). Het logbestand staat op de host als `/root/debian13-upgrade-<datum>.log`.
+
+De app zelf bijwerken blijft daarna gewoon `update-from-github.sh`.
 
 Meer Proxmox-instellingen, beheercommando's en back-upinstructies staan in [`deploy/proxmox/README.md`](deploy/proxmox/README.md).
 

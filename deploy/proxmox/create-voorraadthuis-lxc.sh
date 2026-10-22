@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Maakt een unprivileged Debian 12 LXC aan en richt VoorraadThuis daarin in.
+# Maakt een unprivileged Debian LXC aan en richt VoorraadThuis daarin in.
+# Standaard Debian 13; met DEBIAN_MAJOR=12 maak je nog een oude versie.
 set -euo pipefail
 CTID="${CTID:-}"
 CT_HOSTNAME="${CT_HOSTNAME:-voorraadthuis}"
@@ -13,7 +14,7 @@ CORES="${CORES:-1}"
 MEMORY="${MEMORY:-512}"
 SWAP="${SWAP:-256}"
 DISK="${DISK:-4}"
-DEBIAN_MAJOR="${DEBIAN_MAJOR:-12}"
+DEBIAN_MAJOR="${DEBIAN_MAJOR:-13}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 APP_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 log(){ printf '\033[1;36m==>\033[0m %s\n' "$*"; }
