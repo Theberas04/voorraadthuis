@@ -188,6 +188,8 @@ Onder **Platen** houd je je lp's bij. Je scant de barcode van een plaat — of t
 - **Overzicht met alles erop.** Elke plaat staat als kaart met de hoes, artiest, jaar, formaat, label, eventuele notitie en het aantal exemplaren. Zonder bekende hoes krijg je een nette kaart met de beginletter.
 - **Hoezen worden lokaal bewaard.** De afbeelding wordt één keer opgehaald en daarna uit de eigen opslag geserveerd, zodat je verzameling ook zonder internet compleet is en op de telefoon meteen laadt.
 - **Meerdere locaties.** Elke plaat krijgt een plek mee (bijvoorbeeld *Woonkamer*, *Zolder* of *Mama*). Boven de verzameling staan tabs met het aantal per plek, zodat je per locatie kunt kijken wat er staat. Een plaat verplaats je met het keuzemenu onder de kaart — ook naar een plek die nog niet in de lijst staat.
+- **Filteren op genre, artiest, locatie en jaartal.** Boven de verzameling staan keuzelijsten met aantallen erbij: elk genre, elke artiest en elk decennium dat in je kast voorkomt — plus *jaartal onbekend* en *genre onbekend* om juist de platen zonder gegevens op te sporen. Daarnaast kun je met *van* en *tot* op een periode filteren. Alles werkt tegelijk en naast het zoekveld en de locatietabs; boven de lijst staat wat er gefilterd is ("Gefilterd op genre Rock, decennium 1980 — 1 van 9 platen") met één knop om alles weer los te laten.
+- **Echte genres, geen uitgiftetype.** Het genre komt uit de uitgave-groep in MusicBrainz (rock, jazz, soul, electronic), niet uit het soort uitgave; is daar niets bekend, dan valt de app terug op *Album*, *Single* enzovoort.
 - **Zoeken en opruimen.** Zoek op titel, artiest, jaar of label, en haal een plaat met één knop uit de verzameling. Dezelfde plaat op dezelfde plek telt op in plaats van dubbel te verschijnen.
 - **Niemand hoeft dit te leren.** De app onthoudt wat je zelf invult; wat jij typt blijft leidend boven wat de databank zegt.
 
@@ -196,6 +198,8 @@ Rondleiding in beeld: [**rondleiding-platen.mp4**](docs/video/rondleiding-platen
 | Platen op desktop | Platen op de telefoon |
 | --- | --- |
 | ![Platen op desktop](docs/img/platen-desktop.png) | ![Platen op de telefoon](docs/img/platen-mobiel.png) |
+| Filteren op genre en decennium | Filters op de telefoon |
+| ![Filters op de platenpagina](docs/img/platen-filters-actief.png) | ![Filters op de telefoon](docs/img/platen-filters-mobiel.png) |
 
 *Barcodeherkenning voor platen*: `GET /api/platen/zoek?code=<barcode>` (met `?force=1` om opnieuw te zoeken). De opzoeking wordt lokaal bewaard, dus de tweede keer is het antwoord direct en werkt het ook zonder internet.
 
@@ -297,7 +301,8 @@ npm start    # http://localhost:3000
 | `GET /api/recipes?country=` | De receptencollectie, optioneel per land. |
 | `GET/PUT/DELETE /api/planner/<datum>`, `GET /api/planner?month=` | Dagplanning met recept, landkeuken en diensten. |
 | `GET/POST/DELETE /api/shift-templates` | Herbruikbare diensten. |
-| `GET/POST /api/platen`, `PATCH/DELETE /api/platen/<id>` | De platenverzameling: lezen (met `?locatie=` of `?q=`), toevoegen, verplaatsen of wijzigen en verwijderen. |
+| `GET/POST /api/platen`, `PATCH/DELETE /api/platen/<id>` | De platenverzameling: lezen, toevoegen, verplaatsen of wijzigen en verwijderen. Lezen kan gefilterd met `?locatie=` (of `leeg`), `?genre=`, `?artiest=`, `?decennium=` (of `onbekend`), `?van=`/`?tot=` en `?q=`; het antwoord bevat ook `keuzelijsten` met de genres, artiesten, decennia en locaties met aantallen. |
+| `GET /api/platen/keuzelijsten` | Alleen de keuzelijsten om op te filteren. |
 | `GET /api/platen/zoek?code=<barcode>`, `GET /api/platen/locaties` | Een plaat opzoeken bij MusicBrainz (met hoes) en de locaties met aantallen. |
 | `GET /api/platen/hoes/<id>` | De lokaal bewaarde hoesafbeelding. |
 | `GET /api/kast/config` | Categorieën, statussen, seizoenen, gelegenheden en of AI-tagging aanstaat. |

@@ -166,15 +166,74 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       GROUP BY locatie ORDER BY (locatie='') DESC, locatie COLLATE NOCASE`).all()
     .map(r => ({ naam: r.naam || 'Zonder locatie', sleutel: r.naam, aantal: r.aantal }));
 
-  const alles = () => {
-    const rijen = lijst();
-    return {
-      platen: rijen,
-      totaal: rijen.length,
-      locaties: locaties(),
-      stuks: rijen.reduce((som, p) => som + (Number(p.aantal) || 0), 0),
-    };
+  // Waar staat iets: dezelfde waarde met verschillende spaties of hoofdletters hoort bij
+  // elkaar. Zo filtert "the beatles" ook op "The Beatles".
+  const gelijk = (a, b) => String(a || '').trim().toLowerCase() === String(b || '').trim().toLowerCase();
+  const jaarGetal = (p) => {
+    const m = String(p.jaar || '').match(/\d{4}/);
+    return m ? Number(m[0]) : null;
   };
+  const decenniumVan = (p) => {
+    const jaar = jaarGetal(p);
+    return jaar === null ? null : Math.floor(jaar / 10) * 10;
+  };
+  const ONBEKEND = 'onbekend';
+
+  // De keuzelijsten komen uit de hele verzameling (niet uit wat er nu gefilterd is),
+  // zodat een keuze nooit zijn eigen opties kwijtraakt.
+  function keuzelijsten() {
+    const rijen = db.prepare('SELECT genre, artiest, jaar FROM platen').all();
+    const tel = (kies) => {
+      const map = new Map();
+      for (const r of rijen) {
+        const waarde = kies(r);
+        if (waarde === null || waarde === undefined || waarde === '') continue;
+        map.set(waarde, (map.get(waarde) || 0) + 1);
+      }
+      return [...map].map(([naam, aantal]) => ({ naam, aantal }))
+        .sort((a, b) => b.aantal - a.aantal || String(a.naam).localeCompare(String(b.naam), 'nl'));
+    };
+    const decennia = tel((r) => {
+      const m = String(r.jaar || '').match(/\d{4}/);
+      return m ? Math.floor(Number(m[0]) / 10) * 10 : null;
+    }).map((d) => ({ naam: String(d.naam), label: `${d.naam} – ${Number(d.naam) + 9}`, aantal: d.aantal }));
+    const genres = tel((r) => String(r.genre || '').trim());
+    const artiesten = tel((r) => String(r.artiest || '').trim());
+    const zonderJaar = rijen.filter((r) => !/\d{4}/.test(String(r.jaar || ''))).length;
+    const zonderGenre = rijen.filter((r) => !String(r.genre || '').trim()).length;
+    if (zonderJaar) decennia.push({ naam: ONBEKEND, label: 'Jaar onbekend', aantal: zonderJaar });
+    if (zonderGenre) genres.push({ naam: ONBEKEND, label: 'Genre onbekend', aantal: zonderGenre });
+    return { genres, artiesten, decennia, locaties: locaties() };
+  }
+
+  // Filteren: locatie (via de database), genre, artiest, decennium of jaar van–tot, en
+  // een zoekterm over alles heen. Alles wat je combineert, geldt tegelijk.
+  function zeef({ locatie, genre, artiest, decennium, van, tot, zoekterm }) {
+    let rijen = lijst(locatie === '' || locatie === undefined ? undefined : locatie);
+    if (locatie === 'leeg') rijen = rijen.filter((p) => !p.locatie);
+    if (genre) rijen = rijen.filter((p) => genre === ONBEKEND ? !String(p.genre || '').trim() : gelijk(p.genre, genre));
+    if (artiest) rijen = rijen.filter((p) => artiest === ONBEKEND ? !String(p.artiest || '').trim() : gelijk(p.artiest, artiest));
+    if (decennium) {
+      rijen = rijen.filter((p) => decennium === ONBEKEND ? decenniumVan(p) === null : decenniumVan(p) === Number(decennium));
+    }
+    if (van !== null && van !== undefined && van !== '') rijen = rijen.filter((p) => { const j = jaarGetal(p); return j !== null && j >= Number(van); });
+    if (tot !== null && tot !== undefined && tot !== '') rijen = rijen.filter((p) => { const j = jaarGetal(p); return j !== null && j <= Number(tot); });
+    if (zoekterm) {
+      rijen = rijen.filter((p) => `${p.titel} ${p.artiest} ${p.jaar} ${p.label} ${p.formaat} ${p.genre} ${p.locatie} ${p.notitie}`.toLowerCase().includes(zoekterm));
+    }
+    return rijen;
+  }
+
+  const antwoord = (rijen, filters) => ({
+    platen: rijen,
+    totaal: rijen.length,
+    locaties: locaties(),
+    stuks: rijen.reduce((som, p) => som + (Number(p.aantal) || 0), 0),
+    keuzelijsten: keuzelijsten(),
+    filters,
+  });
+
+  const alles = () => antwoord(lijst(), {});
 
   function bewaarCache(code, gegevens) {
     db.prepare(`INSERT INTO plaat_cache(barcode,titel,artiest,jaar,label,formaat,genre,hoes,mbid,gevonden,fetched_at)
@@ -233,6 +292,24 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
     return maten.large || maten['500'] || maten.small || voorkant.image || '';
   }
 
+  // Het echte genre (rock, jazz, pop) staat in MusicBrainz bij de uitgave-groep, niet bij
+  // de uitgave zelf. Lukt dat niet, dan valt het terug op het soort uitgave (Album, Single).
+  const netjes = (t) => { const w = leeg(t, 60); return w ? w.charAt(0).toUpperCase() + w.slice(1) : ''; };
+  async function genreBij(uitgave) {
+    const soort = typeVan(uitgave) || '';
+    const groep = uitgave['release-group'] && uitgave['release-group'].id;
+    if (!groep) return soort;
+    let gegevens = null;
+    try { gegevens = await vraagJson(`${MB_BASIS()}/release-group/${groep}?inc=genres+tags&fmt=json`); } catch { gegevens = null }
+    const kies = (lijst) => (Array.isArray(lijst) ? lijst : [])
+      .filter((g) => g && g.name).sort((a, b) => (b.count || 0) - (a.count || 0));
+    const genres = kies(gegevens && gegevens.genres);
+    if (genres.length) return netjes(genres[0].name);
+    const tags = kies(gegevens && gegevens.tags);
+    if (tags.length) return netjes(tags[0].name);
+    return soort;
+  }
+
   async function zoekOnline(code) {
     let storing = false;
     for (const variant of barcodeVarianten(code)) {
@@ -268,7 +345,7 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
         jaar: jaarVan(uitgave.date),
         label: leeg((labelInfo.label && labelInfo.label.name) || labelInfo['catalog-number'] || ''),
         formaat: leeg(formaatVan(uitgave)),
-        genre: leeg(typeVan(uitgave) || uitgave.country || ''),
+        genre: leeg(await genreBij(uitgave).catch(() => '')) || leeg(typeVan(uitgave) || uitgave.country || ''),
         hoes,
         bron: 'MusicBrainz',
         licentie: 'CC0 1.0',
@@ -385,21 +462,22 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
   async function handle(req, res, url) {
     const pad = url.pathname;
     if (pad === '/api/platen' && req.method === 'GET') {
-      const locatie = url.searchParams.get('locatie');
-      const zoekterm = leeg(url.searchParams.get('q'), 60).toLowerCase();
-      if (!locatie && !zoekterm) return stuur(res, 200, alles());
-      let rijen = lijst(locatie === '' ? '' : locatie || undefined);
-      if (locatie === 'leeg') rijen = rijen.filter(p => !p.locatie);
-      if (zoekterm) {
-        rijen = rijen.filter(p => `${p.titel} ${p.artiest} ${p.jaar} ${p.label} ${p.formaat} ${p.locatie} ${p.notitie}`.toLowerCase().includes(zoekterm));
-      }
-      return stuur(res, 200, {
-        platen: rijen,
-        totaal: rijen.length,
-        locaties: locaties(),
-        stuks: rijen.reduce((som, p) => som + (Number(p.aantal) || 0), 0),
-      });
+      const q = (naam, max) => { const w = url.searchParams.get(naam); return w === null ? null : leeg(w, max); };
+      const filters = {
+        locatie: q('locatie', 120),
+        genre: q('genre', 80),
+        artiest: q('artiest', 160),
+        decennium: q('decennium', 12),
+        van: q('van', 8),
+        tot: q('tot', 8),
+        zoekterm: (q('q', 60) || '').toLowerCase(),
+      };
+      const leegAlles = Object.values(filters).every((w) => !w);
+      if (leegAlles) return stuur(res, 200, alles());
+      const rijen = zeef(filters);
+      return stuur(res, 200, antwoord(rijen, Object.fromEntries(Object.entries(filters).filter(([, w]) => w))));
     }
+    if (pad === '/api/platen/keuzelijsten' && req.method === 'GET') return stuur(res, 200, keuzelijsten());
     if (pad === '/api/platen/locaties' && req.method === 'GET') return stuur(res, 200, locaties());
     const hoesPad = pad.match(/^\/api\/platen\/hoes\/(\d+)$/);
     if (hoesPad && req.method === 'GET') return serveerHoes(res, hoesPad[1]);
@@ -427,7 +505,7 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
     return stuur(res, 404, { error: 'Onbekende platenroute.' });
   }
 
-  return { handle, alles, lijst, locaties, zoek, voegToe, wijzig, verwijder, bewaarHoes };
+  return { handle, alles, lijst, locaties, keuzelijsten, zeef, zoek, voegToe, wijzig, verwijder, bewaarHoes };
 }
 
 module.exports = { createPlaten, barcodeVarianten, kiesUitgave };

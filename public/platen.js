@@ -11,7 +11,7 @@
   };
   const stuurJson = (pad, methode, lichaam) => api(pad, { method: methode, headers: { 'content-type': 'application/json' }, body: JSON.stringify(lichaam) });
 
-  const staat = { locatie: '', zoek: '', laatste: '', scan: null, zoekTimer: null };
+  const staat = { locatie: '', zoek: '', genre: '', artiest: '', decennium: '', van: '', tot: '', laatste: '', scan: null, zoekTimer: null, jaarTimer: null };
   let geopend = false;
 
   const veld = (id) => $(id);
@@ -49,7 +49,7 @@
 
   async function zoekBarcode(code, geforceerd) {
     const schoon = String(code || '').replace(/\D/g, '');
-    const vak = $('#plaatZoek');
+    const vak = $('#plaatZoekVak');
     if (!vak) return;
     if (schoon.length < 8) { vak.hidden = true; vak.innerHTML = ''; return; }
     if (!geforceerd && schoon === staat.laatste && !vak.hidden) return;
@@ -125,7 +125,7 @@
     staat.locaties = gegevens.locaties || [];
     const tabs = $('#plaatLocatieTabs');
     if (tabs) {
-      const knoppen = [`<button class="tab${staat.locatie ? '' : ' active'}" data-locatie="">Alles <span>${gegevens.totaal}</span></button>`];
+      const knoppen = [`<button class="tab${staat.locatie ? '' : ' active'}" data-locatie="">Alles <span>${gegevens.alleTotaal || gegevens.totaal}</span></button>`];
       for (const l of staat.locaties) {
         const actief = staat.locatie === l.sleutel ? ' active' : '';
         knoppen.push(`<button class="tab${actief}" data-locatie="${esc(l.sleutel)}">${esc(l.naam)} <span>${l.aantal}</span></button>`);
@@ -140,6 +140,8 @@
 
   function teken(gegevens) {
     tekenLocaties(gegevens);
+    vulKeuzelijsten(gegevens);
+    tekenFilterStand(gegevens);
     const grid = $('#plaatGrid');
     const leeg = $('#plaatLeeg');
     const pill = $('#platenTotaal');
@@ -149,8 +151,9 @@
       grid.innerHTML = '';
       if (leeg) {
         leeg.hidden = false;
-        leeg.textContent = staat.zoek
-          ? 'Geen plaat gevonden met die zoekterm.'
+        const gefilterd = staat.zoek || staat.genre || staat.artiest || staat.decennium || staat.van || staat.tot || staat.locatie;
+        leeg.textContent = gefilterd
+          ? 'Geen plaat die bij deze filters past. Zet een filter uit of wis ze allemaal met “Filters wissen”.'
           : 'Nog geen platen op deze plek. Scan een barcode of vul de gegevens zelf in.';
       }
       return;
@@ -159,11 +162,59 @@
     grid.innerHTML = gegevens.platen.map(kaart).join('');
   }
 
+  // De keuzelijsten (genre, artiest, decennium) komen uit de hele verzameling. Een keuze
+  // die je al gemaakt hebt blijft staan, ook als de lijst opnieuw gevuld wordt.
+  function vulKeuzelijsten(gegevens) {
+    const keuzes = gegevens.keuzelijsten || {};
+    const vul = (id, items, eigenTekst, gekozen) => {
+      const vak = $(id);
+      if (!vak) return;
+      const opties = [`<option value="">${eigenTekst}</option>`];
+      for (const it of items || []) {
+        const naam = it.naam;
+        const label = it.label || naam;
+        opties.push(`<option value="${esc(naam)}"${String(naam) === String(gekozen || '') ? ' selected' : ''}>${esc(label)} (${it.aantal})</option>`);
+      }
+      vak.innerHTML = opties.join('');
+      if (gekozen && ![...vak.options].some((o) => o.value === String(gekozen))) vak.value = '';
+    };
+    vul('#plaatGenre', keuzes.genres, 'Alle genres', staat.genre);
+    vul('#plaatArtiestFilter', keuzes.artiesten, 'Alle artiesten', staat.artiest);
+    vul('#plaatDecennium', keuzes.decennia, 'Alle jaartallen', staat.decennium);
+  }
+
+  // Laat zien wat er gefilterd is, zodat je nooit voor een lege lijst staat zonder te
+  // weten waarom.
+  function tekenFilterStand(gegevens) {
+    const vak = $('#plaatFilterStand');
+    if (!vak) return;
+    const actief = [];
+    if (staat.genre) actief.push(`genre ${staat.genre === 'onbekend' ? 'onbekend' : staat.genre}`);
+    if (staat.artiest) actief.push(`artiest ${staat.artiest === 'onbekend' ? 'onbekend' : staat.artiest}`);
+    if (staat.decennium) actief.push(staat.decennium === 'onbekend' ? 'jaar onbekend' : `decennium ${staat.decennium}`);
+    if (staat.van) actief.push(`vanaf ${staat.van}`);
+    if (staat.tot) actief.push(`tot ${staat.tot}`);
+    if (staat.locatie) actief.push(`locatie ${staat.locatie}`);
+    if (staat.zoek) actief.push(`zoekterm “${staat.zoek}”`);
+    const totaal = gegevens.alleTotaal || gegevens.totaal;
+    vak.innerHTML = actief.length
+      ? `Gefilterd op ${actief.map(esc).join(', ')} — <strong>${gegevens.totaal}</strong> van ${totaal} platen.`
+      : `Alle <strong>${gegevens.totaal}</strong> platen. Filter op genre, artiest, jaartal of decennium.`;
+    const wis = $('#plaatWisFilters');
+    if (wis) wis.disabled = !actief.length;
+  }
+
   async function laad() {
     const vraag = new URLSearchParams();
     if (staat.locatie) vraag.set('locatie', staat.locatie);
     if (staat.zoek) vraag.set('q', staat.zoek);
+    if (staat.genre) vraag.set('genre', staat.genre);
+    if (staat.artiest) vraag.set('artiest', staat.artiest);
+    if (staat.decennium) vraag.set('decennium', staat.decennium);
+    if (staat.van) vraag.set('van', staat.van);
+    if (staat.tot) vraag.set('tot', staat.tot);
     const gegevens = await api(`/api/platen${vraag.toString() ? '?' + vraag.toString() : ''}`);
+    gegevens.alleTotaal = (gegevens.keuzelijsten && gegevens.keuzelijsten.locaties || []).reduce((som, l) => som + l.aantal, 0) || gegevens.totaal;
     teken(gegevens);
     return gegevens;
   }
@@ -193,7 +244,7 @@
       if (veld('#plaatForm')) veld('#plaatForm').reset();
       if (veld('#plaatAantal')) veld('#plaatAantal').value = 1;
       toonHoes('');
-      const zoekvak = $('#plaatZoek');
+      const zoekvak = $('#plaatZoekVak');
       if (zoekvak) { zoekvak.hidden = true; zoekvak.innerHTML = ''; }
       staat.laatste = '';
       await laad();
@@ -221,6 +272,38 @@
         zoek.addEventListener('input', () => {
           clearTimeout(timer);
           timer = setTimeout(async () => { staat.zoek = zoek.value.trim(); await laad(); }, 250);
+        });
+      }
+      // Filters: genre, artiest, decennium en jaartal. Ze werken allemaal tegelijk en
+      // naast de locatietabs en het zoekveld.
+      const keuze = (id, veldNaam) => {
+        const vak = $(id);
+        if (!vak) return;
+        vak.addEventListener('change', async () => { staat[veldNaam] = vak.value; await laad(); });
+      };
+      keuze('#plaatGenre', 'genre');
+      keuze('#plaatArtiestFilter', 'artiest');
+      keuze('#plaatDecennium', 'decennium');
+      const jaarVeld = (id, veldNaam) => {
+        const vak = $(id);
+        if (!vak) return;
+        vak.addEventListener('input', () => {
+          clearTimeout(staat.jaarTimer);
+          staat.jaarTimer = setTimeout(async () => {
+            staat[veldNaam] = vak.value.trim();
+            await laad();
+          }, 400);
+        });
+      };
+      jaarVeld('#plaatVan', 'van');
+      jaarVeld('#plaatTot', 'tot');
+      const wis = $('#plaatWisFilters');
+      if (wis) {
+        wis.addEventListener('click', async () => {
+          staat.genre = staat.artiest = staat.decennium = staat.van = staat.tot = '';
+          for (const id of ['#plaatGenre', '#plaatArtiestFilter', '#plaatDecennium']) if ($(id)) $(id).value = '';
+          for (const id of ['#plaatVan', '#plaatTot']) if ($(id)) $(id).value = '';
+          await laad();
         });
       }
       const tabs = $('#plaatLocatieTabs');
