@@ -274,3 +274,76 @@ test('zonder genres bij de uitgave valt het genre terug op het soort uitgave', a
   const uitkomst = await api('/api/platen/zoek/602547077750');   // onbekend: geen uitgave
   assert.equal(uitkomst.body.gevonden, false);
 });
+
+// --- De eigen lp-lijst (barcodes uit MusicBrainz, lokaal) ---
+const tabelPad = path.join(dir, 'lp-barcodes.json');
+const CODE_IN_LIJST = '9990000000017';
+const CODE_SCHONE_TWEEDE = '9990000000024';
+function schrijfTabel(rijen) {
+  fs.writeFileSync(tabelPad, JSON.stringify(rijen));
+}
+process.env.PLATEN_TABEL = tabelPad;
+
+test('een barcode uit de eigen lp-lijst wordt zonder internet herkend', async () => {
+  schrijfTabel({
+    [CODE_IN_LIJST]: {t: 'Rumours', a: 'Fleetwood Mac', j: '1977', l: 'Warner Bros.', f: '12\" Vinyl · 11 nummers', m: 'mbid-lokaal-1', g: 'rg-lokaal-1'},
+  });
+  const voor = mbVerzoeken;
+  const uitkomst = await api(`/api/platen/zoek/${CODE_IN_LIJST}`);
+  assert.equal(uitkomst.body.gevonden, true);
+  assert.equal(uitkomst.body.titel, 'Rumours');
+  assert.equal(uitkomst.body.artiest, 'Fleetwood Mac');
+  assert.equal(uitkomst.body.jaar, '1977');
+  assert.equal(uitkomst.body.label, 'Warner Bros.');
+  assert.match(uitkomst.body.formaat, /Vinyl/);
+  assert.equal(uitkomst.body.uitEigenLijst, true, 'het antwoord zegt dat het uit de eigen lijst komt');
+  assert.match(uitkomst.body.hoes, /release\/mbid-lokaal-1\/front-500\.jpg$/, 'de hoes wordt bij de uitgave gezocht');
+  assert.equal(mbVerzoeken, voor, 'de databank wordt niet lastiggevallen als de eigen lijst het weet');
+});
+
+test('een barcode die niet in de eigen lijst staat wordt online opgezocht', async () => {
+  const voor = mbVerzoeken;
+  const onbekend = await api(`/api/platen/zoek/${EAN}`);
+  assert.equal(onbekend.body.gevonden, true);
+  assert.ok(!onbekend.body.uitEigenLijst, 'deze kwam niet uit de eigen lijst');
+  // Een verse barcode die nergens in staat: die moet de databank wél bevragen.
+  const nergens = await api('/api/platen/zoek/4006381333931');
+  assert.equal(nergens.body.gevonden, false, 'wat nergens bekend is blijft onbekend');
+  assert.ok(mbVerzoeken > voor, 'voor een barcode buiten de eigen lijst wordt de databank bevraagd');
+});
+
+test('met force=1 wordt de eigen lijst overgeslagen', async () => {
+  const voor = mbVerzoeken;
+  const uitkomst = await api(`/api/platen/zoek/${CODE_IN_LIJST}?force=1`);
+  assert.ok(mbVerzoeken > voor, 'opnieuw zoeken gaat langs de databank');
+  assert.ok(!uitkomst.body.uitEigenLijst);
+});
+
+test('een bijgewerkte lp-lijst wordt vanzelf ingelezen', async () => {
+  const voor = await api('/api/platen/locaties').then(() => true);
+  assert.ok(voor);
+  schrijfTabel({
+    [CODE_IN_LIJST]: {t: 'Rumours', a: 'Fleetwood Mac', j: '1977', m: 'mbid-lokaal-1'},
+    [CODE_SCHONE_TWEEDE]: {t: 'Tango in the Night', a: 'Fleetwood Mac', j: '1987', m: 'mbid-lokaal-2'},
+  });
+  const uitkomst = await api(`/api/platen/zoek/${CODE_SCHONE_TWEEDE}`);
+  assert.equal(uitkomst.body.gevonden, true, 'de nieuwe regel is meteen te vinden');
+  assert.equal(uitkomst.body.titel, 'Tango in the Night');
+});
+
+test('een ontbrekende lp-lijst is geen probleem', async () => {
+  const oud = process.env.PLATEN_TABEL;
+  process.env.PLATEN_TABEL = path.join(dir, 'bestaat-niet.json');
+  try {
+    const uitkomst = await api(`/api/platen/zoek/${EAN}`);
+    assert.equal(uitkomst.status, 200, 'de app blijft gewoon werken zonder lijst');
+    assert.equal(uitkomst.body.gevonden, true);
+  } finally { process.env.PLATEN_TABEL = oud }
+});
+
+test('de app vertelt hoeveel lp-barcodes er in de eigen lijst staan', async () => {
+  const uitkomst = await api('/api/platen/lijst');
+  assert.equal(uitkomst.status, 200);
+  assert.equal(uitkomst.body.aantal, 2);
+  assert.equal(uitkomst.body.bestand, tabelPad);
+});

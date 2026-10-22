@@ -103,6 +103,66 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       fetched_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`);
 
+  // Een lokale tabel met lp-barcodes uit MusicBrainz (open data, CC0). Zo wordt een
+  // gescande plaat ook zonder internet meteen herkend. De tabel wordt uit het bestand in
+  // de database gezet en blijft daar staan: zoeken op barcode is daarna indexwerk en het
+  // bestand hoeft niet bij elke scan in het geheugen te staan.
+  db.exec(`CREATE TABLE IF NOT EXISTS lp_barcodes(
+      barcode TEXT PRIMARY KEY,
+      titel TEXT NOT NULL DEFAULT '',
+      artiest TEXT NOT NULL DEFAULT '',
+      jaar TEXT NOT NULL DEFAULT '',
+      label TEXT NOT NULL DEFAULT '',
+      formaat TEXT NOT NULL DEFAULT '',
+      mbid TEXT NOT NULL DEFAULT '',
+      groep TEXT NOT NULL DEFAULT ''
+    );
+    CREATE TABLE IF NOT EXISTS lp_meta(
+      sleutel TEXT PRIMARY KEY,
+      waarde TEXT NOT NULL DEFAULT ''
+    )`);
+
+  const lpBestand = () => process.env.PLATEN_TABEL || path.join(__dirname, 'product-data', 'lp-barcodes.json');
+  const meta = (sleutel) => (db.prepare('SELECT waarde FROM lp_meta WHERE sleutel=?').get(sleutel) || {}).waarde || '';
+  const zetMeta = (sleutel, waarde) => db.prepare('INSERT INTO lp_meta(sleutel,waarde) VALUES(?,?) ON CONFLICT(sleutel) DO UPDATE SET waarde=excluded.waarde').run(sleutel, String(waarde));
+  // De tabel vullen of bijwerken als het bestand nieuwer is dan wat er in de database staat.
+  // De vingerafdruk wordt bij elke opzoeking even nagekeken (dat is een stat en twee kleine
+  // opzoekingen), zodat een bijgewerkte lijst ook zonder herstart wordt ingelezen.
+  function zorgVoorTabel() {
+    if (process.env.PLATEN_TABEL === '0') return;
+    let kenmerk;
+    try { const s = fs.statSync(lpBestand()); kenmerk = `${s.size}:${Math.round(s.mtimeMs)}`; } catch { return }
+    if (meta('lp_bestand') === lpBestand() && meta('lp_kenmerk') === kenmerk) return;
+    let gegevens;
+    try { gegevens = JSON.parse(fs.readFileSync(lpBestand(), 'utf8')); } catch { return }
+    const rijen = Object.entries(gegevens).filter(([, rij]) => rij && rij.t);
+    if (!rijen.length) return;
+    const invoegen = db.prepare('INSERT OR REPLACE INTO lp_barcodes(barcode,titel,artiest,jaar,label,formaat,mbid,groep) VALUES(?,?,?,?,?,?,?,?)');
+    db.exec('BEGIN');
+    try {
+      db.exec('DELETE FROM lp_barcodes');
+      for (const [code, rij] of rijen) {
+        invoegen.run(code, rij.t || '', rij.a || '', rij.j || '', rij.l || '', rij.f || '', rij.m || '', rij.g || '');
+      }
+      zetMeta('lp_bestand', lpBestand());
+      zetMeta('lp_kenmerk', kenmerk);
+      zetMeta('lp_aantal', rijen.length);
+      db.exec('COMMIT');
+    } catch {
+      try { db.exec('ROLLBACK') } catch { /* niets */ }
+    }
+  }
+
+  const uitTabel = (code) => {
+    zorgVoorTabel();
+    const r = db.prepare('SELECT * FROM lp_barcodes WHERE barcode=?').get(code);
+    return r || null;
+  };
+  const aantalInTabel = () => {
+    zorgVoorTabel();
+    return db.prepare('SELECT COUNT(*) AS n FROM lp_barcodes').get().n;
+  };
+
   // Hoezen worden één keer gedownload en daarna uit de eigen opslag geserveerd; zo blijft
   // de verzameling ook zonder internet compleet en laadt hij op een telefoon meteen.
   const hoesMap = () => path.join(mediaDir || path.dirname(process.env.DB_PATH || './data/voorraad.db'), 'platen');
@@ -355,6 +415,30 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
     return { gevonden: false, barcode: code, storing };
   }
 
+  // Een treffer in de eigen tabel: meteen antwoord, zonder internet. De hoes halen we
+  // gewoon bij het Cover Art Archive op het moment dat de plaat in de verzameling komt.
+  function uitEigenTabel(code) {
+    const rij = uitTabel(code);
+    if (!rij) return null;
+    return {
+      gevonden: true,
+      barcode: code,
+      titel: rij.titel,
+      artiest: rij.artiest,
+      jaar: rij.jaar,
+      label: rij.label,
+      formaat: rij.formaat,
+      genre: '',
+      hoes: rij.mbid ? `${CAA_BASIS()}/release/${rij.mbid}/front-500.jpg` : '',
+      mbid: rij.mbid,
+      bron: 'MusicBrainz (eigen lp-lijst)',
+      licentie: 'CC0 1.0',
+      bronUrl: rij.mbid ? `https://musicbrainz.org/release/${rij.mbid}` : '',
+      uitEigenLijst: true,
+      cached: false,
+    };
+  }
+
   async function zoek(code, { force = false } = {}) {
     const schoon = String(code || '').replace(/\D/g, '');
     if (schoon.length < 8 || schoon.length > 14) {
@@ -362,6 +446,11 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
     }
     const bewaard = leesCache(schoon);
     if (bewaard && !force && !bewaard.verouderd) return { ...bewaard, cached: true };
+    // Eerst de eigen lijst: dat is direct en werkt ook zonder internet.
+    if (!force) {
+      const eigen = uitEigenTabel(schoon);
+      if (eigen) return eigen;
+    }
     const vers = await zoekOnline(schoon);
     if (vers.storing) {
       if (bewaard) return { ...bewaard, cached: true, storing: true };
@@ -478,6 +567,7 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       return stuur(res, 200, antwoord(rijen, Object.fromEntries(Object.entries(filters).filter(([, w]) => w))));
     }
     if (pad === '/api/platen/keuzelijsten' && req.method === 'GET') return stuur(res, 200, keuzelijsten());
+    if (pad === '/api/platen/lijst' && req.method === 'GET') return stuur(res, 200, { aantal: aantalInTabel(), bestand: lpBestand() });
     if (pad === '/api/platen/locaties' && req.method === 'GET') return stuur(res, 200, locaties());
     const hoesPad = pad.match(/^\/api\/platen\/hoes\/(\d+)$/);
     if (hoesPad && req.method === 'GET') return serveerHoes(res, hoesPad[1]);
@@ -505,7 +595,7 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
     return stuur(res, 404, { error: 'Onbekende platenroute.' });
   }
 
-  return { handle, alles, lijst, locaties, keuzelijsten, zeef, zoek, voegToe, wijzig, verwijder, bewaarHoes };
+  return { handle, alles, lijst, locaties, keuzelijsten, zeef, zoek, voegToe, wijzig, verwijder, bewaarHoes, aantalInTabel };
 }
 
 module.exports = { createPlaten, barcodeVarianten, kiesUitgave };
