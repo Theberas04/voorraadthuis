@@ -7,6 +7,14 @@ Deze map bevat twee tabellen waarmee VoorraadThuis huismerken herkent:
 | `nl-huismerken.json` | Per barcode: naam, merk, hoeveelheid, categorie en de winkel waar het huismerk bij hoort. |
 | `winkelprefixen.json` | Welke barcode-reeksen (GS1-prefixen) bij welke supermarkt horen. |
 
+De tabel bevat **20.111 producten van zestien ketens** (Lidl 10.257, Aldi 3.755, Albert Heijn
+994, Jumbo 990, Boni 989, PLUS 983, Netto 937 en verder) en **137 barcode-reeksen**. Elke
+barcode in de tabel heeft een kloppend controlecijfer, zodat er niets tussenstaat wat een
+scanner nooit kan lezen.
+Het grootste deel van de Lidl- en Aldi-schappen staat in de databank onder de eigen
+merknaam van het product (milbona, k-classic, vitasia enzovoort); die merken worden
+meegezocht en daarna aan de juiste keten gekoppeld.
+
 Beide bestanden komen uit **Open Food Facts**, de open productendatabank, en zijn
 beschikbaar onder de [Open Database License (ODbL) 1.0](https://opendatacommons.org/licenses/odbl/1-0/).
 Naamsvermelding: *Open Food Facts-bijdragers*, https://world.openfoodfacts.org/.
