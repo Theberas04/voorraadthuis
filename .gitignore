@@ -3,5 +3,7 @@ data/
 *.db
 .env
 .DS_Store
+# Tussentijdse oogst van de huismerken (groot; alleen de eindtabellen horen in de repo)
+product-data/.voortgang/
 __pycache__/
 *.pyc
