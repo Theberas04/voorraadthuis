@@ -246,3 +246,16 @@ test('het bijwerkscript zet elk bestand dat het inrichten plaatst ook echt in de
   assert.ok(gezet.includes('platen.js'),'de platenmodule hoort in de lijst te staan');
   assert.ok(gezet.includes('public/platen.js'),'en de platenpagina ook');
 });
+
+test('de locatie van een plaat is helemaal vrij: geen standaardplekken in de pagina',()=>{
+  const script=fs.readFileSync(path.join(__dirname,'..','public','platen.js'),'utf8');
+  const pagina=fs.readFileSync(path.join(__dirname,'..','public','index.html'),'utf8');
+  for(const naam of ['Woonkamer','Zolder','Mama']){
+    assert.ok(!script.includes(`'${naam}'`)&&!script.includes(`"${naam}"`),`de platenpagina noemt ${naam} als standaardplek`);
+  }
+  const datalist=(pagina.match(/<datalist id="plaatLocaties">([\s\S]*?)<\/datalist>/)||['',''])[1];
+  assert.equal(datalist.trim(),'','de keuzelijst met plekken hoort leeg te beginnen; de plekken komen uit je eigen verzameling');
+  const veld=(pagina.match(/<input id="plaatLocatie"[^>]*>/)||[''])[0];
+  assert.ok(veld.includes('list="plaatLocaties"'),'het veld stelt je eigen plekken voor');
+  assert.ok(!/value="[^"]+"/.test(veld),'het veld begint leeg');
+});

@@ -111,7 +111,6 @@
   function locatieOpties(gekozen) {
     const namen = staat.locaties && staat.locaties.length ? staat.locaties.map((l) => l.sleutel) : [];
     if (gekozen && !namen.includes(gekozen)) namen.push(gekozen);
-    if (!namen.length) namen.push('Woonkamer');
     const opties = [`<option value=""${gekozen ? '' : ' selected'}>Zonder locatie</option>`];
     for (const naam of namen) {
       opties.push(`<option value="${esc(naam)}"${naam === gekozen ? ' selected' : ''}>${esc(naam)}</option>`);
@@ -134,7 +133,8 @@
     }
     const lijst = $('#plaatLocaties');
     if (lijst) {
-      lijst.innerHTML = staat.locaties.map((l) => `<option value="${esc(l.sleutel)}"></option>`).join('') + '<option value="Woonkamer"></option><option value="Zolder"></option><option value="Mama"></option>';
+      // Alleen de plekken die je zelf gebruikt; je typt zo een nieuwe plek erbij.
+      lijst.innerHTML = staat.locaties.filter((l) => l.sleutel).map((l) => `<option value="${esc(l.sleutel)}"></option>`).join('');
     }
   }
 
