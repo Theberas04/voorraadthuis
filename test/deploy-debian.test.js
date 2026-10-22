@@ -111,3 +111,36 @@ test('de leeswijzer verwijst naar het sprongscript', () => {
   assert.match(readme, /upgrade-debian-13\.sh/, 'de leeswijzer noemt het script');
   assert.match(readme, /Debian 13/, 'de leeswijzer noemt Debian 13');
 });
+
+test('het controleerscript kijkt naar de dingen die een bijwerking laten mislukken', () => {
+  const bestand = path.join(root, 'deploy/proxmox/check-voorraadthuis.sh');
+  execFileSync('bash', ['-n', bestand]);
+  const tekst = fs.readFileSync(bestand, 'utf8');
+  // Netwerk, dienst, Node (met node:sqlite), poorten, geheugen en het journaal: precies de
+  // dingen die 'App-healthcheck mislukt' kunnen veroorzaken.
+  for (const stuk of ['ip -4 -o addr show', 'systemctl is-active voorraadthuis', 'node --version',
+    'node:sqlite', 'ss -ltnp', 'free -m', 'journalctl -u voorraadthuis', '/healthz',
+    'node_22.x nodistro main', 'provision-voorraadthuis.sh']) {
+    assert.ok(tekst.includes(stuk), `het controleerscript mist ${stuk}`);
+  }
+  // Een gestopte container hoort niet als fout te eindigen, maar met de opdracht erbij.
+  const stub = fs.mkdtempSync(path.join(os.tmpdir(), 'vt-pct-'));
+  fs.writeFileSync(path.join(stub, 'pct'), '#!/usr/bin/env bash\ncase "$1" in\n status) echo "status: stopped";;\n config) echo "memory: 512";;\nesac\n');
+  fs.chmodSync(path.join(stub, 'pct'), 0o755);
+  const uit = execFileSync('bash', [bestand, '101'], {env: {...process.env, PATH: `${stub}:${process.env.PATH}`}, encoding: 'utf8'});
+  assert.match(uit, /De container draait niet/);
+  assert.match(uit, /pct start 101/);
+  fs.rmSync(stub, {recursive: true, force: true});
+});
+
+test('de bijwerking is geduldig en zegt wat er misgaat', () => {
+  const bestand = path.join(root, 'deploy/proxmox/update-from-github.sh');
+  const tekst = fs.readFileSync(bestand, 'utf8');
+  // Niet na vijftien seconden al 'mislukt': een kleine container heeft langer nodig.
+  assert.match(tekst, /for _ in \$\(seq 1 60\)/, 'de gezondheidscontrole wacht lang genoeg');
+  assert.match(tekst, /diagnose\(\)/, 'er is een diagnosefunctie');
+  assert.match(tekst, /App-healthcheck mislukt[^']*' >&2; diagnose; rollback/, 'bij een mislukte controle komt de diagnose mee');
+  // Een container met de oude nginx-opzet wordt vóór het wijzigen herkend.
+  assert.match(tekst, /command -v nginx/, 'het script kijkt of deze container nog de oude opzet heeft');
+  assert.match(tekst, /Er is niets gewijzigd\./, 'en wijzigt dan niets');
+});

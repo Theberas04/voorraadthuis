@@ -15,6 +15,7 @@ FILES=(
   "deploy/proxmox/provision-voorraadthuis.sh"
   "deploy/proxmox/update-from-github.sh"
   "deploy/proxmox/upgrade-debian-13.sh"
+  "deploy/proxmox/check-voorraadthuis.sh"
   "deploy/proxmox/README.md"
   "server.js"
   "package.json"
