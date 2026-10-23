@@ -103,6 +103,9 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       fetched_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`);
 
+  // Oude installaties krijgen zonder dataverlies een statusveld voor de verlanglijst.
+  try { db.exec("ALTER TABLE platen ADD COLUMN gewenst INTEGER NOT NULL DEFAULT 0") } catch { /* bestaat al */ }
+
   // Een lokale tabel met lp-barcodes uit MusicBrainz (open data, CC0). Zo wordt een
   // gescande plaat ook zonder internet meteen herkend. De tabel wordt uit het bestand in
   // de database gezet en blijft daar staan: zoeken op barcode is daarna indexwerk en het
@@ -213,17 +216,21 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
     locatie: r.locatie,
     notitie: r.notitie,
     aantal: r.aantal,
+    gewenst: !!r.gewenst,
   });
 
-  const lijst = (locatie) => {
-    const rijen = locatie
-      ? db.prepare('SELECT * FROM platen WHERE locatie=? ORDER BY artiest COLLATE NOCASE, titel COLLATE NOCASE').all(locatie)
-      : db.prepare('SELECT * FROM platen ORDER BY artiest COLLATE NOCASE, titel COLLATE NOCASE').all();
+  const lijst = (locatie, gewenst = false) => {
+    const sql = gewenst
+      ? 'SELECT * FROM platen WHERE gewenst=1 ORDER BY artiest COLLATE NOCASE, titel COLLATE NOCASE'
+      : locatie
+        ? 'SELECT * FROM platen WHERE gewenst=0 AND locatie=? ORDER BY artiest COLLATE NOCASE, titel COLLATE NOCASE'
+        : 'SELECT * FROM platen WHERE gewenst=0 ORDER BY artiest COLLATE NOCASE, titel COLLATE NOCASE';
+    const rijen = locatie && !gewenst ? db.prepare(sql).all(locatie) : db.prepare(sql).all();
     return rijen.map(rij);
   };
 
   const locaties = () => db.prepare(`SELECT locatie AS naam, COUNT(*) AS aantal FROM platen
-      GROUP BY locatie ORDER BY (locatie='') DESC, locatie COLLATE NOCASE`).all()
+      WHERE gewenst=0 GROUP BY locatie ORDER BY (locatie='') DESC, locatie COLLATE NOCASE`).all()
     .map(r => ({ naam: r.naam || 'Zonder locatie', sleutel: r.naam, aantal: r.aantal }));
 
   // Waar staat iets: dezelfde waarde met verschillende spaties of hoofdletters hoort bij
@@ -242,7 +249,7 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
   // De keuzelijsten komen uit de hele verzameling (niet uit wat er nu gefilterd is),
   // zodat een keuze nooit zijn eigen opties kwijtraakt.
   function keuzelijsten() {
-    const rijen = db.prepare('SELECT genre, artiest, jaar FROM platen').all();
+    const rijen = db.prepare('SELECT genre, artiest, jaar FROM platen WHERE gewenst=0').all();
     const tel = (kies) => {
       const map = new Map();
       for (const r of rijen) {
@@ -268,8 +275,8 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
 
   // Filteren: locatie (via de database), genre, artiest, decennium of jaar van–tot, en
   // een zoekterm over alles heen. Alles wat je combineert, geldt tegelijk.
-  function zeef({ locatie, genre, artiest, decennium, van, tot, zoekterm }) {
-    let rijen = lijst(locatie === '' || locatie === undefined ? undefined : locatie);
+  function zeef({ locatie, genre, artiest, decennium, van, tot, zoekterm, gewenst }) {
+    let rijen = lijst(locatie === '' || locatie === undefined ? undefined : locatie, !!gewenst);
     if (locatie === 'leeg') rijen = rijen.filter((p) => !p.locatie);
     if (genre) rijen = rijen.filter((p) => genre === ONBEKEND ? !String(p.genre || '').trim() : gelijk(p.genre, genre));
     if (artiest) rijen = rijen.filter((p) => artiest === ONBEKEND ? !String(p.artiest || '').trim() : gelijk(p.artiest, artiest));
@@ -479,19 +486,37 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       locatie,
       notitie: leeg(invoer.notitie, 300),
       aantal,
+      gewenst: invoer.gewenst === true || Number(invoer.gewenst) === 1,
     };
-    // Dezelfde plaat op dezelfde plek telt op in plaats van dubbel te verschijnen.
-    const bestaand = barcode
-      ? db.prepare('SELECT id FROM platen WHERE barcode=? AND locatie=? ORDER BY id LIMIT 1').get(barcode, locatie)
+    // Een gewenste barcode wordt één keer bijgehouden; hem later toevoegen aan bezit
+    // promoveert dezelfde regel in plaats van een tweede plaat te maken.
+    if (gegevens.barcode && gegevens.gewenst) {
+      const bestaandBezit = db.prepare('SELECT * FROM platen WHERE barcode=? AND gewenst=0 ORDER BY id LIMIT 1').get(gegevens.barcode);
+      if (bestaandBezit) return { plaat: rij(bestaandBezit), opgeteld: false, bestondAl: true, alInVerzameling: true };
+      const bestaandWens = db.prepare('SELECT * FROM platen WHERE barcode=? AND gewenst=1 ORDER BY id LIMIT 1').get(gegevens.barcode);
+      if (bestaandWens) return { plaat: rij(bestaandWens), opgeteld: false, bestondAl: true };
+    }
+    const bestaand = gegevens.barcode && !gegevens.gewenst
+      ? db.prepare('SELECT id FROM platen WHERE barcode=? AND gewenst=0 AND locatie=? ORDER BY id LIMIT 1').get(gegevens.barcode, locatie)
       : null;
     if (bestaand) {
       db.prepare(`UPDATE platen SET aantal=aantal+?, updated_at=CURRENT_TIMESTAMP WHERE id=?`).run(aantal, bestaand.id);
       return { plaat: rij(db.prepare('SELECT * FROM platen WHERE id=?').get(bestaand.id)), opgeteld: true };
     }
-    const uitkomst = db.prepare(`INSERT INTO platen(barcode,titel,artiest,jaar,label,formaat,genre,hoes,locatie,notitie,aantal)
-        VALUES(?,?,?,?,?,?,?,?,?,?,?)`)
+    if (gegevens.barcode && !gegevens.gewenst) {
+      const wens = db.prepare('SELECT id FROM platen WHERE barcode=? AND gewenst=1 ORDER BY id LIMIT 1').get(gegevens.barcode);
+      if (wens) {
+        db.prepare(`UPDATE platen SET titel=?,artiest=?,jaar=?,label=?,formaat=?,genre=?,hoes=?,locatie=?,notitie=?,aantal=?,gewenst=0,updated_at=CURRENT_TIMESTAMP WHERE id=?`)
+          .run(gegevens.titel, gegevens.artiest, gegevens.jaar, gegevens.label, gegevens.formaat, gegevens.genre,
+            gegevens.hoes, gegevens.locatie, gegevens.notitie, gegevens.aantal, wens.id);
+        bewaarHoes(wens.id);
+        return { plaat: rij(db.prepare('SELECT * FROM platen WHERE id=?').get(wens.id)), opgeteld: false, gekocht: true };
+      }
+    }
+    const uitkomst = db.prepare(`INSERT INTO platen(barcode,titel,artiest,jaar,label,formaat,genre,hoes,locatie,notitie,aantal,gewenst)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`)
       .run(gegevens.barcode, gegevens.titel, gegevens.artiest, gegevens.jaar, gegevens.label, gegevens.formaat,
-        gegevens.genre, gegevens.hoes, gegevens.locatie, gegevens.notitie, gegevens.aantal);
+        gegevens.genre, gegevens.hoes, gegevens.locatie, gegevens.notitie, gegevens.aantal, gegevens.gewenst ? 1 : 0);
     const id = Number(uitkomst.lastInsertRowid);
     bewaarHoes(id);
     return { plaat: rij(db.prepare('SELECT * FROM platen WHERE id=?').get(id)), opgeteld: false };
@@ -510,6 +535,7 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       hoes: invoer.hoes == null ? bestaand.hoes : leeg(invoer.hoes, 400),
       locatie: invoer.locatie == null ? bestaand.locatie : leeg(invoer.locatie, 60),
       notitie: invoer.notitie == null ? bestaand.notitie : leeg(invoer.notitie, 300),
+      gewenst: invoer.gewenst == null ? !!bestaand.gewenst : Boolean(invoer.gewenst),
     };
     if (!velden.titel) throw Error('Een plaat hoort een titel te hebben.');
     let aantal = bestaand.aantal;
@@ -517,9 +543,9 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       aantal = Math.round(Number(invoer.aantal));
       if (!Number.isFinite(aantal) || aantal < 1 || aantal > 99) throw Error('Geef een aantal tussen 1 en 99 op.');
     }
-    db.prepare(`UPDATE platen SET titel=?,artiest=?,jaar=?,label=?,formaat=?,genre=?,hoes=?,locatie=?,notitie=?,aantal=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`)
+    db.prepare(`UPDATE platen SET titel=?,artiest=?,jaar=?,label=?,formaat=?,genre=?,hoes=?,locatie=?,notitie=?,aantal=?,gewenst=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`)
       .run(velden.titel, velden.artiest, velden.jaar, velden.label, velden.formaat, velden.genre, velden.hoes,
-        velden.locatie, velden.notitie, aantal, Number(id));
+        velden.locatie, velden.notitie, aantal, velden.gewenst ? 1 : 0, Number(id));
     bewaarHoes(id);
     return rij(db.prepare('SELECT * FROM platen WHERE id=?').get(Number(id)));
   }
@@ -560,8 +586,9 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
         van: q('van', 8),
         tot: q('tot', 8),
         zoekterm: (q('q', 60) || '').toLowerCase(),
+        gewenst: url.searchParams.get('status') === 'wens',
       };
-      const leegAlles = Object.values(filters).every((w) => !w);
+      const leegAlles = Object.values(filters).every((waarde) => !waarde);
       if (leegAlles) return stuur(res, 200, alles());
       const rijen = zeef(filters);
       return stuur(res, 200, antwoord(rijen, Object.fromEntries(Object.entries(filters).filter(([, w]) => w))));

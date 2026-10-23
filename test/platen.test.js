@@ -341,7 +341,44 @@ test('een ontbrekende lp-lijst is geen probleem', async () => {
   } finally { process.env.PLATEN_TABEL = oud }
 });
 
-test('de app vertelt hoeveel lp-barcodes er in de eigen lijst staan', async () => {
+test('een plaat die ik wil hebben staat op een aparte verlanglijst en niet in mijn verzameling', async () => {
+  const code = '9990000000031';
+  const toegevoegd = await stuur('/api/platen', 'POST', {barcode: code, titel: 'LP op mijn verlanglijst', artiest: 'Proefartiest', gewenst: true});
+  assert.equal(toegevoegd.status, 201);
+  assert.equal(toegevoegd.body.plaat.gewenst, true);
+  assert.equal((await api('/api/platen')).body.platen.some(p => p.barcode === code), false, 'een gewenste plaat telt niet als bezit');
+  const wensen = await api('/api/platen?status=wens');
+  assert.deepEqual(wensen.body.platen.map(p => p.titel), ['LP op mijn verlanglijst']);
+});
+
+test('een gewenste plaat kan naar de verzameling zodra ik hem heb', async () => {
+  const code = '9990000000032';
+  const toegevoegd = await stuur('/api/platen', 'POST', {barcode: code, titel: 'Later gekocht album', artiest: 'Proefartiest', gewenst: true});
+  const verplaatst = await stuur(`/api/platen/${toegevoegd.body.plaat.id}`, 'PATCH', {gewenst: false, locatie: 'Mijn kast'});
+  assert.equal(verplaatst.status, 200);
+  assert.equal(verplaatst.body.gewenst, false);
+  assert.equal(verplaatst.body.locatie, 'Mijn kast');
+  assert.equal((await api('/api/platen?status=wens')).body.platen.some(p => p.barcode === code), false);
+  assert.equal((await api('/api/platen')).body.platen.some(p => p.barcode === code), true);
+});
+
+test('de pagina maakt onderscheid tussen mijn verzameling en mijn verlanglijst', async () => {
+  const pagina = await (await fetch(`${base}/`)).text();
+  const script = await (await fetch(`${base}/platen.js`)).text();
+  assert.ok(pagina.includes('platenVerlanglijstTabs'));
+  assert.ok(pagina.includes('Aan verlanglijst toevoegen'));
+  assert.ok(script.includes('Heb ik nu'));
+});
+
+test('een plaat die al in bezit is wordt niet ook op de verlanglijst gezet', async () => {
+  const code = '9990000000033';
+  await stuur('/api/platen', 'POST', {barcode: code, titel: 'Al in bezit', artiest: 'Proefartiest'});
+  const reactie = await stuur('/api/platen', 'POST', {barcode: code, titel: 'Al in bezit', artiest: 'Proefartiest', gewenst: true});
+  assert.equal(reactie.body.alInVerzameling, true);
+  assert.equal((await api('/api/platen?status=wens')).body.platen.some(p => p.barcode === code), false);
+});
+
+ test('de app vertelt hoeveel lp-barcodes er in de eigen lijst staan', async () => {
   const uitkomst = await api('/api/platen/lijst');
   assert.equal(uitkomst.status, 200);
   assert.equal(uitkomst.body.aantal, 2);
