@@ -24,7 +24,7 @@ if pct exec "$CTID" -- bash -c 'command -v nginx >/dev/null 2>&1' 2>/dev/null; t
 fi
 TMP=$(mktemp -d); trap 'rm -rf "$TMP"' EXIT
 ASSETS=(public/platen.js public/favicon.svg public/manifest.webmanifest public/sw.js public/icon-192.png public/icon-512.png public/icon-512-maskable.png public/apple-touch-icon.png public/social-card.png)
-FILES=(server.js wardrobe.js barcodes.js profiles.js platen.js package.json recipes-international.js recipes-open.js recipe-data/unitools-recipes.json "recipe-data/wikibooks-en-recipes.json" "recipe-data/wikibooks-es-recipes.json" "recipe-data/wikibooks-de-recipes.json" "recipe-data/wikibooks-nl-recipes.json" "recipe-data/wikibooks-fr-recipes.json" "recipe-data/wikibooks-it-recipes.json" "recipe-data/wikibooks-ca-recipes.json" "recipe-data/wikibooks-pt-recipes.json" "recipe-data/wikibooks-ja-recipes.json" "recipe-data/wikibooks-pl-recipes.json" "recipe-data/wikibooks-sv-recipes.json" "recipe-data/wikibooks-nb-recipes.json" "recipe-data/wikibooks-fi-recipes.json" "recipe-data/wikibooks-cocktails-recipes.json" "recipe-data/wikibooks-borrelhapjes-recipes.json" "recipe-data/translations-nl.json" product-data/nl-huismerken.json product-data/winkelprefixen.json public/index.html "${ASSETS[@]}")
+FILES=(server.js wardrobe.js barcodes.js profiles.js platen.js package.json recipes-international.js recipes-open.js recipe-data/unitools-recipes.json "recipe-data/wikibooks-en-recipes.json" "recipe-data/wikibooks-es-recipes.json" "recipe-data/wikibooks-de-recipes.json" "recipe-data/wikibooks-nl-recipes.json" "recipe-data/wikibooks-fr-recipes.json" "recipe-data/wikibooks-it-recipes.json" "recipe-data/wikibooks-ca-recipes.json" "recipe-data/wikibooks-pt-recipes.json" "recipe-data/wikibooks-ja-recipes.json" "recipe-data/wikibooks-pl-recipes.json" "recipe-data/wikibooks-sv-recipes.json" "recipe-data/wikibooks-nb-recipes.json" "recipe-data/wikibooks-fi-recipes.json" "recipe-data/wikibooks-cocktails-recipes.json" "recipe-data/wikibooks-borrelhapjes-recipes.json" "recipe-data/translations-nl.json" product-data/nl-huismerken.json product-data/winkelprefixen.json product-data/lp-barcodes.json public/index.html "${ASSETS[@]}")
 for f in "${FILES[@]}"; do
   case "$f" in *" "*) echo "Interne fout: bestandsnaam met een spatie ($f). Meld dit; er is niets gewijzigd." >&2; exit 1;; esac
 done
@@ -67,11 +67,11 @@ diagnose(){
 rollback(){ echo 'Bijwerken mislukt; eerdere versie wordt teruggezet.' >&2; pct exec "$CTID" -- bash -c "rm -rf '$SITE' && cp -a '$BACKUP' '$SITE' && chown -R voorraadthuis:voorraadthuis '$SITE'"; pct exec "$CTID" -- systemctl restart voorraadthuis; exit 1; }
 # Eerst alles klaarzetten en controleren; de draaiende app blijft ondertussen in de lucht.
 pct exec "$CTID" -- rm -rf "$STAGE"
-pct exec "$CTID" -- install -d -o voorraadthuis -g voorraadthuis "$STAGE/public" "$STAGE/recipe-data" "$STAGE/product-data"
+pct exec "$CTID" -- install -d -o voorraadthuis -g voorraadthuis "$STAGE/public" "$STAGE/recipe-data" "${STAGE}/product-data"
 for f in server.js wardrobe.js barcodes.js profiles.js platen.js package.json recipes-international.js recipes-open.js public/index.html "${ASSETS[@]}"; do pct push "$CTID" "$TMP/$f" "$STAGE/$f" --perms 644; done
 for f in unitools-recipes.json "wikibooks-en-recipes.json" "wikibooks-es-recipes.json" "wikibooks-de-recipes.json" "wikibooks-nl-recipes.json" "wikibooks-fr-recipes.json" "wikibooks-it-recipes.json" "wikibooks-ca-recipes.json" "wikibooks-pt-recipes.json" "wikibooks-ja-recipes.json" "wikibooks-pl-recipes.json" "wikibooks-sv-recipes.json" "wikibooks-nb-recipes.json" "wikibooks-fi-recipes.json" "wikibooks-cocktails-recipes.json" "wikibooks-borrelhapjes-recipes.json" translations-nl.json; do pct push "$CTID" "$TMP/recipe-data/$f" "$STAGE/recipe-data/$f" --perms 644; done
 # Huismerktabel van Nederlandse supermarkten (open data uit Open Food Facts).
-for f in nl-huismerken.json winkelprefixen.json; do pct push "$CTID" "$TMP/product-data/$f" "$STAGE/product-data/$f" --perms 644; done
+for f in nl-huismerken.json winkelprefixen.json lp-barcodes.json; do pct push "$CTID" "$TMP/product-data/$f" "$STAGE/product-data/$f" --perms 644; done
 pct exec "$CTID" -- node --check "$STAGE/server.js"
 pct exec "$CTID" -- chown -R voorraadthuis:voorraadthuis "$STAGE"
 # Nu pas wisselen, met een volledige kopie van de huidige versie als terugvaloptie.

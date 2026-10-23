@@ -16,6 +16,7 @@ De uitkomst staat in product-data/lp-barcodes.json (open data, MusicBrainz, CC0 
 """
 import argparse
 import json
+import re
 import pathlib
 import sys
 import time
@@ -95,7 +96,7 @@ def artiest_van(uitgave):
 
 def rij_van(uitgave):
     barcode = ''.join(c for c in str(uitgave.get('barcode') or '') if c.isdigit())
-    if len(barcode) < 8:
+    if len(barcode) < 8 or len(barcode) > 14:
         return None, None
     media = (uitgave.get('media') or [{}])[0]
     label = ((uitgave.get('label-info') or [{}])[0].get('label') or {}).get('name', '')
@@ -115,6 +116,9 @@ def rij_van(uitgave):
 
 
 def oogst(vraag, producten, teller, diepte=0):
+    if teller['nieuw'] - teller.get('laatst_bewaard', 0) >= 500:
+        teller['laatst_bewaard'] = teller['nieuw']
+        bewaar(producten, teller)
     """Haalt alles op wat aan deze vraag voldoet, en splitst waar nodig."""
     try:
         eerste = zoek(vraag, 0, PAGINA)
@@ -151,7 +155,7 @@ def oogst(vraag, producten, teller, diepte=0):
             print(f'  {nieuw:5} nieuwe barcodes (totaal {len(producten)})  <- {vraag[:110]}', flush=True)
         return
     # Te groot voor één keer: verder opdelen.
-    if diepte >= 4:
+    if diepte >= 32:
         print(f'  [!] blijft te groot ({totaal}) en kan niet verder opgedeeld worden: {vraag[:110]}', flush=True)
         teller['te_groot'].append((vraag, totaal))
         return
@@ -169,9 +173,17 @@ def oogst(vraag, producten, teller, diepte=0):
         for soort in SOORTEN:
             oogst(f'{vraag} AND primarytype:{soort}', producten, teller, diepte + 1)
         return
-    # Ten slotte op de eerste cijfers van de barcode.
+    # Splits op het barcode-einde. MusicBrainz normaliseert voorloopnullen in prefixen
+    # (0*, 00*, … worden dezelfde brede query); suffix-wildcards blijven onderscheidend.
+    suffixen = [onderdeel[len('barcode:*'):] for onderdeel in vraag.split(' AND ')
+                if onderdeel.startswith('barcode:*')]
+    suffix = suffixen[-1] if suffixen else ''
+    if len(suffix) >= 12:
+        print(f'  [!] blijft te groot na suffix-splitsing ({totaal}): {vraag[:110]}', flush=True)
+        teller['te_groot'].append((vraag, totaal))
+        return
     for cijfer in range(10):
-        oogst(f'{vraag} AND barcode:{cijfer}*', producten, teller, diepte + 1)
+        oogst(f'{vraag} AND barcode:*{suffix}{cijfer}', producten, teller, diepte + 1)
 
 
 def bewaar(producten, teller, definitief=False):
@@ -209,13 +221,28 @@ def main():
             print(f'{formaat:14} {aantal(vraag)}')
         return
 
-    teller = {'vragen': 0, 'nieuw': 0, 'te_groot': []}
+    teller = {'vragen': 0, 'nieuw': 0, 'te_groot': [], 'laatst_bewaard': 0}
     begin = time.time()
-    for formaat in formaten:
-        vraag = f'barcode:* AND format:"{formaat}"'
-        print(f'== {formaat} ==', flush=True)
-        oogst(vraag, producten, teller)
+    onaf = []
+    statuspad = VOORTGANG / 'lp-voortgang.json'
+    if keuzes.doorschrijven and statuspad.exists():
+        try:
+            onaf = json.loads(statuspad.read_text()).get('te_groot', [])
+        except (ValueError, OSError):
+            onaf = []
+    if onaf:
+        print(f'== hervatten: {len(onaf)} deelvragen die vorige keer te groot waren ==', flush=True)
+        for item in onaf:
+            oogst(item['vraag'], producten, teller)
+        # De reeds complete resultaten worden niet opnieuw opgehaald; alleen de mislukte
+        # deelvragen worden met de langere prefix-splitsing aangevuld.
         bewaar(producten, teller)
+    else:
+        for formaat in formaten:
+            vraag = f'barcode:* AND format:"{formaat}"'
+            print(f'== {formaat} ==', flush=True)
+            oogst(vraag, producten, teller)
+            bewaar(producten, teller)
     bewaar(producten, teller, definitief=True)
     minuten = (time.time() - begin) / 60
     print(f'klaar: {len(producten)} barcodes, {teller["vragen"]} vragen, {minuten:.1f} minuten')

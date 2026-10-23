@@ -6,6 +6,7 @@ Deze map bevat twee tabellen waarmee VoorraadThuis huismerken herkent:
 | --- | --- |
 | `nl-huismerken.json` | Per barcode: naam, merk, hoeveelheid, categorie en de winkel waar het huismerk bij hoort. |
 | `winkelprefixen.json` | Welke barcode-reeksen (GS1-prefixen) bij welke supermarkt horen. |
+| `lp-barcodes.json` | 101.980 unieke barcodes van vinyluitgaven uit MusicBrainz, met titel, artiest, jaar, label, formaat en release-ID. De app herkent deze lokaal en zonder internet. |
 
 De tabel bevat **45.623 producten van veertig ketens** en **289 barcode-reeksen**. Naar land:
 **Duitsland 20.521, Nederland 17.347, België 7.755**. De grootste ketens: Lidl 10.259,
@@ -31,6 +32,16 @@ Is een huismerk nog onbekend, dan wijst de app aan de barcode-reeks de winkel aa
 (bijvoorbeeld *Albert Heijn*) en onthoudt hij de naam die je zelf invult.
 
 ## Opnieuw opbouwen
+
+De lp-barcodelijst is gebaseerd op [MusicBrainz](https://musicbrainz.org/) (CC0 1.0; releasegegevens) en wordt door `scripts/fetch-platen.py` opgebouwd. Naamsvermelding: *MusicBrainz contributors*, https://musicbrainz.org/. De hoesafbeeldingen worden niet in deze tabel opgeslagen; de app haalt hoezen eenmalig bij Cover Art Archive op en bewaart ze lokaal.
+
+```bash
+python3 scripts/fetch-platen.py --doorschrijven --met-zeven
+```
+
+De oogst werkt met onderverdeling op jaar, status, type en barcode-eindcijfers om binnen MusicBrainz' limiet per zoekvraag te blijven; voortgang staat onder `product-data/.voortgang/`.
+
+De huismerktabel bouw je zo opnieuw op:
 
 ```bash
 python3 scripts/fetch-huismerken.py
