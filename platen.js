@@ -477,7 +477,7 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
     // oorspronkelijke (onvolledige) code mag die treffer overschrijven.
     if (eigen && (eigen.correctie || eigen.barcode !== schoon)) return eigen;
     const bewaard = leesCache(schoon);
-    if (bewaard && !force && !bewaard.verouderd) return { ...bewaard, cached: true };
+    if (bewaard && !force && !bewaard.verouderd && (bewaard.gevonden || !eigen)) return { ...bewaard, cached: true };
     // De algemene offline-lijst respecteren we na de cachecheck; force=1 kan die overslaan.
     if (!force && eigen) return eigen;
     const vers = await zoekOnline(schoon);
@@ -485,7 +485,7 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       if (bewaard) return { ...bewaard, cached: true, storing: true };
       return { gevonden: false, barcode: schoon, reason: 'storing', message: 'De databank is even niet bereikbaar. Typ de gegevens zelf in; met “Opnieuw zoeken” probeer je het nog eens.' };
     }
-    bewaarCache(schoon, vers);
+    if (vers.gevonden) bewaarCache(schoon, vers);
     return { ...vers, cached: false };
   }
 
