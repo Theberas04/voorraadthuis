@@ -184,7 +184,7 @@ Met een OpenAI-compatibele dienst (OpenAI, Ollama, LocalAI) kan de app een kledi
 
 Onder **Platen** houd je je lp's bij. Je scant de barcode van een plaat — of typt hem in — en de app zoekt de uitgave op in [MusicBrainz](https://musicbrainz.org/) (open data, CC0) en haalt de hoes bij het [Cover Art Archive](https://coverartarchive.org/). Titel, artiest, jaar, label, formaat en de hoes worden vast ingevuld.
 
-- **Toevoegen met de camera of met de hand.** De barcode wordt ook herkend als je hem typt; is een plaat onbekend, dan vul je de gegevens zelf in en onthoudt de app ze bij die barcode.
+- **Lokale barcodeherkenning voor ruim 100.000 vinyluitgaven.** Een eenmalige tabel uit MusicBrainz bevat 101.980 unieke barcodes. De scanherkenning zoekt daarin lokaal en direct, ook zonder internet; een hoes wordt bij het toevoegen nog bij Cover Art Archive opgehaald als die nog ontbreekt. Herkomst, CC0 1.0 en naamsvermelding staan bij [`product-data/`](product-data/README.md).
 - **Overzicht met alles erop.** Elke plaat staat als kaart met de hoes, artiest, jaar, formaat, label, eventuele notitie en het aantal exemplaren. Zonder bekende hoes krijg je een nette kaart met de beginletter.
 - **Hoezen worden lokaal bewaard.** De afbeelding wordt één keer opgehaald en daarna uit de eigen opslag geserveerd, zodat je verzameling ook zonder internet compleet is en op de telefoon meteen laadt.
 - **Meerdere locaties, helemaal zelf te kiezen.** Je typt de plek zelf in (*Kast in de gang*, *Zolder*, *bij mama*) — er staat geen standaardplek in het veld en de app stelt alleen de plekken voor die je zelf al gebruikt. Dezelfde plek bij een tweede plaat verschijnt vanzelf als tab, en met het keuzemenu onder een plaat verhuist hij naar een bestaande of gloednieuwe plek. Boven de verzameling staan tabs met het aantal per plek.
@@ -284,8 +284,9 @@ npm start    # http://localhost:3000
 | `recipes-open.js` | Normalisatie én Nederlandse vertaling van de 9.692 geïmporteerde recepten, met bron en licentie. |
 | `recipe-data/` | Brondata, gepinde revisies, bronvermelding en de Nederlandse vertaling (`translations-nl.json`). |
 | `barcodes.js` | Barcodeherkenning: vier open databanken, de huismerktabel, winkelherkenning aan de barcode en de lokale opslag. |
-| `product-data/` | Huismerken van Nederlandse, Duitse en Belgische supermarkten en de barcode-reeksen per winkel (uit Open Food Facts, ODbL 1.0). |
+| `product-data/` | Huismerken uit Open Food Facts (ODbL 1.0), winkeltabellen en 102.004 LP-barcodes uit MusicBrainz (CC0 1.0). |
 | `scripts/fetch-huismerken.py` | Bouwt de huismerktabel en de winkeltabel opnieuw op uit Open Food Facts. |
+| `scripts/fetch-platen.py` | Oogst vinylbarcode-metadata uit MusicBrainz, met hervatten en opsplitsing per jaartal en barcode-eindcijfers. |
 | `scripts/build-open-recipe-data.py` | Reproduceerbare import van de gelicentieerde datasets. |
 | `scripts/merge-recipe-translations.py` | Controleert de vertaalblokken en bundelt ze tot `recipe-data/translations-nl.json`. |
 | `test/app.test.js`, `test/wardrobe.test.js` | Tests voor de app en voor de garderobe. |

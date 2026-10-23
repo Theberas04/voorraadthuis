@@ -35,7 +35,7 @@ test('een verse installatie haalt alles op wat het inrichten nodig heeft',()=>{
     const sub=(regel.match(/\$APP_DIR\/([a-z-]+)\/\$f/)||[])[1];
     for(const naam of m[1].replace(/"/g,'').split(/\s+/)) if(naam) nodig.add(sub?`${sub}/${naam}`:naam);
   }
-  for(const stuk of ['platen.js','public/platen.js']) nodig.add(stuk);
+  for(const stuk of ['platen.js','public/platen.js','product-data/lp-barcodes.json']) nodig.add(stuk);
   assert.ok(nodig.size>=30,`verwacht een flinke lijst, gevonden ${nodig.size}`);
   for(const bestand of nodig){
     assert.ok(install.includes(`"${bestand}"`),`install.sh haalt ${bestand} niet op, terwijl het inrichten dat wel nodig heeft`);
