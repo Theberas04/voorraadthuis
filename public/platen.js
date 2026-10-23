@@ -11,7 +11,7 @@
   };
   const stuurJson = (pad, methode, lichaam) => api(pad, { method: methode, headers: { 'content-type': 'application/json' }, body: JSON.stringify(lichaam) });
 
-  const staat = { locatie: '', zoek: '', genre: '', artiest: '', decennium: '', van: '', tot: '', laatste: '', scan: null, zoekTimer: null, jaarTimer: null };
+  const staat = { locatie: '', zoek: '', genre: '', artiest: '', decennium: '', van: '', tot: '', gewenst: false, laatste: '', scan: null, zoekTimer: null, jaarTimer: null };
   let geopend = false;
 
   const veld = (id) => $(id);
@@ -91,7 +91,10 @@
     const meta = [plaat.artiest, plaat.jaar, plaat.formaat].filter(Boolean).map(esc).join(' · ');
     const label = plaat.label ? `<div class="plaatMeta">${esc(plaat.label)}</div>` : '';
     const notitie = plaat.notitie ? `<div class="plaatMeta">${esc(plaat.notitie)}</div>` : '';
-    return `<article class="plaatKaart" data-plaat="${plaat.id}">
+    const voet = plaat.gewenst
+      ? `<button class="btn primary" type="button" data-wens-hebben="${plaat.id}">Heb ik nu</button><button class="btn danger" type="button" data-weg="${plaat.id}" aria-label="Van verlanglijst halen">×</button>`
+      : `<select data-verplaats="${plaat.id}" aria-label="Locatie van deze plaat">${locatieOpties(plaat.locatie)}</select><button class="btn danger" type="button" data-weg="${plaat.id}" aria-label="Uit de verzameling halen">×</button>`;
+    return `<article class="plaatKaart${plaat.gewenst ? ' plaatGewenst' : ''}" data-plaat="${plaat.id}">
       <div class="hoes">${hoesBlok(plaat)}</div>
       <div class="plaatInfo">
         <strong>${esc(plaat.titel)}</strong>
@@ -99,13 +102,22 @@
         ${label}${notitie}
         ${Number(plaat.aantal) > 1 ? `<div class="plaatMeta">${Number(plaat.aantal)} exemplaren</div>` : ''}
       </div>
-      <div class="plaatVoet">
-        <select data-verplaats="${plaat.id}" aria-label="Locatie van deze plaat">
-          ${locatieOpties(plaat.locatie)}
-        </select>
-        <button class="btn danger" type="button" data-weg="${plaat.id}" aria-label="Uit de verzameling halen">×</button>
-      </div>
+      <div class="plaatVoet">${voet}</div>
     </article>`;
+  }
+
+  function tekenVerlanglijstTabs() {
+    const tabs = $('#platenVerlanglijstTabs');
+    if (!tabs) return;
+    tabs.innerHTML = `<button class="tab${staat.gewenst ? '' : ' active'}" type="button" data-platen-status="bezit">Mijn verzameling</button><button class="tab${staat.gewenst ? ' active' : ''}" type="button" data-platen-status="wens">Wil ik hebben</button>`;
+    const titel = $('#plaatLijstTitel');
+    if (titel) titel.textContent = staat.gewenst ? 'Mijn verlanglijst' : 'Mijn verzameling';
+    const filters = $('#plaatFilters');
+    const filterStand = $('#plaatFilterStand');
+    const locaties = $('#plaatLocatieTabs');
+    if (filters) filters.hidden = staat.gewenst;
+    if (filterStand) filterStand.hidden = staat.gewenst;
+    if (locaties) locaties.hidden = staat.gewenst;
   }
 
   function locatieOpties(gekozen) {
@@ -139,6 +151,7 @@
   }
 
   function teken(gegevens) {
+    tekenVerlanglijstTabs();
     tekenLocaties(gegevens);
     vulKeuzelijsten(gegevens);
     tekenFilterStand(gegevens);
@@ -152,9 +165,11 @@
       if (leeg) {
         leeg.hidden = false;
         const gefilterd = staat.zoek || staat.genre || staat.artiest || staat.decennium || staat.van || staat.tot || staat.locatie;
-        leeg.textContent = gefilterd
-          ? 'Geen plaat die bij deze filters past. Zet een filter uit of wis ze allemaal met “Filters wissen”.'
-          : 'Nog geen platen op deze plek. Scan een barcode of vul de gegevens zelf in.';
+        leeg.textContent = staat.gewenst
+          ? 'Je verlanglijst is nog leeg. Scan een barcode en kies “Aan verlanglijst toevoegen”.'
+          : gefilterd
+            ? 'Geen plaat die bij deze filters past. Zet een filter uit of wis ze allemaal met “Filters wissen”.'
+            : 'Nog geen platen op deze plek. Scan een barcode of vul de gegevens zelf in.';
       }
       return;
     }
@@ -213,13 +228,14 @@
     if (staat.decennium) vraag.set('decennium', staat.decennium);
     if (staat.van) vraag.set('van', staat.van);
     if (staat.tot) vraag.set('tot', staat.tot);
+    if (staat.gewenst) vraag.set('status', 'wens');
     const gegevens = await api(`/api/platen${vraag.toString() ? '?' + vraag.toString() : ''}`);
     gegevens.alleTotaal = (gegevens.keuzelijsten && gegevens.keuzelijsten.locaties || []).reduce((som, l) => som + l.aantal, 0) || gegevens.totaal;
     teken(gegevens);
     return gegevens;
   }
 
-  async function bewaar(gebeurtenis) {
+  async function bewaar(gebeurtenis, zetOpVerlanglijst = false) {
     if (gebeurtenis) gebeurtenis.preventDefault();
     const titel = waarde('#plaatTitel');
     if (!titel) { meld('Vul in elk geval de titel van de plaat in.', true); return; }
@@ -232,13 +248,18 @@
       formaat: waarde('#plaatFormaat'),
       genre: ($('#plaatNotitie') && $('#plaatNotitie').dataset.genre) || '',
       hoes: $('#plaatHoes') && $('#plaatHoes').getAttribute('src') ? $('#plaatHoes').src : '',
-      locatie: waarde('#plaatLocatie'),
+      locatie: zetOpVerlanglijst ? '' : waarde('#plaatLocatie'),
       notitie: waarde('#plaatNotitie'),
       aantal: waarde('#plaatAantal') || 1,
+      gewenst: zetOpVerlanglijst,
     };
     try {
       const uitkomst = await stuurJson('/api/platen', 'POST', gegevens);
-      meld(uitkomst.opgeteld
+      if (uitkomst.alInVerzameling) meld(`${uitkomst.plaat.titel} staat al in je verzameling.`);
+      else if (uitkomst.bestondAl) meld(`${gegevens.titel} staat al op je verlanglijst.`);
+      else if (zetOpVerlanglijst) meld(`${uitkomst.plaat.titel} staat op je verlanglijst.`);
+      else if (uitkomst.gekocht) meld(`${uitkomst.plaat.titel} staat nu in je verzameling${gegevens.locatie ? ' op ' + gegevens.locatie : ''}.`);
+      else meld(uitkomst.opgeteld
         ? `${gegevens.titel} staat al op ${gegevens.locatie || 'deze plek'}; het aantal is opgehoogd.`
         : `${uitkomst.plaat.titel} staat nu in je verzameling${gegevens.locatie ? ' op ' + gegevens.locatie : ''}.`);
       if (veld('#plaatForm')) veld('#plaatForm').reset();
@@ -247,6 +268,7 @@
       const zoekvak = $('#plaatZoekVak');
       if (zoekvak) { zoekvak.hidden = true; zoekvak.innerHTML = ''; }
       staat.laatste = '';
+      staat.gewenst = zetOpVerlanglijst && !uitkomst.alInVerzameling;
       await laad();
     } catch (fout) {
       meld(fout.message, true);
@@ -258,6 +280,15 @@
       geopend = true;
       const form = $('#plaatForm');
       if (form) form.addEventListener('submit', bewaar);
+      const wensKnop = $('#plaatWensButton');
+      if (wensKnop) wensKnop.addEventListener('click', (gebeurtenis) => bewaar(gebeurtenis, true));
+      const lijstTabs = $('#platenVerlanglijstTabs');
+      if (lijstTabs) lijstTabs.addEventListener('click', async (gebeurtenis) => {
+        const knop = gebeurtenis.target.closest('[data-platen-status]');
+        if (!knop) return;
+        staat.gewenst = knop.dataset.platenStatus === 'wens';
+        await laad();
+      });
       const barcode = $('#plaatBarcode');
       if (barcode) {
         barcode.addEventListener('input', () => {
@@ -334,12 +365,22 @@
           } catch (fout) { meld(fout.message, true); }
         });
         grid.addEventListener('click', async (gebeurtenis) => {
+          const hebben = gebeurtenis.target.closest('[data-wens-hebben]');
+          if (hebben) {
+            try {
+              const plaat = await stuurJson(`/api/platen/${hebben.dataset.wensHebben}`, 'PATCH', { gewenst: false, locatie: '' });
+              staat.gewenst = false;
+              meld(`${plaat.titel || 'De plaat'} staat nu in je verzameling. Je kunt de locatie daarna kiezen.`);
+              await laad();
+            } catch (fout) { meld(fout.message, true); }
+            return;
+          }
           const weg = gebeurtenis.target.closest('[data-weg]');
           if (!weg) return;
-          if (!window.confirm('Deze plaat uit je verzameling halen?')) return;
+          if (!window.confirm(staat.gewenst ? 'Deze plaat van je verlanglijst halen?' : 'Deze plaat uit je verzameling halen?')) return;
           try {
             await api(`/api/platen/${weg.dataset.weg}`, { method: 'DELETE' });
-            meld('Plaat uit de verzameling gehaald.');
+            meld(staat.gewenst ? 'Plaat van je verlanglijst gehaald.' : 'Plaat uit de verzameling gehaald.');
             await laad();
           } catch (fout) { meld(fout.message, true); }
         });
