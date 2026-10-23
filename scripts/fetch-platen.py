@@ -44,6 +44,12 @@ BARCODE_CORRECTIES = {
         'l': 'The Vinyl Champ', 'f': '12" Vinyl', 'm': '', 'g': 'handmatige-correctie',
     },
 }
+BARCODE_AANVULLINGEN = {
+    '0602445070718': {
+        't': 'Skunk', 'a': 'Doe Maar', 'j': '2022', 'l': 'Music On Vinyl',
+        'f': '12" Vinyl · 10 nummers', 'm': '', 'g': 'handmatige-aanvulling',
+    },
+}
 JAAR_MIN, JAAR_MAX = 1948, datetime.now(timezone.utc).year
 
 
@@ -195,8 +201,9 @@ def oogst(vraag, producten, teller, diepte=0):
 
 
 def pas_correcties_toe(producten):
-    """Laat expliciet geverifieerde barcodecorrecties boven MusicBrainz-data gaan."""
+    """Voeg gecontroleerde correcties en ontbrekende barcodevermeldingen toe."""
     resultaat = dict(producten)
+    resultaat.update({code: dict(rij) for code, rij in BARCODE_AANVULLINGEN.items()})
     resultaat.update({code: dict(rij) for code, rij in BARCODE_CORRECTIES.items()})
     return resultaat
 

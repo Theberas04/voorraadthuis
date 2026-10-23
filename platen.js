@@ -7,6 +7,16 @@ const { URL } = require('node:url');
 const UA = 'VoorraadThuis/1.0 (self-hosted huishoudapp; https://github.com/Theberas04/voorraadthuis)';
 const MB_BASIS = () => process.env.PLATEN_MB_BASIS || 'https://musicbrainz.org/ws/2';
 const CAA_BASIS = () => process.env.PLATEN_CAA_BASIS || 'https://coverartarchive.org';
+const HANDMATIGE_BARCODE_BRONNEN = {
+  '8717662593284': {
+    bron: 'Gecorrigeerde barcodevermelding',
+    bronUrl: 'https://codarecords.co.uk/products/elton-john-bbc-sessions-1970-limited-edition-clear-vinyl',
+  },
+  '0602445070718': {
+    bron: 'Handmatige aanvulling',
+    bronUrl: 'https://www.sounds.nl/detail/4237720/lp/doe_maar/skunk',
+  },
+};
 // Hoe lang een opzoeking geldig blijft voordat we het opnieuw proberen (dertig dagen).
 const CACHE_DAGEN = Number(process.env.PLATEN_CACHE_DAGEN || 30);
 const MAX_TEKST = 160;
@@ -445,6 +455,7 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
     const rij = uitTabel(code);
     if (!rij) return null;
     const correctie = rij.groep === 'handmatige-correctie';
+    const handmatigeBron = HANDMATIGE_BARCODE_BRONNEN[rij.barcode] || null;
     return {
       gevonden: true,
       barcode: rij.barcode || code,
@@ -456,11 +467,9 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       genre: '',
       hoes: rij.mbid ? `${CAA_BASIS()}/release/${rij.mbid}/front-500.jpg` : '',
       mbid: rij.mbid,
-      bron: correctie ? 'Gecorrigeerde barcodevermelding' : 'MusicBrainz (eigen lp-lijst)',
-      licentie: correctie ? '' : 'CC0 1.0',
-      bronUrl: correctie
-        ? 'https://codarecords.co.uk/products/elton-john-bbc-sessions-1970-limited-edition-clear-vinyl'
-        : rij.mbid ? `https://musicbrainz.org/release/${rij.mbid}` : '',
+      bron: handmatigeBron ? handmatigeBron.bron : 'MusicBrainz (eigen lp-lijst)',
+      licentie: handmatigeBron ? '' : 'CC0 1.0',
+      bronUrl: handmatigeBron ? handmatigeBron.bronUrl : rij.mbid ? `https://musicbrainz.org/release/${rij.mbid}` : '',
       uitEigenLijst: true,
       correctie,
       cached: false,
