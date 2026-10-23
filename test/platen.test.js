@@ -305,6 +305,20 @@ test('een barcode uit de eigen lp-lijst wordt zonder internet herkend', async ()
   assert.equal(mbVerzoeken, voor, 'de databank wordt niet lastiggevallen als de eigen lijst het weet');
 });
 
+test('handmatig geverifieerde lp-aanvullingen tonen hun eigen bron, niet MusicBrainz', async () => {
+  const code = '0602445070718';
+  schrijfTabel({[code]: {t: 'Skunk', a: 'Doe Maar', j: '2022', l: 'Music On Vinyl', f: '12" Vinyl · 10 nummers', m: '', g: 'handmatige-aanvulling'}});
+  const uitkomst = await api(`/api/platen/zoek/${code}`);
+  assert.equal(uitkomst.body.gevonden, true);
+  assert.equal(uitkomst.body.titel, 'Skunk');
+  assert.equal(uitkomst.body.artiest, 'Doe Maar');
+  assert.equal(uitkomst.body.bron, 'Handmatige aanvulling');
+  assert.equal(uitkomst.body.licentie, '');
+  assert.equal(uitkomst.body.bronUrl, 'https://www.sounds.nl/detail/4237720/lp/doe_maar/skunk');
+  assert.equal(uitkomst.body.correctie, false);
+  schrijfTabel({[CODE_IN_LIJST]: {t: 'Rumours', a: 'Fleetwood Mac', j: '1977', l: 'Warner Bros.', f: '12" Vinyl', m: 'mbid-lokaal-1', g: 'rg-lokaal-1'}});
+});
+
 test('een UPC zonder laatste controlecijfer wordt herkend via het volledige LP-barcode', async () => {
   const ingekort = '63490403131';
   const volledig = '634904031312';

@@ -17,6 +17,16 @@ class PlatenBarcodeTests(unittest.TestCase):
         self.assertEqual(corrected['8717662593284']['l'], 'The Vinyl Champ')
         self.assertEqual(corrected['8717662593284']['g'], 'handmatige-correctie')
 
+    def test_missing_doe_maar_barcode_is_added_to_generated_dataset(self):
+        products = fetch_platen.pas_correcties_toe({})
+        row = products['0602445070718']
+        self.assertEqual(row['t'], 'Skunk')
+        self.assertEqual(row['a'], 'Doe Maar')
+        self.assertEqual(row['j'], '2022')
+        self.assertEqual(row['l'], 'Music On Vinyl')
+        self.assertEqual(row['f'], '12" Vinyl · 10 nummers')
+        self.assertEqual(row['g'], 'handmatige-aanvulling')
+
     def test_only_scanner_supported_lengths_are_kept(self):
         for code in ('12345678', '12345678901', '123456789012', '1234567890123', '12345678901234'):
             with self.subTest(code=code):
