@@ -36,6 +36,14 @@ PAGINA = 100
 FORMATEN = ['12\\" Vinyl', '10\\" Vinyl', 'Vinyl']
 STATUSSEN = ['official', 'promotion', 'bootleg', 'pseudo-release']
 SOORTEN = ['Album', 'Single', 'EP', 'Other']
+# MusicBrainz bevat bij deze code aantoonbaar de verkeerde uitgave (White Zombie).
+# De barcode/titel/artiest/format zijn gecontroleerd op Discogs en bij de verkoper Coda Records.
+BARCODE_CORRECTIES = {
+    '8717662593284': {
+        't': 'BBC Sessions 1970', 'a': 'Elton John', 'j': '2024',
+        'l': 'The Vinyl Champ', 'f': '12" Vinyl', 'm': '', 'g': 'handmatige-correctie',
+    },
+}
 JAAR_MIN, JAAR_MAX = 1948, datetime.now(timezone.utc).year
 
 
@@ -186,6 +194,13 @@ def oogst(vraag, producten, teller, diepte=0):
         oogst(f'{vraag} AND barcode:*{suffix}{cijfer}', producten, teller, diepte + 1)
 
 
+def pas_correcties_toe(producten):
+    """Laat expliciet geverifieerde barcodecorrecties boven MusicBrainz-data gaan."""
+    resultaat = dict(producten)
+    resultaat.update({code: dict(rij) for code, rij in BARCODE_CORRECTIES.items()})
+    return resultaat
+
+
 def bewaar(producten, teller, definitief=False):
     VOORTGANG.mkdir(parents=True, exist_ok=True)
     (VOORTGANG / 'lp-ruw.json').write_text(json.dumps(producten, ensure_ascii=False, separators=(',', ':')))
@@ -197,7 +212,7 @@ def bewaar(producten, teller, definitief=False):
     }, ensure_ascii=False, indent=1))
     if definitief:
         DOEL.mkdir(parents=True, exist_ok=True)
-        schoon = {code: rij for code, rij in sorted(producten.items()) if rij.get('t')}
+        schoon = pas_correcties_toe({code: rij for code, rij in sorted(producten.items()) if rij.get('t')})
         (DOEL / 'lp-barcodes.json').write_text(json.dumps(schoon, ensure_ascii=False, separators=(',', ':')))
         print(f'product-data/lp-barcodes.json geschreven: {len(schoon)} barcodes')
 

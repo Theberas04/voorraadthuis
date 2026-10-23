@@ -9,6 +9,14 @@ spec.loader.exec_module(fetch_platen)
 
 
 class PlatenBarcodeTests(unittest.TestCase):
+    def test_known_bad_barcode_is_corrected_in_generated_dataset(self):
+        corrected = fetch_platen.pas_correcties_toe({})
+        self.assertEqual(corrected['8717662593284']['t'], 'BBC Sessions 1970')
+        self.assertEqual(corrected['8717662593284']['a'], 'Elton John')
+        self.assertEqual(corrected['8717662593284']['j'], '2024')
+        self.assertEqual(corrected['8717662593284']['l'], 'The Vinyl Champ')
+        self.assertEqual(corrected['8717662593284']['g'], 'handmatige-correctie')
+
     def test_only_scanner_supported_lengths_are_kept(self):
         for code in ('12345678', '12345678901', '123456789012', '1234567890123', '12345678901234'):
             with self.subTest(code=code):

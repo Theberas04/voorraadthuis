@@ -85,6 +85,7 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       locatie TEXT NOT NULL DEFAULT '',
       notitie TEXT NOT NULL DEFAULT '',
       aantal INTEGER NOT NULL DEFAULT 1,
+      prijs REAL,
       created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
       updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
@@ -105,6 +106,7 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
 
   // Oude installaties krijgen zonder dataverlies een statusveld voor de verlanglijst.
   try { db.exec("ALTER TABLE platen ADD COLUMN gewenst INTEGER NOT NULL DEFAULT 0") } catch { /* bestaat al */ }
+  try { db.exec('ALTER TABLE platen ADD COLUMN prijs REAL') } catch { /* bestaat al */ }
 
   // Een lokale tabel met lp-barcodes uit MusicBrainz (open data, CC0). Zo wordt een
   // gescande plaat ook zonder internet meteen herkend. De tabel wordt uit het bestand in
@@ -217,6 +219,7 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
     notitie: r.notitie,
     aantal: r.aantal,
     gewenst: !!r.gewenst,
+    prijs: r.prijs == null ? null : Number(r.prijs),
   });
 
   const lijst = (locatie, gewenst = false) => {
@@ -291,14 +294,19 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
     return rijen;
   }
 
-  const antwoord = (rijen, filters) => ({
-    platen: rijen,
-    totaal: rijen.length,
-    locaties: locaties(),
-    stuks: rijen.reduce((som, p) => som + (Number(p.aantal) || 0), 0),
-    keuzelijsten: keuzelijsten(),
-    filters,
-  });
+  const antwoord = (rijen, filters) => {
+    const prijsStat = db.prepare('SELECT AVG(prijs) AS gemiddelde, COUNT(prijs) AS aantal FROM platen WHERE gewenst=1 AND prijs IS NOT NULL').get();
+    return {
+      platen: rijen,
+      totaal: rijen.length,
+      locaties: locaties(),
+      stuks: rijen.reduce((som, p) => som + (Number(p.aantal) || 0), 0),
+      gemiddeldePrijs: prijsStat.aantal ? Math.round(Number(prijsStat.gemiddelde) * 100) / 100 : null,
+      prijsAantal: prijsStat.aantal,
+      keuzelijsten: keuzelijsten(),
+      filters,
+    };
+  };
 
   const alles = () => antwoord(lijst(), {});
 
@@ -427,6 +435,7 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
   function uitEigenTabel(code) {
     const rij = uitTabel(code);
     if (!rij) return null;
+    const correctie = rij.groep === 'handmatige-correctie';
     return {
       gevonden: true,
       barcode: code,
@@ -438,10 +447,13 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       genre: '',
       hoes: rij.mbid ? `${CAA_BASIS()}/release/${rij.mbid}/front-500.jpg` : '',
       mbid: rij.mbid,
-      bron: 'MusicBrainz (eigen lp-lijst)',
-      licentie: 'CC0 1.0',
-      bronUrl: rij.mbid ? `https://musicbrainz.org/release/${rij.mbid}` : '',
+      bron: correctie ? 'Gecorrigeerde barcodevermelding' : 'MusicBrainz (eigen lp-lijst)',
+      licentie: correctie ? '' : 'CC0 1.0',
+      bronUrl: correctie
+        ? 'https://codarecords.co.uk/products/elton-john-bbc-sessions-1970-limited-edition-clear-vinyl'
+        : rij.mbid ? `https://musicbrainz.org/release/${rij.mbid}` : '',
       uitEigenLijst: true,
+      correctie,
       cached: false,
     };
   }
@@ -451,13 +463,14 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
     if (schoon.length < 8 || schoon.length > 14) {
       return { gevonden: false, barcode: schoon, reason: 'ongeldig', message: 'Een barcode hoort uit 8 tot 14 cijfers te bestaan.' };
     }
+    const eigen = uitEigenTabel(schoon);
+    // Een expliciete correctie is een bron-van-waarheid en mag ook niet door een
+    // eerder foutief MusicBrainz-resultaat in de cache worden teruggedraaid.
+    if (eigen && eigen.correctie) return eigen;
     const bewaard = leesCache(schoon);
     if (bewaard && !force && !bewaard.verouderd) return { ...bewaard, cached: true };
-    // Eerst de eigen lijst: dat is direct en werkt ook zonder internet.
-    if (!force) {
-      const eigen = uitEigenTabel(schoon);
-      if (eigen) return eigen;
-    }
+    // De algemene offline-lijst respecteren we na de cachecheck; force=1 kan die overslaan.
+    if (!force && eigen) return eigen;
     const vers = await zoekOnline(schoon);
     if (vers.storing) {
       if (bewaard) return { ...bewaard, cached: true, storing: true };
@@ -465,6 +478,13 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
     }
     bewaarCache(schoon, vers);
     return { ...vers, cached: false };
+  }
+
+  function leesPrijs(waarde) {
+    if (waarde == null || waarde === '') return null;
+    const prijs = Number(String(waarde).trim().replace(',', '.'));
+    if (!Number.isFinite(prijs) || prijs < 0 || prijs > 100000) throw Error('Vul een richtprijs tussen €0 en €100.000 in.');
+    return Math.round(prijs * 100) / 100;
   }
 
   function voegToe(invoer) {
@@ -486,6 +506,7 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       locatie,
       notitie: leeg(invoer.notitie, 300),
       aantal,
+      prijs: leesPrijs(invoer.prijs),
       gewenst: invoer.gewenst === true || Number(invoer.gewenst) === 1,
     };
     // Een gewenste barcode wordt één keer bijgehouden; hem later toevoegen aan bezit
@@ -494,7 +515,10 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       const bestaandBezit = db.prepare('SELECT * FROM platen WHERE barcode=? AND gewenst=0 ORDER BY id LIMIT 1').get(gegevens.barcode);
       if (bestaandBezit) return { plaat: rij(bestaandBezit), opgeteld: false, bestondAl: true, alInVerzameling: true };
       const bestaandWens = db.prepare('SELECT * FROM platen WHERE barcode=? AND gewenst=1 ORDER BY id LIMIT 1').get(gegevens.barcode);
-      if (bestaandWens) return { plaat: rij(bestaandWens), opgeteld: false, bestondAl: true };
+      if (bestaandWens) {
+        if (invoer.prijs !== undefined && invoer.prijs !== '') db.prepare('UPDATE platen SET prijs=?,updated_at=CURRENT_TIMESTAMP WHERE id=?').run(gegevens.prijs, bestaandWens.id);
+        return { plaat: rij(db.prepare('SELECT * FROM platen WHERE id=?').get(bestaandWens.id)), opgeteld: false, bestondAl: true };
+      }
     }
     const bestaand = gegevens.barcode && !gegevens.gewenst
       ? db.prepare('SELECT id FROM platen WHERE barcode=? AND gewenst=0 AND locatie=? ORDER BY id LIMIT 1').get(gegevens.barcode, locatie)
@@ -513,10 +537,10 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
         return { plaat: rij(db.prepare('SELECT * FROM platen WHERE id=?').get(wens.id)), opgeteld: false, gekocht: true };
       }
     }
-    const uitkomst = db.prepare(`INSERT INTO platen(barcode,titel,artiest,jaar,label,formaat,genre,hoes,locatie,notitie,aantal,gewenst)
-        VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`)
+    const uitkomst = db.prepare(`INSERT INTO platen(barcode,titel,artiest,jaar,label,formaat,genre,hoes,locatie,notitie,aantal,prijs,gewenst)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`)
       .run(gegevens.barcode, gegevens.titel, gegevens.artiest, gegevens.jaar, gegevens.label, gegevens.formaat,
-        gegevens.genre, gegevens.hoes, gegevens.locatie, gegevens.notitie, gegevens.aantal, gegevens.gewenst ? 1 : 0);
+        gegevens.genre, gegevens.hoes, gegevens.locatie, gegevens.notitie, gegevens.aantal, gegevens.prijs, gegevens.gewenst ? 1 : 0);
     const id = Number(uitkomst.lastInsertRowid);
     bewaarHoes(id);
     return { plaat: rij(db.prepare('SELECT * FROM platen WHERE id=?').get(id)), opgeteld: false };
@@ -536,6 +560,7 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       locatie: invoer.locatie == null ? bestaand.locatie : leeg(invoer.locatie, 60),
       notitie: invoer.notitie == null ? bestaand.notitie : leeg(invoer.notitie, 300),
       gewenst: invoer.gewenst == null ? !!bestaand.gewenst : Boolean(invoer.gewenst),
+      prijs: Object.hasOwn(invoer, 'prijs') ? leesPrijs(invoer.prijs) : bestaand.prijs,
     };
     if (!velden.titel) throw Error('Een plaat hoort een titel te hebben.');
     let aantal = bestaand.aantal;
@@ -543,9 +568,9 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       aantal = Math.round(Number(invoer.aantal));
       if (!Number.isFinite(aantal) || aantal < 1 || aantal > 99) throw Error('Geef een aantal tussen 1 en 99 op.');
     }
-    db.prepare(`UPDATE platen SET titel=?,artiest=?,jaar=?,label=?,formaat=?,genre=?,hoes=?,locatie=?,notitie=?,aantal=?,gewenst=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`)
+    db.prepare(`UPDATE platen SET titel=?,artiest=?,jaar=?,label=?,formaat=?,genre=?,hoes=?,locatie=?,notitie=?,aantal=?,prijs=?,gewenst=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`)
       .run(velden.titel, velden.artiest, velden.jaar, velden.label, velden.formaat, velden.genre, velden.hoes,
-        velden.locatie, velden.notitie, aantal, velden.gewenst ? 1 : 0, Number(id));
+        velden.locatie, velden.notitie, aantal, velden.prijs, velden.gewenst ? 1 : 0, Number(id));
     bewaarHoes(id);
     return rij(db.prepare('SELECT * FROM platen WHERE id=?').get(Number(id)));
   }
@@ -595,6 +620,19 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
     }
     if (pad === '/api/platen/keuzelijsten' && req.method === 'GET') return stuur(res, 200, keuzelijsten());
     if (pad === '/api/platen/lijst' && req.method === 'GET') return stuur(res, 200, { aantal: aantalInTabel(), bestand: lpBestand() });
+    if (pad === '/api/platen/catalogus' && req.method === 'GET') {
+      const term = leeg(url.searchParams.get('q') || '', 80).toLowerCase();
+      if (term.length < 2) return stuur(res, 200, { resultaten: [] });
+      zorgVoorTabel();
+      const resultaten = db.prepare(`SELECT barcode,titel,artiest,jaar,label,formaat,mbid FROM lp_barcodes
+          WHERE instr(lower(titel),?)>0 OR instr(lower(artiest),?)>0
+          ORDER BY CASE WHEN instr(lower(titel),?)>0 THEN 0 ELSE 1 END, artiest COLLATE NOCASE, titel COLLATE NOCASE
+          LIMIT 30`).all(term, term, term).map((r) => ({
+        barcode: r.barcode, titel: r.titel, artiest: r.artiest, jaar: r.jaar, label: r.label,
+        formaat: r.formaat, hoes: r.mbid ? `${CAA_BASIS()}/release/${r.mbid}/front-500.jpg` : '',
+      }));
+      return stuur(res, 200, { resultaten });
+    }
     if (pad === '/api/platen/locaties' && req.method === 'GET') return stuur(res, 200, locaties());
     const hoesPad = pad.match(/^\/api\/platen\/hoes\/(\d+)$/);
     if (hoesPad && req.method === 'GET') return serveerHoes(res, hoesPad[1]);

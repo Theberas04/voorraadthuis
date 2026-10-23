@@ -14,6 +14,7 @@ process.env.MEDIA_DIR = path.join(dir, 'fotos');
 
 const EAN = '602547077743';       // bekend bij de nagemaakte databank
 const EAN_LEEG = '602547077750';  // onbekend
+const EAN_FOUTIEF = '8717662593284'; // MusicBrainz koppelt deze foutief aan White Zombie
 let mbVerzoeken = 0, caaVerzoeken = 0, mbStoring = false;
 
 let stub, server, db, base;
@@ -34,6 +35,9 @@ test.before(async () => {
     if (mbStoring) { res.writeHead(503); return res.end('{}'); }
     const vraag = decodeURIComponent(url);
     res.writeHead(200, { 'content-type': 'application/json' });
+    if (vraag.includes(EAN_FOUTIEF)) {
+      return res.end(JSON.stringify({releases: [{id: 'mbid-verkeerd', title: 'Cow Palace Hollywood 1992: Live Radio Broadcast', score: 100, date: '2017', barcode: EAN_FOUTIEF, 'artist-credit': [{name: 'White Zombie'}], media: [{format: 'Digital Media'}]}]}));
+    }
     if (vraag.includes(EAN)) {
       return res.end(JSON.stringify({
         releases: [
@@ -301,6 +305,19 @@ test('een barcode uit de eigen lp-lijst wordt zonder internet herkend', async ()
   assert.equal(mbVerzoeken, voor, 'de databank wordt niet lastiggevallen als de eigen lijst het weet');
 });
 
+test('een gecorrigeerde lokale barcode vervangt ook een foutief MusicBrainz-cacheantwoord', async () => {
+  schrijfTabel({});
+  const fout = await api(`/api/platen/zoek/${EAN_FOUTIEF}`);
+  assert.equal(fout.body.artiest, 'White Zombie');
+  schrijfTabel({[EAN_FOUTIEF]: {t: 'BBC Sessions 1970', a: 'Elton John', j: '2024', l: 'The Vinyl Champ', f: '12" Vinyl', m: '', g: 'handmatige-correctie'}});
+  const hersteld = await api(`/api/platen/zoek/${EAN_FOUTIEF}`);
+  assert.equal(hersteld.body.titel, 'BBC Sessions 1970');
+  assert.equal(hersteld.body.artiest, 'Elton John');
+  assert.equal(hersteld.body.bron, 'Gecorrigeerde barcodevermelding');
+  const force = await api(`/api/platen/zoek/${EAN_FOUTIEF}?force=1`);
+  assert.equal(force.body.artiest, 'Elton John', 'een geforceerde online zoekactie mag de bekende correctie niet overschrijven');
+});
+
 test('een barcode die niet in de eigen lijst staat wordt online opgezocht', async () => {
   const voor = mbVerzoeken;
   const onbekend = await api(`/api/platen/zoek/${EAN}`);
@@ -339,6 +356,54 @@ test('een ontbrekende lp-lijst is geen probleem', async () => {
     assert.equal(uitkomst.status, 200, 'de app blijft gewoon werken zonder lijst');
     assert.equal(uitkomst.body.gevonden, true);
   } finally { process.env.PLATEN_TABEL = oud }
+});
+
+test('zoeken in de lp-catalogus levert lokale vinyluitgaven op naam op', async () => {
+  const code = '8719000000010';
+  schrijfTabel({[code]: {t: 'BBC Sessions 1970', a: 'Elton John', j: '2024', l: 'The Vinyl Champ', f: '12" Vinyl', m: '', g: ''}});
+  const uitkomst = await api('/api/platen/catalogus?q=Elton');
+  assert.equal(uitkomst.status, 200);
+  assert.equal(uitkomst.body.resultaten[0].barcode, code);
+  assert.equal(uitkomst.body.resultaten[0].artiest, 'Elton John');
+  schrijfTabel({
+    [CODE_IN_LIJST]: {t: 'Rumours', a: 'Fleetwood Mac', j: '1977', l: 'Warner Bros.', f: '12" Vinyl', m: 'mbid-lokaal-1', g: 'rg-lokaal-1'},
+    [CODE_SCHONE_TWEEDE]: {t: 'Tango in the Night', a: 'Fleetwood Mac', j: '1987', m: 'mbid-lokaal-2'},
+  });
+});
+
+test('vanuit catalogus toevoegen met richtprijs werkt en gemiddelde wordt berekend', async () => {
+  const code = '8719000000011';
+  const antwoord = await stuur('/api/platen', 'POST', {barcode: code, titel: 'LP A', artiest: 'Artiest A', gewenst: true, prijs: 24.50});
+  assert.equal(antwoord.status, 201);
+  assert.equal(antwoord.body.plaat.prijs, 24.5);
+  const dubbel = await stuur('/api/platen', 'POST', {barcode: code, titel: 'LP A', artiest: 'Artiest A', gewenst: true, prijs: ''});
+  assert.equal(dubbel.body.plaat.prijs, 24.5, 'leeg toevoegen wist een bestaande richtprijs niet');
+  const tweede = await stuur('/api/platen', 'POST', {barcode: '8719000000012', titel: 'LP B', artiest: 'Artiest B', gewenst: true, prijs: 35.50});
+  const wens = await api('/api/platen?status=wens');
+  assert.equal(wens.body.prijsAantal, 2);
+  assert.equal(wens.body.gemiddeldePrijs, 30);
+  const plaat = wens.body.platen.find(p => p.barcode === code);
+  await stuur(`/api/platen/${plaat.id}`, 'PATCH', {prijs: 31.50});
+  const bijgewerkt = await api('/api/platen?status=wens');
+  assert.equal(bijgewerkt.body.gemiddeldePrijs, 33.5);
+  await stuur(`/api/platen/${plaat.id}`, 'PATCH', {prijs: ''});
+  const gewist = await api('/api/platen?status=wens');
+  assert.equal(gewist.body.prijsAantal, 1);
+  assert.equal(gewist.body.gemiddeldePrijs, 35.5);
+  await api(`/api/platen/${plaat.id}`, {method: 'DELETE'});
+  await api(`/api/platen/${tweede.body.plaat.id}`, {method: 'DELETE'});
+});
+
+test('de verlanglijst heeft een eigen zoekpaneel en toont de gemiddelde richtprijs', async () => {
+  const pagina = await (await fetch(`${base}/`)).text();
+  const script = await (await fetch(`${base}/platen.js`)).text();
+  assert.ok(pagina.includes('plaatWensZoek'));
+  assert.ok(pagina.includes('plaatWensResultaten'));
+  assert.ok(pagina.includes('platenGemiddelde'));
+  assert.ok(pagina.includes('Gemiddelde richtprijs'));
+  assert.ok(script.includes('/api/platen/catalogus?q='));
+  assert.ok(script.includes('data-wens-add'));
+  assert.ok(script.includes('data-prijs'));
 });
 
 test('een plaat die ik wil hebben staat op een aparte verlanglijst en niet in mijn verzameling', async () => {
