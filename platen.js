@@ -21,7 +21,12 @@ function leeg(tekst, max = MAX_TEKST) {
 // varianten die hetzelfde product aanwijzen.
 function barcodeVarianten(code) {
   const cijfers = String(code || '').replace(/\D/g, '');
-  const varianten = new Set([cijfers]);
+  const varianten = new Set();
+  if (cijfers.length === 11) {
+    const totaal = [...cijfers].reduce((som, cijfer, index) => som + Number(cijfer) * ((cijfers.length - index) % 2 ? 3 : 1), 0);
+    varianten.add(`${cijfers}${(10 - totaal % 10) % 10}`);
+  }
+  varianten.add(cijfers);
   if (cijfers) {
     varianten.add(cijfers.replace(/^0+/, ''));
     varianten.add(cijfers.padStart(13, '0'));
@@ -160,8 +165,12 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
 
   const uitTabel = (code) => {
     zorgVoorTabel();
-    const r = db.prepare('SELECT * FROM lp_barcodes WHERE barcode=?').get(code);
-    return r || null;
+    const ophalen = db.prepare('SELECT * FROM lp_barcodes WHERE barcode=?');
+    for (const variant of barcodeVarianten(code)) {
+      const rij = ophalen.get(variant);
+      if (rij) return { ...rij, barcode: variant };
+    }
+    return null;
   };
   const aantalInTabel = () => {
     zorgVoorTabel();
@@ -413,7 +422,7 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       const hoes = await hoesBij(uitgave.id).catch(() => '');
       return {
         gevonden: true,
-        barcode: code,
+        barcode: variant,
         mbid: uitgave.id || '',
         titel: leeg(uitgave.title),
         artiest: leeg(artiestVan(uitgave)),
@@ -438,7 +447,7 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
     const correctie = rij.groep === 'handmatige-correctie';
     return {
       gevonden: true,
-      barcode: code,
+      barcode: rij.barcode || code,
       titel: rij.titel,
       artiest: rij.artiest,
       jaar: rij.jaar,
@@ -464,9 +473,9 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       return { gevonden: false, barcode: schoon, reason: 'ongeldig', message: 'Een barcode hoort uit 8 tot 14 cijfers te bestaan.' };
     }
     const eigen = uitEigenTabel(schoon);
-    // Een expliciete correctie is een bron-van-waarheid en mag ook niet door een
-    // eerder foutief MusicBrainz-resultaat in de cache worden teruggedraaid.
-    if (eigen && eigen.correctie) return eigen;
+    // Een expliciete correctie of genormaliseerde barcode is leidend; geen cache met de
+    // oorspronkelijke (onvolledige) code mag die treffer overschrijven.
+    if (eigen && (eigen.correctie || eigen.barcode !== schoon)) return eigen;
     const bewaard = leesCache(schoon);
     if (bewaard && !force && !bewaard.verouderd) return { ...bewaard, cached: true };
     // De algemene offline-lijst respecteren we na de cachecheck; force=1 kan die overslaan.
