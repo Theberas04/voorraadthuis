@@ -349,6 +349,27 @@ test('een barcode die niet in de eigen lijst staat wordt online opgezocht', asyn
   assert.ok(mbVerzoeken > voor, 'voor een barcode buiten de eigen lijst wordt de databank bevraagd');
 });
 
+test('een negatieve online zoekpoging wordt bij een volgende scan opnieuw gecontroleerd', async () => {
+  const code = '4006381333932';
+  const eerste = await api(`/api/platen/zoek/${code}`);
+  assert.equal(eerste.body.gevonden, false);
+  const verzoekenNaEersteScan = mbVerzoeken;
+  const tweede = await api(`/api/platen/zoek/${code}`);
+  assert.equal(tweede.body.gevonden, false);
+  assert.ok(mbVerzoeken > verzoekenNaEersteScan, 'een tijdelijke lege zoekuitkomst mag niet 30 dagen vast blijven staan');
+});
+
+test('een lokale LP-treffer vervangt een oude negatieve cachevermelding', async () => {
+  schrijfTabel({[CODE_SCHONE_TWEEDE]: {t: 'Tango in the Night', a: 'Fleetwood Mac', j: '1987', m: 'mbid-lokaal-2'}});
+  db.prepare(`INSERT INTO plaat_cache(barcode,titel,artiest,jaar,label,formaat,genre,hoes,mbid,gevonden,fetched_at)
+    VALUES(?,?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP)`).run(CODE_SCHONE_TWEEDE, '', '', '', '', '', '', '', '', 0);
+  const uitkomst = await api(`/api/platen/zoek/${CODE_SCHONE_TWEEDE}`);
+  assert.equal(uitkomst.body.gevonden, true);
+  assert.equal(uitkomst.body.titel, 'Tango in the Night');
+  assert.equal(uitkomst.body.uitEigenLijst, true);
+  schrijfTabel({[CODE_IN_LIJST]: {t: 'Rumours', a: 'Fleetwood Mac', j: '1977', l: 'Warner Bros.', f: '12" Vinyl', m: 'mbid-lokaal-1', g: 'rg-lokaal-1'}});
+});
+
 test('met force=1 wordt de eigen lijst overgeslagen', async () => {
   const voor = mbVerzoeken;
   const uitkomst = await api(`/api/platen/zoek/${CODE_IN_LIJST}?force=1`);
