@@ -11,7 +11,7 @@
   };
   const stuurJson = (pad, methode, lichaam) => api(pad, { method: methode, headers: { 'content-type': 'application/json' }, body: JSON.stringify(lichaam) });
 
-  const staat = { locatie: '', zoek: '', genre: '', artiest: '', decennium: '', van: '', tot: '', gewenst: false, laatste: '', scan: null, zoekTimer: null, jaarTimer: null };
+  const staat = { locatie: '', zoek: '', genre: '', artiest: '', decennium: '', van: '', tot: '', gewenst: false, laatste: '', scan: null, zoekTimer: null, jaarTimer: null, catalogusTimer: null };
   let geopend = false;
 
   const veld = (id) => $(id);
@@ -68,10 +68,11 @@
         return;
       }
       vulIn(uitkomst);
-      const bron = uitkomst.bron ? `${esc(uitkomst.bron)} · ${esc(uitkomst.licentie || '')}` : '';
+      const bron = [uitkomst.bron, uitkomst.licentie].filter(Boolean).map(esc).join(' · ');
+      const bronLink = uitkomst.bronUrl ? `<a href="${esc(uitkomst.bronUrl)}" target="_blank" rel="noopener noreferrer">Bron</a>` : '';
       const bewaard = uitkomst.cached ? ' · eerder opgezocht' : '';
       const soort = uitkomst.genre && uitkomst.genre !== 'Album' ? ` · ${esc(uitkomst.genre)}` : '';
-      vak.innerHTML = `<strong>Herkend: ${esc(uitkomst.titel)}</strong><span class="mutedlink">${esc(uitkomst.artiest)}${uitkomst.jaar ? ' · ' + esc(uitkomst.jaar) : ''}${uitkomst.label ? ' · ' + esc(uitkomst.label) : ''}${soort}${bron ? ' · ' + bron : ''}${bewaard}</span>${uitkomst.hoes ? '' : '<span class="mutedlink">Van deze uitgave is geen hoes bekend; je kunt er zelf een notitie bij zetten.</span>'} <button class="mutedlink" type="button" id="plaatOpnieuw">Opnieuw zoeken</button>`;
+      vak.innerHTML = `<strong>Herkend: ${esc(uitkomst.titel)}</strong><span class="mutedlink">${esc(uitkomst.artiest)}${uitkomst.jaar ? ' · ' + esc(uitkomst.jaar) : ''}${uitkomst.label ? ' · ' + esc(uitkomst.label) : ''}${soort}${bron ? ' · ' + bron : ''}${bronLink ? ' · ' + bronLink : ''}${bewaard}</span>${uitkomst.hoes ? '' : '<span class="mutedlink">Van deze uitgave is geen hoes bekend; je kunt er zelf een notitie bij zetten.</span>'} <button class="mutedlink" type="button" id="plaatOpnieuw">Opnieuw zoeken</button>`;
       const opnieuw = $('#plaatOpnieuw');
       if (opnieuw) opnieuw.onclick = () => zoekBarcode(schoon, true);
     } catch (fout) {
@@ -100,6 +101,7 @@
         <strong>${esc(plaat.titel)}</strong>
         ${meta ? `<div class="plaatMeta">${meta}</div>` : ''}
         ${label}${notitie}
+        ${plaat.gewenst ? `<label class="plaatPrijs">Richtprijs (€)<input data-prijs="${plaat.id}" type="number" min="0" max="100000" step="0.01" value="${plaat.prijs == null ? '' : Number(plaat.prijs).toFixed(2)}" placeholder="Nog invullen"></label>` : ''}
         ${Number(plaat.aantal) > 1 ? `<div class="plaatMeta">${Number(plaat.aantal)} exemplaren</div>` : ''}
       </div>
       <div class="plaatVoet">${voet}</div>
@@ -109,15 +111,24 @@
   function tekenVerlanglijstTabs() {
     const tabs = $('#platenVerlanglijstTabs');
     if (!tabs) return;
-    tabs.innerHTML = `<button class="tab${staat.gewenst ? '' : ' active'}" type="button" data-platen-status="bezit">Mijn verzameling</button><button class="tab${staat.gewenst ? ' active' : ''}" type="button" data-platen-status="wens">Wil ik hebben</button>`;
+    tabs.innerHTML = `<button class="tab${staat.gewenst ? '' : ' active'}" type="button" data-platen-status="bezit">Mijn verzameling</button><button class="tab${staat.gewenst ? ' active' : ''}" type="button" data-platen-status="wens">Verlanglijst</button>`;
     const titel = $('#plaatLijstTitel');
     if (titel) titel.textContent = staat.gewenst ? 'Mijn verlanglijst' : 'Mijn verzameling';
+    const lijstZoek = $('#plaatZoek');
+    if (lijstZoek) {
+      lijstZoek.placeholder = staat.gewenst ? 'Zoek in mijn verlanglijst' : 'Zoek in mijn verzameling';
+      lijstZoek.setAttribute('aria-label', lijstZoek.placeholder);
+    }
     const filters = $('#plaatFilters');
     const filterStand = $('#plaatFilterStand');
     const locaties = $('#plaatLocatieTabs');
+    const invoer = $('#plaatToevoegenPanel');
+    const catalogus = $('#plaatVerlanglijstZoekPanel');
     if (filters) filters.hidden = staat.gewenst;
     if (filterStand) filterStand.hidden = staat.gewenst;
     if (locaties) locaties.hidden = staat.gewenst;
+    if (invoer) invoer.hidden = staat.gewenst;
+    if (catalogus) catalogus.hidden = !staat.gewenst;
   }
 
   function locatieOpties(gekozen) {
@@ -158,7 +169,14 @@
     const grid = $('#plaatGrid');
     const leeg = $('#plaatLeeg');
     const pill = $('#platenTotaal');
+    const gemiddelde = $('#platenGemiddelde');
     if (pill) pill.textContent = `${gegevens.totaal} ${gegevens.totaal === 1 ? 'plaat' : 'platen'}${gegevens.stuks > gegevens.totaal ? ` · ${gegevens.stuks} exemplaren` : ''}`;
+    if (gemiddelde) {
+      gemiddelde.hidden = !staat.gewenst;
+      gemiddelde.textContent = gegevens.gemiddeldePrijs == null
+        ? 'Gemiddelde richtprijs: nog geen prijzen ingevuld'
+        : `Gemiddelde richtprijs: ${Number(gegevens.gemiddeldePrijs).toLocaleString('nl-NL', {style: 'currency', currency: 'EUR'})} (${gegevens.prijsAantal} met prijs)`;
+    }
     if (!grid) return;
     if (!gegevens.platen.length) {
       grid.innerHTML = '';
@@ -179,6 +197,42 @@
 
   // De keuzelijsten (genre, artiest, decennium) komen uit de hele verzameling. Een keuze
   // die je al gemaakt hebt blijft staan, ook als de lijst opnieuw gevuld wordt.
+  function toonWensResultaten(resultaten, zoekterm) {
+    const vak = $('#plaatWensResultaten');
+    if (!vak) return;
+    if (!resultaten.length) {
+      vak.innerHTML = `<p class="hint">Geen platen gevonden voor “${esc(zoekterm)}” in de lokale barcodelijst.</p>`;
+      return;
+    }
+    vak.innerHTML = resultaten.map((plaat) => {
+      const meta = [plaat.artiest, plaat.jaar, plaat.formaat].filter(Boolean).map(esc).join(' · ');
+      return `<article class="wensZoekResultaat">
+        <strong>${esc(plaat.titel)}</strong><div class="wensZoekMeta">${meta || 'Vinyluitgave'} · barcode ${esc(plaat.barcode)}</div>
+        <div class="wensZoekActies"><label class="wensZoekPrijs">Richtprijs (€)<input data-catalog-prijs type="number" min="0" max="100000" step="0.01" placeholder="Optioneel"></label>
+        <button class="btn primary" type="button" data-wens-add="${esc(plaat.barcode)}" data-titel="${esc(plaat.titel)}" data-artiest="${esc(plaat.artiest)}" data-jaar="${esc(plaat.jaar)}" data-label="${esc(plaat.label)}" data-formaat="${esc(plaat.formaat)}" data-hoes="${esc(plaat.hoes)}">♡ Op lijst</button></div>
+      </article>`;
+    }).join('');
+  }
+
+  async function zoekWensCatalogus(zoekterm) {
+    const melding = $('#plaatWensZoekMelding');
+    const vak = $('#plaatWensResultaten');
+    if (!zoekterm || zoekterm.length < 2) {
+      if (melding) melding.textContent = 'Typ minimaal twee letters om in de lokale lp-lijst te zoeken.';
+      if (vak) vak.innerHTML = '';
+      return;
+    }
+    if (melding) { melding.classList.remove('fout'); melding.textContent = 'Zoeken in de lokale lp-barcodelijst…'; }
+    try {
+      const gegevens = await api(`/api/platen/catalogus?q=${encodeURIComponent(zoekterm)}`);
+      if (zoekterm !== waarde('#plaatWensZoek')) return;
+      toonWensResultaten(gegevens.resultaten || [], zoekterm);
+      if (melding) melding.textContent = `${(gegevens.resultaten || []).length} resultaten (maximaal 30).`;
+    } catch (fout) {
+      if (melding) { melding.textContent = fout.message; melding.classList.add('fout'); }
+    }
+  }
+
   function vulKeuzelijsten(gegevens) {
     const keuzes = gegevens.keuzelijsten || {};
     const vul = (id, items, eigenTekst, gekozen) => {
@@ -221,14 +275,18 @@
 
   async function laad() {
     const vraag = new URLSearchParams();
-    if (staat.locatie) vraag.set('locatie', staat.locatie);
-    if (staat.zoek) vraag.set('q', staat.zoek);
-    if (staat.genre) vraag.set('genre', staat.genre);
-    if (staat.artiest) vraag.set('artiest', staat.artiest);
-    if (staat.decennium) vraag.set('decennium', staat.decennium);
-    if (staat.van) vraag.set('van', staat.van);
-    if (staat.tot) vraag.set('tot', staat.tot);
-    if (staat.gewenst) vraag.set('status', 'wens');
+    if (staat.gewenst) {
+      vraag.set('status', 'wens');
+      if (staat.zoek) vraag.set('q', staat.zoek);
+    } else {
+      if (staat.locatie) vraag.set('locatie', staat.locatie);
+      if (staat.zoek) vraag.set('q', staat.zoek);
+      if (staat.genre) vraag.set('genre', staat.genre);
+      if (staat.artiest) vraag.set('artiest', staat.artiest);
+      if (staat.decennium) vraag.set('decennium', staat.decennium);
+      if (staat.van) vraag.set('van', staat.van);
+      if (staat.tot) vraag.set('tot', staat.tot);
+    }
     const gegevens = await api(`/api/platen${vraag.toString() ? '?' + vraag.toString() : ''}`);
     gegevens.alleTotaal = (gegevens.keuzelijsten && gegevens.keuzelijsten.locaties || []).reduce((som, l) => som + l.aantal, 0) || gegevens.totaal;
     teken(gegevens);
@@ -286,8 +344,36 @@
       if (lijstTabs) lijstTabs.addEventListener('click', async (gebeurtenis) => {
         const knop = gebeurtenis.target.closest('[data-platen-status]');
         if (!knop) return;
-        staat.gewenst = knop.dataset.platenStatus === 'wens';
+        const volgende = knop.dataset.platenStatus === 'wens';
+        if (staat.gewenst !== volgende) {
+          staat.gewenst = volgende;
+          staat.zoek = '';
+          if ($('#plaatZoek')) $('#plaatZoek').value = '';
+        }
         await laad();
+      });
+      const wensZoek = $('#plaatWensZoek');
+      if (wensZoek) wensZoek.addEventListener('input', () => {
+        clearTimeout(staat.catalogusTimer);
+        staat.catalogusTimer = setTimeout(() => zoekWensCatalogus(wensZoek.value.trim()), 280);
+      });
+      const wensResultaten = $('#plaatWensResultaten');
+      if (wensResultaten) wensResultaten.addEventListener('click', async (gebeurtenis) => {
+        const knop = gebeurtenis.target.closest('[data-wens-add]');
+        if (!knop) return;
+        const item = knop.closest('.wensZoekResultaat');
+        const prijs = item && item.querySelector('[data-catalog-prijs]') ? item.querySelector('[data-catalog-prijs]').value : '';
+        try {
+          const uitkomst = await stuurJson('/api/platen', 'POST', {
+            barcode: knop.dataset.wensAdd, titel: knop.dataset.titel, artiest: knop.dataset.artiest,
+            jaar: knop.dataset.jaar, label: knop.dataset.label, formaat: knop.dataset.formaat,
+            hoes: knop.dataset.hoes, gewenst: true, prijs,
+          });
+          if (uitkomst.alInVerzameling) meld(`${uitkomst.plaat.titel} staat al in je verzameling.`);
+          else meld(uitkomst.bestondAl ? `${uitkomst.plaat.titel} stond al op je verlanglijst; de prijs is bijgewerkt.` : `${uitkomst.plaat.titel} is aan je verlanglijst toegevoegd.`);
+          staat.gewenst = true;
+          await laad();
+        } catch (fout) { meld(fout.message, true); }
       });
       const barcode = $('#plaatBarcode');
       if (barcode) {
@@ -349,6 +435,15 @@
       const grid = $('#plaatGrid');
       if (grid) {
         grid.addEventListener('change', async (gebeurtenis) => {
+          const prijsveld = gebeurtenis.target.closest('[data-prijs]');
+          if (prijsveld) {
+            try {
+              await stuurJson(`/api/platen/${prijsveld.dataset.prijs}`, 'PATCH', {prijs: prijsveld.value});
+              meld(prijsveld.value === '' ? 'Richtprijs gewist.' : 'Richtprijs opgeslagen.');
+              await laad();
+            } catch (fout) { meld(fout.message, true); }
+            return;
+          }
           const keuze = gebeurtenis.target.closest('[data-verplaats]');
           if (!keuze) return;
           let locatie = keuze.value;

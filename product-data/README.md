@@ -6,7 +6,7 @@ Deze map bevat twee tabellen waarmee VoorraadThuis huismerken herkent:
 | --- | --- |
 | `nl-huismerken.json` | Per barcode: naam, merk, hoeveelheid, categorie en de winkel waar het huismerk bij hoort. |
 | `winkelprefixen.json` | Welke barcode-reeksen (GS1-prefixen) bij welke supermarkt horen. |
-| `lp-barcodes.json` | 101.980 unieke barcodes van vinyluitgaven uit MusicBrainz, met titel, artiest, jaar, label, formaat en release-ID. De app herkent deze lokaal en zonder internet. |
+| `lp-barcodes.json` | 101.981 vinylbarcodes: 101.980 uitgaven uit MusicBrainz en één expliciete correctie, met titel, artiest, jaar, label, formaat en release-ID waar beschikbaar. De app herkent ze lokaal en zonder internet. |
 
 De tabel bevat **45.623 producten van veertig ketens** en **289 barcode-reeksen**. Naar land:
 **Duitsland 20.521, Nederland 17.347, België 7.755**. De grootste ketens: Lidl 10.259,
@@ -33,7 +33,7 @@ Is een huismerk nog onbekend, dan wijst de app aan de barcode-reeks de winkel aa
 
 ## Opnieuw opbouwen
 
-De lp-barcodelijst is gebaseerd op [MusicBrainz](https://musicbrainz.org/) (CC0 1.0; releasegegevens) en wordt door `scripts/fetch-platen.py` opgebouwd. Naamsvermelding: *MusicBrainz contributors*, https://musicbrainz.org/. De hoesafbeeldingen worden niet in deze tabel opgeslagen; de app haalt hoezen eenmalig bij Cover Art Archive op en bewaart ze lokaal.
+De lp-barcodelijst is gebaseerd op [MusicBrainz](https://musicbrainz.org/) (CC0 1.0; releasegegevens) en wordt door `scripts/fetch-platen.py` opgebouwd. Naamsvermelding: *MusicBrainz contributors*, https://musicbrainz.org/. De barcode `8717662593284` is door MusicBrainz foutief gekoppeld aan White Zombie; de gecorrigeerde vermelding *BBC Sessions 1970* — Elton John (2024, The Vinyl Champ) is gecontroleerd aan de hand van [Coda Records](https://codarecords.co.uk/products/elton-john-bbc-sessions-1970-limited-edition-clear-vinyl) en [Discogs](https://www.discogs.com/release/28592884-Elton-John-BBC-Sessions-1970). Het oogstscript past deze handmatige correctie bij elke nieuwe export opnieuw toe; die ene regel wordt niet als MusicBrainz-data of CC0 geattribueerd. De hoesafbeeldingen worden niet in deze tabel opgeslagen; de app haalt hoezen eenmalig bij Cover Art Archive op en bewaart ze lokaal.
 
 ```bash
 python3 scripts/fetch-platen.py --doorschrijven --met-zeven
