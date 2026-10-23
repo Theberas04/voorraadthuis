@@ -305,6 +305,26 @@ test('een barcode uit de eigen lp-lijst wordt zonder internet herkend', async ()
   assert.equal(mbVerzoeken, voor, 'de databank wordt niet lastiggevallen als de eigen lijst het weet');
 });
 
+test('een UPC zonder laatste controlecijfer wordt herkend via het volledige LP-barcode', async () => {
+  const ingekort = '63490403131';
+  const volledig = '634904031312';
+  schrijfTabel({[volledig]: {t: '19', a: 'Adele', j: '2008', l: 'XL Recordings', f: '12" Vinyl · 12 nummers', m: 'adele-19-mbid', g: 'adele-19-groep'}});
+  const voor = mbVerzoeken;
+  db.prepare(`INSERT INTO plaat_cache(barcode,titel,artiest,jaar,label,formaat,genre,hoes,mbid,gevonden,fetched_at)
+    VALUES(?,?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP)`).run(ingekort, '', '', '', '', '', '', '', '', 0);
+  const uitkomst = await api(`/api/platen/zoek/${ingekort}`);
+  assert.equal(uitkomst.body.gevonden, true);
+  assert.equal(uitkomst.body.titel, '19');
+  assert.equal(uitkomst.body.artiest, 'Adele');
+  assert.equal(uitkomst.body.barcode, volledig);
+  assert.equal(uitkomst.body.uitEigenLijst, true);
+  assert.equal(mbVerzoeken, voor, 'de ontbrekende checkdigit wordt lokaal aangevuld');
+  schrijfTabel({
+    [CODE_IN_LIJST]: {t: 'Rumours', a: 'Fleetwood Mac', j: '1977', l: 'Warner Bros.', f: '12" Vinyl', m: 'mbid-lokaal-1', g: 'rg-lokaal-1'},
+    [CODE_SCHONE_TWEEDE]: {t: 'Tango in the Night', a: 'Fleetwood Mac', j: '1987', m: 'mbid-lokaal-2'},
+  });
+});
+
 test('een gecorrigeerde lokale barcode vervangt ook een foutief MusicBrainz-cacheantwoord', async () => {
   schrijfTabel({});
   const fout = await api(`/api/platen/zoek/${EAN_FOUTIEF}`);

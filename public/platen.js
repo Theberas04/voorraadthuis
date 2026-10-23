@@ -68,6 +68,10 @@
         return;
       }
       vulIn(uitkomst);
+      if (uitkomst.barcode && uitkomst.barcode !== schoon && veld('#plaatBarcode')) {
+        veld('#plaatBarcode').value = uitkomst.barcode;
+        staat.laatste = uitkomst.barcode;
+      }
       const bron = [uitkomst.bron, uitkomst.licentie].filter(Boolean).map(esc).join(' · ');
       const bronLink = uitkomst.bronUrl ? `<a href="${esc(uitkomst.bronUrl)}" target="_blank" rel="noopener noreferrer">Bron</a>` : '';
       const bewaard = uitkomst.cached ? ' · eerder opgezocht' : '';
