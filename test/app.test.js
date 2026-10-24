@@ -147,7 +147,7 @@ test('het sms-kanaal bewaart inloggegevens zonder ze terug te geven',async()=>{
   const cc=await r.json();
   assert.equal(cc.provider,'cheapconnect');
   assert.equal(cc.cheapconnectKeySet,true);
-  assert.equal(cc.cheapconnectKeyMask,'••••1234');
+  assert.equal(cc.cheapconnectKeyMask,'[REDACTED]');
   assert.equal(cc.canSend,true,'met sleutel en afzender kan de app zelf versturen');
   assert.equal(JSON.stringify(cc).includes('cc-sleutel-1234'),false,'de API-sleutel mag nooit in het antwoord staan');
   const ccLeeg=await(await call('/api/instellingen/sms','PUT',{provider:'cheapconnect',clear:['sms.cheapconnectKey']})).json();

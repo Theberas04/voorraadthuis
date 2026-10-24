@@ -129,10 +129,6 @@ Open de app via `https://<LXC-IP>/`, accepteer eenmalig de waarschuwing van het 
 | --- | --- |
 | Het receptenboek met 9.807 recepten, filters en bronvermelding per recept. | Dezelfde tab op de telefoon; recepten komen per land binnen. |
 
-| ![Werkagenda op desktop](docs/img/werkagenda-desktop.png) | ![Werkagenda op de telefoon](docs/img/werkagenda-mobiel.png) |
-| --- | --- |
-| De werkagenda: per dag alle diensten met hun tijden, plus het totaal van de maand. | Op de telefoon staan de tijden per dienst onder elkaar, zodat ze ook in een smalle dagcel leesbaar blijven. |
-
 ### Kalender en werkrooster
 
 - Maandkalender om per dag een recept en landkeuken te plannen.
@@ -142,10 +138,6 @@ Open de app via `https://<LXC-IP>/`, accepteer eenmalig de waarschuwing van het 
 - In de dagcellen staan **alle** diensten met hun tijden (tot drie; daarna `+N`), en de tooltip toont de namen en notities.
 - Tijden zonder dubbele punt worden goed gezet: `830` wordt `08:30`, `8` wordt `08:00`. Echt onmogelijke tijden zoals `24:00` blijven een foutmelding.
 - Sla diensten op als herbruikbare sjablonen en zet ze met één druk op een gekozen dag. Dagplanning, diensten en sjablonen blijven bewaard in SQLite.
-
-| ![Werkrooster op desktop](docs/img/werkrooster-desktop.png) | ![Werkrooster op de telefoon](docs/img/werkrooster-mobiel.png) |
-| --- | --- |
-| Diensten per dag met 24-uursklok en de sjablonen eronder. | Dezelfde kalender op de telefoon. |
 
 ### Kleding (Kledingkast)
 
@@ -330,7 +322,7 @@ npm start    # http://localhost:3000
 
 ## Herkomst en licentie
 
-De app is geschreven voor Tom Werdens. De receptendata uit UniTools World Recipes en Wikibooks Cookbook vallen onder [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/); per recept staat de bron- en licentielink in de kaart (zie [`recipe-data/README.md`](recipe-data/README.md)).
+De app is geschreven als persoonlijke thuisapp. De receptendata uit UniTools World Recipes en Wikibooks Cookbook vallen onder [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/); per recept staat de bron- en licentielink in de kaart (zie [`recipe-data/README.md`](recipe-data/README.md)).
 
 De productgegevens voor de barcodeherkenning komen van [Open Food Facts](https://world.openfoodfacts.org/) (en de zusterdatabanken Open Products Facts, Open Beauty Facts en Open Pet Food Facts), beschikbaar onder de [ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/). De huismerktabel in `product-data/` (45.623 producten) is een selectie daaruit; zie [`product-data/README.md`](product-data/README.md).
 
@@ -338,7 +330,7 @@ Het garderobe-onderdeel begon als een zelfstandige app (Kledingkast, MIT) en is 
 
 ## Profielen en SMS
 
-In de tab **Profielen** zet je de huisgenoten neer met hun gegevens: naam, telefoonnummer, e-mail, rol en een notitie. Telefoonnummers worden in internationale notatie opgeslagen, dus `06 12345678` en `+31 6 12345678` komen op hetzelfde nummer uit. Eén profiel kan de standaardontvanger zijn; dat nummer staat dan vooraan in de keuzelijst op de boodschappenlijst (andere profielen met een nummer blijven kiesbaar).
+In de tab **Profielen** zet je huisgenoten neer met hun gegevens: naam, telefoonnummer, e-mail, rol en een notitie. Telefoonnummers worden in internationale notatie opgeslagen; invoer met of zonder landcode wordt genormaliseerd. Eén profiel kan de standaardontvanger zijn; dat profiel staat dan vooraan in de keuzelijst op de boodschappenlijst (andere profielen met een nummer blijven kiesbaar).
 
 De knop **Verstuur via SMS** op de boodschappenlijst stuurt de hele lijst naar het nummer van het gekozen profiel. Er zijn vier kanalen:
 
@@ -347,31 +339,15 @@ De knop **Verstuur via SMS** op de boodschappenlijst stuurt de hele lijst naar h
 - **CheapConnect** — de server verstuurt de sms zelf via de SMS-API van CheapConnect (Nederlandse aanbieder, ongeveer € 0,07 per sms). Zie hieronder.
 - **Twilio** — vul je Account SID, Auth Token en Twilio-afzendernummer in; de app verstuurt de sms zelf.
 
-Inloggegevens vul je zelf in de app in. Ze worden lokaal in de database bewaard, nooit aan de pagina teruggegeven (je ziet alleen of ze gevuld zijn en de laatste vier tekens) en nooit naar de logboeken geschreven. Met **Wachtwoorden wissen** haal je ze weer weg. Via **Stuur proefbericht** test je het kanaal; de laatste twintig berichten staan in het lokale logboek onderaan de tab.
+Inloggegevens vul je zelf in de app in. Ze worden lokaal in de database bewaard; na opslaan toont de pagina alleen `[REDACTED]`, nooit een deel van de echte waarde. Geheimen worden niet naar de logboeken geschreven. Met **Wachtwoorden wissen** haal je ze weer weg. Via **Stuur proefbericht** test je het kanaal; de laatste twintig berichten staan in het lokale logboek onderaan de tab.
 
 ### CheapConnect instellen
 
 1. Maak in het klantenpaneel ([account.cheapconnect.net](https://account.cheapconnect.net/)) onder **API** een API-sleutel aan.
-2. Kies bij **Sms-kanaal** voor *CheapConnect*, vul de sleutel in en vul een **afzender** in: je eigen nummer (bijvoorbeeld `06 12345678`) of maximaal 11 letters (bijvoorbeeld `VoorraadTh`).
+2. Kies bij **Sms-kanaal** voor *CheapConnect*, vul de sleutel in en vul een **afzender** in: je eigen nummer of maximaal 11 letters (bijvoorbeeld `VoorraadTh`).
 3. Klik op **Kanaal opslaan** en daarna op **Stuur proefbericht**.
 
-De app roept `https://account.cheapconnect.net/API/v1/sms/SendSMS` aan met `apikey`, `from`, `to` en `msg`; nummers gaan zonder plusteken (`31612345678`). Een weigering van CheapConnect (bijvoorbeeld `2021: No access to this client`) wordt als Nederlandse foutmelding getoond en in het logboek gezet, met de API-sleutel eruit gefilterd.
-
-| ![CheapConnect als sms-kanaal op desktop](docs/img/sms-cheapconnect-desktop.png) | ![CheapConnect als sms-kanaal op de telefoon](docs/img/sms-cheapconnect-mobiel.jpg) |
-| --- | --- |
-| Het kanaal CheapConnect met API-sleutel (alleen de laatste vier tekens zichtbaar) en afzender. | Dezelfde instellingen op de telefoon. |
-
-![CheapConnect kiezen als sms-kanaal](docs/img/sms-cheapconnect-kiezen.png)
-
-*Het kanaal kiezen in de lijst: CheapConnect staat naast de berichten-app, een webhook en Twilio.*
-
-| ![Profielen op desktop](docs/img/profielen-desktop.png) | ![Profielen op de telefoon](docs/img/profielen-mobiel.jpg) |
-| --- | --- |
-| Profielen met telefoonnummer, standaardontvanger en het sms-kanaal. | Dezelfde tab op de telefoon; hier opent de knop je berichten-app. |
-
-| ![Boodschappen met ontvangerkeuze op desktop](docs/img/boodschappen-sms-desktop.png) | ![Boodschappen met ontvangerkeuze op de telefoon](docs/img/boodschappen-sms-mobiel.jpg) |
-| --- | --- |
-| De boodschappenlijst met de ontvangerkeuze naast de sms-knop. | Op de telefoon opent de knop de berichten-app met nummer en lijst ingevuld. |
+De app roept `https://account.cheapconnect.net/API/v1/sms/SendSMS` aan met `apikey`, `from`, `to` en `msg`; telefoonnummers gaan zonder plusteken. Een weigering van CheapConnect (bijvoorbeeld `2021: No access to this client`) wordt als Nederlandse foutmelding getoond en in het logboek gezet, met de API-sleutel eruit gefilterd. Voorbeeldbeelden laten geen profielgegevens, telefoonnummers of bewaarde inloggegevens zien.
 
 
 Zonder eigen kanaal werkt de knop dus altijd, maar op een desktopcomputer gebeurt er niets: daar is geen berichten-app om te openen. Wil je vanaf elke machine echt versturen, kies dan een gateway of Twilio.

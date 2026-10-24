@@ -80,7 +80,7 @@ test('het sms-kanaal wordt bewaard zonder geheimen terug te geven',()=>{
   assert.equal(bewaard.provider,'twilio');
   assert.equal(bewaard.twilioSidSet,true);
   assert.equal(bewaard.twilioTokenSet,true);
-  assert.equal(bewaard.twilioSidMask,'••••abcd');
+  assert.equal(bewaard.twilioSidMask,'[REDACTED]');
   assert.equal(Object.hasOwn(bewaard,'twilioToken'),false,'het token mag niet in het antwoord staan');
   assert.equal(JSON.stringify(bewaard).includes('geheim-token-1234'),false);
   assert.equal(bewaard.canSend,true);
@@ -210,7 +210,7 @@ test('CheapConnect vraagt eerst om sleutel en afzender',async()=>{
   assert.equal(metSleutel.canSend,false);
   assert.equal(metSleutel.providerHint,'Vul eerst een afzender in: je eigen nummer of maximaal 11 letters.');
   assert.equal(metSleutel.cheapconnectKeySet,true);
-  assert.equal(metSleutel.cheapconnectKeyMask,'••••1234');
+  assert.equal(metSleutel.cheapconnectKeyMask,'[REDACTED]');
   assert.equal(JSON.stringify(metSleutel).includes('cc-sleutel-1234'),false,'de sleutel mag niet terugkomen');
   // Een afzender in tekst mag maximaal 11 tekens hebben.
   assert.throws(()=>profiles.saveSmsSettings({provider:'cheapconnect',from:'Boodschappenlijst van Tom'}),/maximaal 11 tekens/);
