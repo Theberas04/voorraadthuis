@@ -1,6 +1,6 @@
 # VoorraadThuis op Proxmox
 
-VoorraadThuis is één app: voorraad, recepten, boodschappen, kalender én de garderobe (Kledingkast). Dit pakket installeert die app als een **unprivileged Debian LXC**, vergelijkbaar met BeatSync Studio. De app draait als systemd-service en **serveert de pagina zelf op poort 80**; Docker en nginx zijn niet nodig. Standaard wordt DHCP gebruikt, met optioneel een vast IP.
+VoorraadThuis is één app: voorraad, recepten, boodschappen, kalender én de garderobe (Kledingkast). Dit pakket installeert die app als een **unprivileged Debian LXC**, vergelijkbaar met BeatSync Studio. De app draait als systemd-service en **serveert HTTP op poort 80 en HTTPS op poort 443**; Docker en nginx zijn niet nodig. Standaard wordt DHCP gebruikt, met optioneel een vast IP.
 
 ## Installeren vanaf GitHub met één commando
 
@@ -58,11 +58,11 @@ CTID=120 STATIC_IP=192.168.1.50/24 GATEWAY=192.168.1.1 \
   bash <(curl -fsSL https://raw.githubusercontent.com/Theberas04/voorraadthuis/main/deploy/proxmox/install.sh)
 ```
 
-`TEMPLATE_STORAGE` staat standaard op `local`; gebruik `ROOTFS_STORAGE=local` als je Proxmox geen `local-lvm` heeft. Overige variabelen: `CT_HOSTNAME`, `DNS_SERVER`, `CORES`, `MEMORY`, `SWAP`, `DISK`, `DEBIAN_MAJOR` (standaard 12), `TARGET_DIR`, `BRANCH`.
+`TEMPLATE_STORAGE` staat standaard op `local`; gebruik `ROOTFS_STORAGE=local` als je Proxmox geen `local-lvm` heeft. Overige variabelen: `CT_HOSTNAME`, `DNS_SERVER`, `CORES`, `MEMORY`, `SWAP`, `DISK`, `DEBIAN_MAJOR` (standaard 13), `TARGET_DIR`, `BRANCH`.
 
 ## Toegang
 
-Na installatie toont het script de URL: `http://<LXC-IP>/`. De app luistert zelf op poort 80 (systemd geeft de dienst alleen `CAP_NET_BIND_SERVICE`, de app draait niet als root). Er is geen nginx en geen certificaat meer. Camera-scannen voor barcodes werkt op een gewone `http://`-pagina niet in elke browser; typ de code dan handmatig, of gebruik een browser die camera's op een LAN-adres toestaat.
+Na installatie toont het script de URL: `http://<LXC-IP>/`. De app luistert zelf op **HTTP/80 en HTTPS/443** (de app draait niet als root) en er is geen nginx of omgekeerde proxy nodig. De installatie maakt een zelfondertekend certificaat aan in `/etc/voorraadthuis/tls/`; open `https://<LXC-IP>/` voor camera- en PWA-toegang en accepteer de eenmalige certificaatwaarschuwing, of installeer het certificaat via `http://<LXC-IP>/certificaat.crt`. Zonder HTTPS blijft handmatige barcode-invoer beschikbaar.
 
 ## Bijwerken
 

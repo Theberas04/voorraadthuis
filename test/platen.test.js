@@ -7,10 +7,33 @@ const fs = require('node:fs');
 const http = require('node:http');
 const os = require('node:os');
 const path = require('node:path');
+const { DatabaseSync } = require('node:sqlite');
 
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'voorraadthuis-platen-'));
 process.env.DB_PATH = path.join(dir, 'test.db');
 process.env.MEDIA_DIR = path.join(dir, 'fotos');
+const discogsPath = path.join(dir, 'discogs-test.sqlite');
+const fixtureDiscogs = new DatabaseSync(discogsPath);
+fixtureDiscogs.exec(`CREATE TABLE records (
+  barcode TEXT NOT NULL, release_id TEXT NOT NULL, title TEXT NOT NULL, artist TEXT NOT NULL,
+  year TEXT NOT NULL, label TEXT NOT NULL, format TEXT NOT NULL, genre TEXT NOT NULL, style TEXT NOT NULL,
+  PRIMARY KEY (barcode, release_id)
+) WITHOUT ROWID`);
+fixtureDiscogs.prepare('INSERT INTO records VALUES(?,?,?,?,?,?,?,?,?)').run(
+  '7961220922684', '21', 'Neural Response EP', 'E.B.E. (2)', '2000', 'Force Inc.',
+  'Vinyl / 12" / EP', 'Electronic', 'Deep House');
+fixtureDiscogs.prepare('INSERT INTO records VALUES(?,?,?,?,?,?,?,?,?)').run(
+  '7961220922684', '22', 'Neural Response EP (Reissue)', 'E.B.E. (2)', '2001', 'Force Inc.',
+  'Vinyl / 12" / EP', 'Electronic', 'Deep House');
+fixtureDiscogs.prepare('INSERT INTO records VALUES(?,?,?,?,?,?,?,?,?)').run(
+  '9990000000017', '99', 'Discogs Fleetwood Test', 'Other Artist', '1977', 'Test Label',
+  'Vinyl / LP', 'Rock', '');
+fixtureDiscogs.exec(`CREATE VIRTUAL TABLE records_fts USING fts5(
+  title, artist, barcode UNINDEXED, release_id UNINDEXED, tokenize='trigram'
+); INSERT INTO records_fts(title,artist,barcode,release_id)
+  SELECT title,artist,barcode,release_id FROM records;`);
+fixtureDiscogs.close();
+process.env.PLATEN_DISCOGS_DB = discogsPath;
 
 const EAN = '602547077743';       // bekend bij de nagemaakte databank
 const EAN_LEEG = '602547077750';  // onbekend
@@ -92,6 +115,21 @@ test('dezelfde barcode wordt niet opnieuw opgezocht', async () => {
   assert.equal(uitkomst.body.cached, true);
   assert.equal(mbVerzoeken, voor, 'de tweede keer komt de plaat uit de eigen bewaarde gegevens');
   assert.equal(uitkomst.body.hoes, 'http://hoes.test/voor-500.jpg');
+});
+
+test('een Discogs-barcode wordt lokaal herkend zonder hem aan mijn verzameling toe te voegen', async () => {
+  const voor = mbVerzoeken;
+  const aantalVoor = (await api('/api/platen')).body.totaal;
+  const uitkomst = await api('/api/platen/zoek/7961220922684');
+  assert.equal(uitkomst.body.gevonden, true);
+  assert.equal(uitkomst.body.titel, 'Neural Response EP');
+  assert.equal(uitkomst.body.artiest, 'E.B.E. (2)');
+  assert.equal(uitkomst.body.bron, 'Discogs');
+  assert.equal(uitkomst.body.licentie, 'CC0 1.0');
+  assert.equal(uitkomst.body.bronUrl, 'https://www.discogs.com/release/21');
+  assert.equal(uitkomst.body.hoes, '', 'Discogs-afbeeldingen worden niet herpubliceerd');
+  assert.equal(mbVerzoeken, voor, 'de meegeleverde catalogus geeft direct antwoord');
+  assert.equal((await api('/api/platen')).body.totaal, aantalVoor, 'catalogusgegevens vullen de persoonlijke verzameling niet');
 });
 
 test('een onbekende barcode zegt het eerlijk', async () => {
@@ -426,6 +464,19 @@ test('zoeken in de lp-catalogus levert lokale vinyluitgaven op naam op', async (
   });
 });
 
+test('Discogs-uitgaven zijn doorzoekbaar en barcodevarianten blijven afzonderlijk beschikbaar', async () => {
+  const uitkomst = await api('/api/platen/catalogus?q=Neural');
+  assert.equal(uitkomst.status, 200);
+  assert.deepEqual(new Set(uitkomst.body.resultaten.map(r => r.titel)),
+    new Set(['Neural Response EP', 'Neural Response EP (Reissue)']));
+  assert.ok(uitkomst.body.resultaten.every(r => r.barcode === '7961220922684' && r.bron === 'Discogs'));
+  assert.deepEqual(new Set(uitkomst.body.resultaten.map(r => r.bronUrl)), new Set([
+    'https://www.discogs.com/release/21', 'https://www.discogs.com/release/22',
+  ]));
+  const opArtiest = await api('/api/platen/catalogus?q=Other%20Artist');
+  assert.ok(opArtiest.body.resultaten.some(r => r.titel === 'Discogs Fleetwood Test' && r.artiest === 'Other Artist'));
+});
+
 test('vanuit catalogus toevoegen met richtprijs werkt en gemiddelde wordt berekend', async () => {
   const code = '8719000000011';
   const antwoord = await stuur('/api/platen', 'POST', {barcode: code, titel: 'LP A', artiest: 'Artiest A', gewenst: true, prijs: 24.50});
@@ -488,6 +539,7 @@ test('de pagina maakt onderscheid tussen mijn verzameling en mijn verlanglijst',
   assert.ok(pagina.includes('platenVerlanglijstTabs'));
   assert.ok(pagina.includes('Aan verlanglijst toevoegen'));
   assert.ok(script.includes('Heb ik nu'));
+  assert.match(script, /Bron: \$\{plaat\.bron\}/);
 });
 
 test('een plaat die al in bezit is wordt niet ook op de verlanglijst gezet', async () => {
@@ -499,8 +551,14 @@ test('een plaat die al in bezit is wordt niet ook op de verlanglijst gezet', asy
 });
 
  test('de app vertelt hoeveel lp-barcodes er in de eigen lijst staan', async () => {
-  const uitkomst = await api('/api/platen/lijst');
+   schrijfTabel({
+     [CODE_IN_LIJST]: {t: 'Rumours', a: 'Fleetwood Mac', j: '1977', m: 'mbid-lokaal-1'},
+     [CODE_SCHONE_TWEEDE]: {t: 'Tango in the Night', a: 'Fleetwood Mac', j: '1987', m: 'mbid-lokaal-2'},
+   });
+   const uitkomst = await api('/api/platen/lijst');
   assert.equal(uitkomst.status, 200);
   assert.equal(uitkomst.body.aantal, 2);
+  assert.equal(uitkomst.body.discogsAantal, 2);
+  assert.equal(uitkomst.body.totaalUniekeBarcodes, 3);
   assert.equal(uitkomst.body.bestand, tabelPad);
 });

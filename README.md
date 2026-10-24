@@ -1,22 +1,28 @@
 # VoorraadThuis
 
-![Hero: VoorraadThuis op de telefoon](docs/img/hero.png)
+<p align="center"><strong>Alles voor thuis, in één overzichtelijke app.</strong><br>
+Voorraad · boodschappen · 9.807 Nederlandstalige recepten · planning · garderobe · platen</p>
 
-[![Node.js](https://img.shields.io/badge/Node.js-22.5%2B-5fa04e?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
-[![Tests](https://img.shields.io/badge/tests-node%3Atest-1f6848)](test/app.test.js)
-[![Recepten](https://img.shields.io/badge/recepten-9.807-1f6848)](recipe-data/README.md)
-[![Taal](https://img.shields.io/badge/taal-Nederlands-1f6848)](recipe-data/README.md)
-[![Receptenbron](https://img.shields.io/badge/receptenbron-CC%20BY--SA%204.0-ef9421)](https://creativecommons.org/licenses/by-sa/4.0/)
-[![Kledingkast](https://img.shields.io/badge/kledingkast-garderobe-2a6f7f)](wardrobe.js) [![Platen](https://img.shields.io/badge/platen-lp--verzameling-5b4636)](platen.js)
-[![Barcodeherkenning](https://img.shields.io/badge/barcode-herkenning-2a6f7f)](barcodes.js)
-[![PWA](https://img.shields.io/badge/PWA-installeerbaar-1f6848)](public/manifest.webmanifest)
-[![Proxmox](https://img.shields.io/badge/Proxmox-LXC-e57000?logo=proxmox&logoColor=white)](deploy/proxmox/README.md)
+<p align="center">
+  <a href="https://nodejs.org/"><img alt="Node.js 22.5+" src="https://img.shields.io/badge/Node.js-22.5%2B-5fa04e?logo=nodedotjs&logoColor=white"></a>
+  <a href="test/app.test.js"><img alt="Tests" src="https://img.shields.io/badge/tests-node%3Atest-1f6848"></a>
+  <a href="recipe-data/README.md"><img alt="9.807 Nederlandse recepten" src="https://img.shields.io/badge/recepten-9.807-1f6848"></a>
+  <a href="recipe-data/README.md"><img alt="Nederlandstalig" src="https://img.shields.io/badge/taal-Nederlands-1f6848"></a>
+  <a href="https://creativecommons.org/licenses/by-sa/4.0/"><img alt="Recepten CC BY-SA 4.0" src="https://img.shields.io/badge/receptenbron-CC%20BY--SA%204.0-ef9421"></a>
+  <a href="wardrobe.js"><img alt="Garderobe" src="https://img.shields.io/badge/kledingkast-garderobe-2a6f7f"></a>
+  <a href="platen.js"><img alt="Lp-verzameling" src="https://img.shields.io/badge/platen-lp--verzameling-5b4636"></a>
+  <a href="barcodes.js"><img alt="Barcodeherkenning" src="https://img.shields.io/badge/barcode-herkenning-2a6f7f"></a>
+  <a href="public/manifest.webmanifest"><img alt="Installeerbare PWA" src="https://img.shields.io/badge/PWA-installeerbaar-1f6848"></a>
+  <a href="deploy/proxmox/README.md"><img alt="Proxmox LXC" src="https://img.shields.io/badge/Proxmox-LXC-e57000?logo=proxmox&logoColor=white"></a>
+</p>
 
-Eén Nederlandstalige app voor thuis: voorraad, 9.807 recepten in het Nederlands, boodschappenlijst, maaltijd- en werkplanning én je garderobe met combineeradvies. Alles draait rechtstreeks als service in een Proxmox LXC, met de gegevens in SQLite op persistente opslag. De webpagina is gebouwd voor de telefoon en werkt ook als installeerbare app. Een gescande barcode wordt meteen herkend via Open Food Facts.
+<p align="center"><img src="docs/img/hero.png" alt="VoorraadThuis: voorraad, recepten, planning, kleding en platen op desktop en mobiel" width="100%"></p>
+<p align="center"><a href="docs/img/voorraadthuis-rondleiding.mp4"><img src="docs/img/rondleiding-poster.jpg" alt="Klik om de stille rondleiding door VoorraadThuis te bekijken" width="100%"></a></p>
+<p align="center"><sub>Klik op de poster voor de stille rondleiding (21 sec, 1280×720, zonder audio). Screenshots en video gebruiken een geïsoleerde demodatabase.</sub></p>
 
-[![Rondleiding door VoorraadThuis: klik om de video te openen](docs/img/rondleiding-poster.jpg)](docs/img/voorraadthuis-rondleiding.mp4)
+VoorraadThuis is een Nederlandstalige thuisapp met zes onderdelen: voorraad, boodschappen, recepten, kalender en werkrooster, kledingkast en lp-verzameling. Alles draait in één Proxmox-LXC als Node.js-service; je gegevens blijven lokaal in SQLite en er zijn geen Docker- of nginx-lagen nodig. De app werkt als mobiele webapp en barcode-scannen gebruikt de ingebouwde HTTPS-dienst.
 
-🎬 **[Rondleiding door de app (106 s, MP4, 1280×720, Nederlandse voice-over)](docs/img/voorraadthuis-rondleiding.mp4)** — voorraad, boodschappenlijst, receptenboek, kledingkasten, was, combineeradvies, kalender met werkrooster en de profielen met sms-kanaal in één doorloop, met uitleg per scherm.
+🎬 **[Stille rondleiding (21 sec · 1280×720 · zonder audio)](docs/img/voorraadthuis-rondleiding.mp4)** — voorraad, recepten, planning, garderobe, boodschappen en de lokale vinylcatalogus.
 
 ## Op de telefoon
 
@@ -28,7 +34,7 @@ Eén Nederlandstalige app voor thuis: voorraad, 9.807 recepten in het Nederlands
 | --- | --- | --- | --- |
 | ![Combineeradvies op de telefoon](docs/img/mobiel-kast-vandaag.jpg) | ![Was op de telefoon](docs/img/mobiel-kast-was.jpg) | ![Analyse op de telefoon](docs/img/mobiel-kast-analyse.jpg) | ![Boodschappenlijst op de telefoon](docs/img/mobiel-boodschappen.jpg) |
 
-- Vijf navigatieknoppen op één rij, ook op een scherm van 360 px breed (op smalle schermen heet de lijstknop **Lijst**).
+- Zes hoofdonderdelen in de navigatie, ook bruikbaar op smalle telefoonschermen.
 - Invoervelden op 16 px, zodat iOS niet inzoomt bij het typen; knoppen en velden zijn minimaal 44 px hoog.
 - Recepten komen in delen van 48 van de server, met **Nog … recepten laden**; zoeken en filteren gebeurt op de server en ingrediënten worden pas bij het openklappen opgehaald, zodat de pagina ook met 9.807 recepten vlot blijft.
 - Veilige marges voor toestellen met een inkeping (`viewport-fit=cover` en `env(safe-area-inset-bottom)`).
@@ -56,7 +62,7 @@ behalve de camera op de telefoon.
 
 ### Installeren als app (PWA)
 
-Open de app op je telefoon en kies **Toevoegen aan startscherm** (iOS/Safari) of **App installeren** (Android/Chrome). De app opent dan zonder adresbalk en houdt de laatst geladen pagina bij tot de server bereikbaar is. De app draait in je eigen netwerk op een gewoon `http`-adres. Een barcode intypen werkt daar meteen; de camera gebruiken (barcode scannen of een kledingfoto maken) blokkeren browsers op een onbeveiligde verbinding — daarvoor is `https` nodig, bijvoorbeeld via een omgekeerde proxy met een certificaat.
+Open de app via `https://<LXC-IP>/`, accepteer eenmalig de waarschuwing van het zelfondertekende certificaat en kies **Toevoegen aan startscherm** (iOS/Safari) of **App installeren** (Android/Chrome). De app opent dan zonder adresbalk en houdt de laatst geladen pagina bij tot de server bereikbaar is. Op `http://<LXC-IP>/` blijven de app en handmatige barcode-invoer werken, maar de camera is alleen beschikbaar via HTTPS. De LXC-app serveert HTTPS zelf op poort 443; er is geen omgekeerde proxy nodig.
 
 <details>
 <summary>Schermafbeeldingen op desktop</summary>
@@ -113,10 +119,10 @@ Open de app op je telefoon en kies **Toevoegen aan startscherm** (iOS/Safari) of
 
 ### Receptenboek
 
-- **9.807 recepten**: 115 Nederlandstalige, zelfgeschreven thuisvarianten uit 55 landen, aangevuld met **9.692 recepten uit zestien open bronnen** — het Wikibooks-kookboek in het Engels (3.393), Spaans (664), Duits (407), Nederlands (450), Frans (986), Italiaans (583), Catalaans (673), Portugees (237), Japans (276), Pools (863), Zweeds (313), Noors (79) en Fins (11), plus 500 recepten uit UniTools World Recipes, en **257 cocktails en borrelhapjes** uit het Wikibooks Cocktails-boek (Duits 141, Hongaars 23, Engels 20, Frans 17) en uit de borrelhapjes-categorieën (Hongaars 39, Engels 12, Portugees 3, Nederlands 1, Pools 1). Cocktails en borrelhapjes hebben een eigen filter, zodat je ze met één klik bij elkaar hebt. De 450 Nederlandse kookboekrecepten zijn al Nederlands en hebben dus geen vertaling nodig. De collectie is per land gegroepeerd waar de bron dat aangeeft; overige gerechten staan onder **Internationaal**. Je kunt filteren op land en zoeken op gerecht of ingrediënt; ingrediënten gaan rechtstreeks naar de boodschappenlijst.
-- Alle 9.241 buitenlandse geïmporteerde recepten zijn naar het Nederlands vertaald: naam, omschrijving, ingrediënten en bereidingsstappen. Hoeveelheden, eenheden, bereidingstijden en porties blijven exact zoals de bron ze geeft, en id, bron-URL en licentie blijven ongewijzigd — een recept in de app verwijst dus nog steeds naar zijn origineel. Zulke recepten dragen het label **Vertaald** en bij de bronvermelding staat uit welke taal ze komen (Engels, Spaans, Duits, Frans, Italiaans, Catalaans, Portugees, Japans, Pools, Zweeds, Noors, Fins of Hongaars). De 450 recepten uit het Nederlandse Wikibooks-kookboek zijn van zichzelf al Nederlands en houden dus geen vertaallabel. De app weigert te starten zolang één vertaling ontbreekt.
-- **Snel, ook met 9.807 recepten**: de lijst komt in stukjes van 48 van de server (gecomprimeerd), zoeken en filteren gebeurt op de server, en ingrediënten en bereiding worden pas opgehaald als je een recept openklapt. Zonder die aanpak stuurde elke paginaweergave bijna 20 MB aan receptgegevens naar de browser.
-- Alle 9.692 geïmporteerde recepten tonen per recept de bron en CC BY-SA 4.0-licentie. Het is een groeiende, niet-uitputtende selectie; de inhoud is niet afkomstig van Albert Heijn of Picnic. Zie [`recipe-data/README.md`](recipe-data/README.md) voor bronvermelding, licenties, de reproduceerbare import en de vertaalmethode.
+- **9.807 recepten**: 115 Nederlandstalige eigen thuisrecepten en **9.692 geïmporteerde recepten uit zestien open bronnen** met CC BY-SA 4.0. Daaronder vallen 257 cocktail- en borrelhapjesrecepten in de categorieën **Cocktails** en **Borrelhapjes**. Je kunt zoeken op gerecht of ingrediënt en filteren op land/categorie; ingrediënten gaan rechtstreeks naar de boodschappenlijst.
+- **9.241 geïmporteerde recepten zijn volledig naar het Nederlands vertaald**: naam, omschrijving, ingrediënten en bereidingsstappen. De 451 geïmporteerde recepten die al Nederlands waren (450 uit het Nederlandse Kookboek en één borrelhapje) behouden hun oorspronkelijke tekst. Hoeveelheden, eenheden, tijden, porties, bron-URL en licentie blijven exact zoals de bron ze geeft. De app weigert te starten als een vertaling ontbreekt.
+- **Snel, ook met 9.807 recepten**: de lijst komt in delen van 48 van de server (gecomprimeerd), zoeken en filteren gebeurt op de server, en ingrediënten en bereiding worden pas opgehaald als je een recept openklapt.
+- Alle 9.692 geïmporteerde recepten tonen hun bron en CC BY-SA 4.0-licentie. Dit is een groeiende, niet-uitputtende selectie; zie [`recipe-data/README.md`](recipe-data/README.md) voor bronvermelding, licenties, opdrachten om de data opnieuw op te bouwen en de vertaalvalidatie.
 - De 115 eigen thuisvarianten zijn geen volledige inventaris van alle gerechten uit de genoemde landen; traditionele bereidingswijzen kunnen per regio en huishouden verschillen.
 
 | ![Receptenboek op desktop](docs/img/receptenboek-desktop.png) | ![Receptenboek op de telefoon](docs/img/receptenboek-mobiel.jpg) |
@@ -182,24 +188,29 @@ Met een OpenAI-compatibele dienst (OpenAI, Ollama, LocalAI) kan de app een kledi
 
 ### Platen (lp-verzameling)
 
-Onder **Platen** houd je je lp's bij. Je scant de barcode van een plaat — of typt hem in — en de app zoekt de uitgave op in [MusicBrainz](https://musicbrainz.org/) (open data, CC0) en haalt de hoes bij het [Cover Art Archive](https://coverartarchive.org/). Titel, artiest, jaar, label, formaat en de hoes worden vast ingevuld.
+Onder **Platen** houd je je eigen lp-verzameling bij. De barcode-opzoeking controleert eerst de lokale MusicBrainz-lijst; daarna kan hij de aparte, alleen-lezen Discogs-catalogus raadplegen. MusicBrainz-hoezen worden bij het [Cover Art Archive](https://coverartarchive.org/) opgehaald en één keer lokaal bewaard. Discogs-hoesafbeeldingen worden niet gebruikt.
 
-- **Lokale barcodeherkenning voor ruim 100.000 vinyluitgaven.** Een eenmalige tabel uit MusicBrainz bevat 101.980 unieke barcodes. De scanherkenning zoekt daarin lokaal en direct, ook zonder internet; een hoes wordt bij het toevoegen nog bij Cover Art Archive opgehaald als die nog ontbreekt. Herkomst, CC0 1.0 en naamsvermelding staan bij [`product-data/`](product-data/README.md).
+- **Lokale vinylcatalogus.** De MusicBrainz-tabel bevat 101.982 barcoderegels. De Discogs-releaseasset bevat 1.023.483 geldige barcode/release-ID-koppelingen en **799.740 unieke geldige vinylbarcodes**, waaronder 708.077 codes die niet in de lokale MusicBrainz-lijst voorkomen. Placeholdercodes met alleen herhaalde cijfers zijn geweerd. Eén barcode kan bij meerdere persingen horen; de catalogus bewaart elke combinatie van barcode en release-ID.
+- **Collectie en catalogus blijven gescheiden.** Zoekresultaten vullen gegevens in, maar worden nooit automatisch in je persoonlijke verzameling gezet. Je kiest zelf of je een uitgave aan je collectie of verlanglijst toevoegt.
+- **Verlanglijst met richtprijzen.** Zoek in de lokale MusicBrainz- en Discogs-catalogus, voeg een gevonden uitgave expliciet toe en noteer optioneel een richtprijs. Het gemiddelde gebruikt alleen regels met een ingevulde prijs.
+- **Bronvermelding.** Discogs-resultaten tonen de bron en linken naar de releasepagina. De data is metadata-only; er staan geen Discogs-afbeeldingen of gebruikers-/marketplacegegevens in de asset. Zie [`product-data/README.md`](product-data/README.md) voor de dumpdatum, CC0-licentie, aantallen en controleprocedure.
 - **Overzicht met alles erop.** Elke plaat staat als kaart met de hoes, artiest, jaar, formaat, label, eventuele notitie en het aantal exemplaren. Zonder bekende hoes krijg je een nette kaart met de beginletter.
-- **Hoezen worden lokaal bewaard.** De afbeelding wordt één keer opgehaald en daarna uit de eigen opslag geserveerd, zodat je verzameling ook zonder internet compleet is en op de telefoon meteen laadt.
 - **Meerdere locaties, helemaal zelf te kiezen.** Je typt de plek zelf in (*Kast in de gang*, *Zolder*, *bij mama*) — er staat geen standaardplek in het veld en de app stelt alleen de plekken voor die je zelf al gebruikt. Dezelfde plek bij een tweede plaat verschijnt vanzelf als tab, en met het keuzemenu onder een plaat verhuist hij naar een bestaande of gloednieuwe plek. Boven de verzameling staan tabs met het aantal per plek.
-- **Filteren op genre, artiest, locatie en jaartal.** Boven de verzameling staan keuzelijsten met aantallen erbij: elk genre, elke artiest en elk decennium dat in je kast voorkomt — plus *jaartal onbekend* en *genre onbekend* om juist de platen zonder gegevens op te sporen. Daarnaast kun je met *van* en *tot* op een periode filteren. Alles werkt tegelijk en naast het zoekveld en de locatietabs; boven de lijst staat wat er gefilterd is ("Gefilterd op genre Rock, decennium 1980 — 1 van 9 platen") met één knop om alles weer los te laten.
+- **Filteren op genre, artiest, locatie en jaartal.** Boven de verzameling staan keuzelijsten met aantallen erbij: elk genre, elke artiest en elk decennium dat in je kast voorkomt — plus *jaartal onbekend* en *genre onbekend* om juist de platen zonder gegevens op te sporen. Daarnaast kun je met *van* en *tot* op een periode filteren. Alles werkt tegelijk en naast het zoekveld en de locatietabs; boven de lijst staat wat er gefilterd is met één knop om alles weer los te laten.
 - **Echte genres, geen uitgiftetype.** Het genre komt uit de uitgave-groep in MusicBrainz (rock, jazz, soul, electronic), niet uit het soort uitgave; is daar niets bekend, dan valt de app terug op *Album*, *Single* enzovoort.
 - **Zoeken en opruimen.** Zoek op titel, artiest, jaar of label, en haal een plaat met één knop uit de verzameling. Dezelfde plaat op dezelfde plek telt op in plaats van dubbel te verschijnen.
 - **Niemand hoeft dit te leren.** De app onthoudt wat je zelf invult; wat jij typt blijft leidend boven wat de databank zegt.
-
-Rondleiding in beeld: [**rondleiding-platen.mp4**](docs/video/rondleiding-platen.mp4) (89 seconden, met Nederlandse stem) — voorraad, recepten, de nieuwe platenpagina, het werkrooster met kleuren en de boodschappenlijst.
 
 | Platen op desktop | Platen op de telefoon |
 | --- | --- |
 | ![Platen op desktop](docs/img/platen-desktop.png) | ![Platen op de telefoon](docs/img/platen-mobiel.png) |
 | Filteren op genre en decennium | Filters op de telefoon |
 | ![Filters op de platenpagina](docs/img/platen-filters-actief.png) | ![Filters op de telefoon](docs/img/platen-filters-mobiel.png) |
+
+| Catalogus zoeken op desktop | Catalogus zoeken op de telefoon |
+| --- | --- |
+| ![Lokale vinylcatalogus op desktop](docs/img/platen-catalogus-desktop.jpg) | ![Lokale vinylcatalogus op mobiel](docs/img/platen-catalogus-mobiel.jpg) |
+| Voorbeeldzoekresultaat met bronvermelding; toevoegen aan je lijst blijft een aparte keuze. | Hetzelfde zoekresultaat in de mobiele weergave. |
 
 *Barcodeherkenning voor platen*: `GET /api/platen/zoek?code=<barcode>` (met `?force=1` om opnieuw te zoeken). De opzoeking wordt lokaal bewaard, dus de tweede keer is het antwoord direct en werkt het ook zonder internet.
 
@@ -211,14 +222,14 @@ VoorraadThuis installeer je op dezelfde manier als BeatSync: voer op de Proxmox-
 bash <(curl -fsSL https://raw.githubusercontent.com/Theberas04/voorraadthuis/main/deploy/proxmox/install.sh)
 ```
 
-Het script haalt de installerbestanden rechtstreeks van GitHub, maakt een Debian 13 LXC aan en start de app als systemd-service. **De app serveert de pagina zelf op poort 80** — er zit geen nginx en geen certificaat tussen, zodat er ook niets meer mis kan gaan met een verkeerde webroot. `FETCH_ONLY=1` haalt de bestanden op en controleert ze zonder een container te maken.
+Het script haalt de installerbestanden rechtstreeks van GitHub, maakt een Debian 13 LXC aan en start de app als systemd-service. De app serveert zelf **HTTP op poort 80 en HTTPS op poort 443** met een lokaal aangemaakt zelfondertekend certificaat; er is geen nginx of omgekeerde proxy nodig. `FETCH_ONLY=1` haalt de bestanden op en controleert ze zonder een container te maken.
 
 Standaard gebruikt de LXC `vmbr0` en DHCP. Vast IP kan bijvoorbeeld zo:
 ```bash
 CTID=120 STATIC_IP=192.168.1.50/24 GATEWAY=192.168.1.1 \
   bash <(curl -fsSL https://raw.githubusercontent.com/Theberas04/voorraadthuis/main/deploy/proxmox/install.sh)
 ```
-Na afloop opent de app op `http://<LXC-IP>/`. Bijwerken zonder je gegevens te wissen:
+Na afloop werkt `http://<LXC-IP>/`; gebruik `https://<LXC-IP>/` voor camera-toegang en accepteer de certificaatwaarschuwing één keer. Bijwerken zonder je gegevens te wissen:
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/Theberas04/voorraadthuis/main/deploy/proxmox/update-from-github.sh) 120
 ```
@@ -259,15 +270,16 @@ Meer Proxmox-instellingen, beheercommando's en back-upinstructies staan in [`dep
 | --- | --- |
 | `/var/lib/voorraadthuis/voorraad.db` | Voorraad, boodschappen, planning, werkdiensten, kleding, wasbeurten en draaghistorie (SQLite). |
 | `/var/lib/voorraadthuis/fotos/` | De geüploade kledingfoto's, één bestand per kledingstuk. |
+| `/var/lib/voorraadthuis/discogs-vinyl.sqlite` | Optionele, alleen-lezen Discogs-vinylcatalogus; staat los van je persoonlijke platenverzameling. |
 
-Neem beide mee in je back-up. Lokaal staan ze standaard in `data/`.
+Neem de appdatabase en gebruikersfoto's mee in je back-up. De Discogs-catalogus is optioneel en kan opnieuw uit de GitHub-release worden opgehaald. Lokaal staan de appdatabase en foto's standaard in `data/`; de catalogus staat, als die aanwezig is, in `product-data/discogs-vinyl.sqlite`.
 
 ## Lokaal ontwikkelen/testen
 
 Node.js 22.5+ is vereist (gebruikt de ingebouwde `node:sqlite`; er zijn geen npm-dependencies).
 
 ```sh
-npm test     # 94 tests: voorraad, boodschappen, recepten, vertaling, planning, garderobe, kledingkasten en barcodeherkenning
+npm test     # volledige suite voor app, recepten, catalogus, sms en deployment
 npm start    # http://localhost:3000
 ```
 
@@ -291,7 +303,7 @@ npm start    # http://localhost:3000
 | `scripts/merge-recipe-translations.py` | Controleert de vertaalblokken en bundelt ze tot `recipe-data/translations-nl.json`. |
 | `test/app.test.js`, `test/wardrobe.test.js` | Tests voor de app en voor de garderobe. |
 | `docs/img/` | Beeldmateriaal voor deze README en de deelkaart. |
-| `deploy/proxmox/` | Installer en updater voor de LXC (de app luistert zelf op poort 80). |
+| `deploy/proxmox/` | Installer en updater voor de LXC (de app serveert zelf HTTP/80 en HTTPS/443). |
 
 ## API in het kort
 

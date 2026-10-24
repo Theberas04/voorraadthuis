@@ -10,7 +10,7 @@ zonder dat bestaande vertalingen losraken.
 Gebruik:
     python3 scripts/merge-recipe-translations.py [--dir PAD] [--report] [--out BESTAND]
 
-Zonder --report wordt er alleen geschreven als alle 4.964 recepten vertaald zijn.
+Zonder --report wordt er alleen geschreven als alle 9.241 recepten vertaald zijn.
 Met --report wordt de voortgang gemeld en verandert er niets.
 """
 
@@ -20,7 +20,7 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-EXPECTED_RECORDS = 8985
+EXPECTED_RECORDS = 9241
 CHUNK_SIZE = 45
 
 
@@ -97,8 +97,8 @@ def collect(chunk_dir):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--dir", default=str(REPO.parent / ".hermes/cache/scratch/voorraadthuis-vertaling-2"),
-                        help="map met de blokken input-NN.json en output-NN.json")
+    parser.add_argument("--dir", default=str(REPO / "recipe-data/translation-batches"),
+                        help="map met de blokken input-NN.json en output-NN.json (niet opgenomen in de repository)")
     parser.add_argument("--report", action="store_true", help="alleen voortgang melden")
     parser.add_argument("--out", default=str(REPO / "recipe-data/translations-nl.json"), help="uitvoerbestand")
     args = parser.parse_args()
@@ -122,9 +122,9 @@ def main():
         json.dump({
             "note": ("Nederlandse vertaling van de geïmporteerde recepten (UniTools World Recipes en het "
                      "Wikibooks-kookboek in het Engels, Spaans, Duits, Frans, Italiaans, Catalaans, Portugees, "
-                     "Japans, Pools, Zweeds, Noors en Fins). Sleutels, hoeveelheden, eenheden, tijden, porties, "
+                     "Japans, Pools, Zweeds, Noors, Fins en Hongaars). Sleutels, hoeveelheden, eenheden, tijden, porties, "
                      "bron- en licentiegegevens blijven ongewijzigd; alleen de tekst is vertaald."),
-            "translatedFrom": "en/es/de/fr/it/ca/pt/ja/pl/sv/nb/fi",
+            "translatedFrom": "en/es/de/fr/it/ca/pt/ja/pl/sv/nb/fi/hu",
             "count": len(items),
             "items": items,
         }, handle, ensure_ascii=False, separators=(",", ":"))

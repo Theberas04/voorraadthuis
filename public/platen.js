@@ -209,7 +209,8 @@
       return;
     }
     vak.innerHTML = resultaten.map((plaat) => {
-      const meta = [plaat.artiest, plaat.jaar, plaat.formaat].filter(Boolean).map(esc).join(' · ');
+      const bron = plaat.bron ? `Bron: ${plaat.bron}` : '';
+      const meta = [plaat.artiest, plaat.jaar, plaat.formaat, bron].filter(Boolean).map(esc).join(' · ');
       return `<article class="wensZoekResultaat">
         <strong>${esc(plaat.titel)}</strong><div class="wensZoekMeta">${meta || 'Vinyluitgave'} · barcode ${esc(plaat.barcode)}</div>
         <div class="wensZoekActies"><label class="wensZoekPrijs">Richtprijs (€)<input data-catalog-prijs type="number" min="0" max="100000" step="0.01" placeholder="Optioneel"></label>
@@ -222,11 +223,11 @@
     const melding = $('#plaatWensZoekMelding');
     const vak = $('#plaatWensResultaten');
     if (!zoekterm || zoekterm.length < 2) {
-      if (melding) melding.textContent = 'Typ minimaal twee letters om in de lokale lp-lijst te zoeken.';
+      if (melding) melding.textContent = 'Typ minimaal twee letters om in de lokale vinylcatalogus te zoeken.';
       if (vak) vak.innerHTML = '';
       return;
     }
-    if (melding) { melding.classList.remove('fout'); melding.textContent = 'Zoeken in de lokale lp-barcodelijst…'; }
+    if (melding) { melding.classList.remove('fout'); melding.textContent = 'Zoeken in de lokale vinylcatalogus…'; }
     try {
       const gegevens = await api(`/api/platen/catalogus?q=${encodeURIComponent(zoekterm)}`);
       if (zoekterm !== waarde('#plaatWensZoek')) return;

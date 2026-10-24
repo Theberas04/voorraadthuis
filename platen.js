@@ -142,6 +142,37 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       waarde TEXT NOT NULL DEFAULT ''
     )`);
 
+  // De grote Discogs-catalogus is een aparte, alleen-lezen SQLite-database.
+  // De persoonlijke database en de MusicBrainz-lijst blijven leidend waar ze al een code hebben.
+  const discogsBestand = process.env.PLATEN_DISCOGS_DB || path.join(__dirname, 'product-data', 'discogs-vinyl.sqlite');
+  let discogsAttached = false;
+  if (process.env.PLATEN_DISCOGS_DB !== '0' && fs.existsSync(discogsBestand)) {
+    try {
+      db.prepare('ATTACH DATABASE ? AS discogs_data').run(`file:${path.resolve(discogsBestand)}?mode=ro`);
+      db.prepare('SELECT barcode FROM discogs_data.records LIMIT 0').all();
+      discogsAttached = true;
+    } catch (e) {
+      try { db.exec('DETACH DATABASE discogs_data'); } catch { /* niet gekoppeld */ }
+      console.warn('Discogs-catalogus niet beschikbaar:', e.message);
+    }
+  }
+  const discogsByBarcode = discogsAttached ? db.prepare(`SELECT barcode,release_id,title AS titel,artist AS artiest,year AS jaar,label,format AS formaat,genre,style
+      FROM discogs_data.records WHERE barcode=?
+      ORDER BY (title<>'') DESC,(artist<>'') DESC,(year<>'') DESC,(label<>'') DESC,CAST(release_id AS INTEGER),release_id
+      LIMIT 1`) : null;
+  const discogsByName = discogsAttached ? db.prepare(`SELECT barcode,release_id,title,artist,year,label,format,genre,style
+      FROM discogs_data.records WHERE instr(lower(title),?)>0 OR instr(lower(artist),?)>0
+      ORDER BY CASE WHEN instr(lower(title),?)>0 THEN 0 ELSE 1 END,artist COLLATE NOCASE,title COLLATE NOCASE,CAST(release_id AS INTEGER),release_id
+      LIMIT 30`) : null;
+  const discogsFtsAvailable = discogsAttached && !!db.prepare(`SELECT 1 FROM discogs_data.sqlite_master
+      WHERE type='table' AND name='records_fts'`).get();
+  const discogsByNameFts = discogsFtsAvailable ? db.prepare(`SELECT r.barcode,r.release_id,r.title,r.artist,r.year,r.label,r.format,r.genre,r.style
+      FROM discogs_data.records_fts AS f
+      JOIN discogs_data.records AS r ON r.barcode=f.barcode AND r.release_id=f.release_id
+      WHERE records_fts MATCH ?
+      ORDER BY CASE WHEN instr(lower(r.title),?)>0 THEN 0 ELSE 1 END,r.artist COLLATE NOCASE,r.title COLLATE NOCASE,CAST(r.release_id AS INTEGER),r.release_id
+      LIMIT 30`) : null;
+
   const lpBestand = () => process.env.PLATEN_TABEL || path.join(__dirname, 'product-data', 'lp-barcodes.json');
   const meta = (sleutel) => (db.prepare('SELECT waarde FROM lp_meta WHERE sleutel=?').get(sleutel) || {}).waarde || '';
   const zetMeta = (sleutel, waarde) => db.prepare('INSERT INTO lp_meta(sleutel,waarde) VALUES(?,?) ON CONFLICT(sleutel) DO UPDATE SET waarde=excluded.waarde').run(sleutel, String(waarde));
@@ -178,13 +209,33 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
     const ophalen = db.prepare('SELECT * FROM lp_barcodes WHERE barcode=?');
     for (const variant of barcodeVarianten(code)) {
       const rij = ophalen.get(variant);
-      if (rij) return { ...rij, barcode: variant };
+      if (rij) return { ...rij, barcode: variant, bron: 'MusicBrainz' };
+    }
+    if (discogsByBarcode) {
+      for (const variant of barcodeVarianten(code)) {
+        const rij = discogsByBarcode.get(variant);
+        if (rij) return {
+          ...rij, barcode: variant, mbid: '', groep: '', bron: 'Discogs', licentie: 'CC0 1.0',
+          bronUrl: `https://www.discogs.com/release/${encodeURIComponent(rij.release_id)}`,
+        };
+      }
     }
     return null;
   };
   const aantalInTabel = () => {
     zorgVoorTabel();
     return db.prepare('SELECT COUNT(*) AS n FROM lp_barcodes').get().n;
+  };
+  const aantalDiscogsCodes = () => discogsAttached
+    ? db.prepare('SELECT COUNT(DISTINCT barcode) AS n FROM discogs_data.records').get().n : 0;
+  const aantalDiscogsUitgaven = () => discogsAttached
+    ? db.prepare('SELECT COUNT(DISTINCT release_id) AS n FROM discogs_data.records').get().n : 0;
+  const totaalUniekeBarcodes = () => {
+    zorgVoorTabel();
+    if (!discogsAttached) return aantalInTabel();
+    return db.prepare(`SELECT COUNT(*) AS n FROM (
+      SELECT barcode FROM lp_barcodes UNION SELECT barcode FROM discogs_data.records
+    )`).get().n;
   };
 
   // Hoezen worden één keer gedownload en daarna uit de eigen opslag geserveerd; zo blijft
@@ -456,6 +507,7 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
     if (!rij) return null;
     const correctie = rij.groep === 'handmatige-correctie';
     const handmatigeBron = HANDMATIGE_BARCODE_BRONNEN[rij.barcode] || null;
+    const isDiscogs = rij.bron === 'Discogs';
     return {
       gevonden: true,
       barcode: rij.barcode || code,
@@ -464,12 +516,12 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       jaar: rij.jaar,
       label: rij.label,
       formaat: rij.formaat,
-      genre: '',
-      hoes: rij.mbid ? `${CAA_BASIS()}/release/${rij.mbid}/front-500.jpg` : '',
-      mbid: rij.mbid,
-      bron: handmatigeBron ? handmatigeBron.bron : 'MusicBrainz (eigen lp-lijst)',
-      licentie: handmatigeBron ? '' : 'CC0 1.0',
-      bronUrl: handmatigeBron ? handmatigeBron.bronUrl : rij.mbid ? `https://musicbrainz.org/release/${rij.mbid}` : '',
+      genre: rij.genre || '',
+      hoes: !isDiscogs && rij.mbid ? `${CAA_BASIS()}/release/${rij.mbid}/front-500.jpg` : '',
+      mbid: rij.mbid || '',
+      bron: handmatigeBron ? handmatigeBron.bron : isDiscogs ? 'Discogs' : 'MusicBrainz (eigen lp-lijst)',
+      licentie: handmatigeBron ? '' : rij.licentie || 'CC0 1.0',
+      bronUrl: handmatigeBron ? handmatigeBron.bronUrl : isDiscogs ? rij.bronUrl : rij.mbid ? `https://musicbrainz.org/release/${rij.mbid}` : '',
       uitEigenLijst: true,
       correctie,
       cached: false,
@@ -637,18 +689,39 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       return stuur(res, 200, antwoord(rijen, Object.fromEntries(Object.entries(filters).filter(([, w]) => w))));
     }
     if (pad === '/api/platen/keuzelijsten' && req.method === 'GET') return stuur(res, 200, keuzelijsten());
-    if (pad === '/api/platen/lijst' && req.method === 'GET') return stuur(res, 200, { aantal: aantalInTabel(), bestand: lpBestand() });
+    if (pad === '/api/platen/lijst' && req.method === 'GET') return stuur(res, 200, {
+      aantal: aantalInTabel(), discogsAantal: aantalDiscogsCodes(), discogsUitgaven: aantalDiscogsUitgaven(),
+      totaalUniekeBarcodes: totaalUniekeBarcodes(), bestand: lpBestand(),
+    });
     if (pad === '/api/platen/catalogus' && req.method === 'GET') {
       const term = leeg(url.searchParams.get('q') || '', 80).toLowerCase();
       if (term.length < 2) return stuur(res, 200, { resultaten: [] });
       zorgVoorTabel();
-      const resultaten = db.prepare(`SELECT barcode,titel,artiest,jaar,label,formaat,mbid FROM lp_barcodes
+      const musicbrainz = db.prepare(`SELECT barcode,titel,artiest,jaar,label,formaat,mbid FROM lp_barcodes
           WHERE instr(lower(titel),?)>0 OR instr(lower(artiest),?)>0
           ORDER BY CASE WHEN instr(lower(titel),?)>0 THEN 0 ELSE 1 END, artiest COLLATE NOCASE, titel COLLATE NOCASE
           LIMIT 30`).all(term, term, term).map((r) => ({
         barcode: r.barcode, titel: r.titel, artiest: r.artiest, jaar: r.jaar, label: r.label,
         formaat: r.formaat, hoes: r.mbid ? `${CAA_BASIS()}/release/${r.mbid}/front-500.jpg` : '',
+        bron: 'MusicBrainz', licentie: 'CC0 1.0', bronUrl: r.mbid ? `https://musicbrainz.org/release/${r.mbid}` : '',
       }));
+      const discogsRows = discogsByNameFts && [...term].length >= 3
+        ? discogsByNameFts.all(`"${term.replace(/"/g, '""')}"`, term)
+        : discogsByName ? discogsByName.all(term, term, term) : [];
+      const discogs = discogsRows.map((r) => ({
+        barcode: r.barcode, titel: r.title, artiest: r.artist, jaar: r.year, label: r.label,
+        formaat: r.format, genre: r.genre, hoes: '', bron: 'Discogs', licentie: 'CC0 1.0',
+        bronUrl: `https://www.discogs.com/release/${encodeURIComponent(r.release_id)}`,
+      }));
+      const uniek = new Map();
+      for (const resultaat of [...musicbrainz, ...discogs]) {
+        const sleutel = [resultaat.barcode, resultaat.titel, resultaat.artiest, resultaat.jaar].join('\u0000');
+        if (!uniek.has(sleutel)) uniek.set(sleutel, resultaat);
+      }
+      const resultaten = [...uniek.values()].sort((a, b) =>
+        Number(!a.titel.toLowerCase().includes(term)) - Number(!b.titel.toLowerCase().includes(term)) ||
+        Number(a.bron !== 'MusicBrainz') - Number(b.bron !== 'MusicBrainz') ||
+        a.artiest.localeCompare(b.artiest, 'nl') || a.titel.localeCompare(b.titel, 'nl')).slice(0, 30);
       return stuur(res, 200, { resultaten });
     }
     if (pad === '/api/platen/locaties' && req.method === 'GET') return stuur(res, 200, locaties());
