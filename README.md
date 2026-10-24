@@ -182,6 +182,8 @@ Met een OpenAI-compatibele dienst (OpenAI, Ollama, LocalAI) kan de app een kledi
 
 Onder **Platen** houd je je eigen lp-verzameling bij. De barcode-opzoeking controleert eerst de lokale MusicBrainz-lijst; daarna kan hij de aparte, alleen-lezen Discogs-catalogus raadplegen. MusicBrainz-hoezen worden bij het [Cover Art Archive](https://coverartarchive.org/) opgehaald en één keer lokaal bewaard. Discogs-hoesafbeeldingen worden niet gebruikt.
 
+Ontbreekt de hoes van een plaat die al in je verzameling staat, dan haalt de app die op de achtergrond alsnog op: eerst via de eigen lp-lijst (één verzoek aan het Cover Art Archive), pas daarna online. Dat gebeurt rustig, één plaat per keer, en dezelfde plaat wordt pas na een week opnieuw geprobeerd. Zo krijgt een oude plaat zonder hoes alsnog zijn hoes, zonder de databank te belasten.
+
 - **Lokale vinylcatalogus.** De MusicBrainz-tabel bevat 101.982 barcoderegels. De Discogs-releaseasset bevat 1.023.483 geldige barcode/release-ID-koppelingen en **799.740 unieke geldige vinylbarcodes**, waaronder 708.077 codes die niet in de lokale MusicBrainz-lijst voorkomen. Placeholdercodes met alleen herhaalde cijfers zijn geweerd. Eén barcode kan bij meerdere persingen horen; de catalogus bewaart elke combinatie van barcode en release-ID.
 - **Collectie en catalogus blijven gescheiden.** Zoekresultaten vullen gegevens in, maar worden nooit automatisch in je persoonlijke verzameling gezet. Je kiest zelf of je een uitgave aan je collectie of verlanglijst toevoegt.
 - **Verlanglijst met richtprijzen.** Zoek in de lokale MusicBrainz- en Discogs-catalogus, voeg een gevonden uitgave expliciet toe en noteer optioneel een richtprijs. Het gemiddelde gebruikt alleen regels met een ingevulde prijs.
