@@ -27,8 +27,7 @@ const SETTING_KEYS = ['sms.provider', 'sms.from', 'sms.sender', 'sms.webhookUrl'
 // De SMS-API van CheapConnect; overschrijfbaar zodat de tests tegen een eigen
 // ontvanger kunnen draaien in plaats van tegen de echte dienst.
 const CHEAPCONNECT_URL = 'https://account.cheapconnect.net/API/v1/sms/SendSMS';
-// Geheimen komen nooit de deur uit: de pagina ziet alleen of ze gevuld zijn en
-// de laatste vier tekens, zodat je kunt controleren dat je de juiste hebt.
+// Geheimen komen nooit de deur uit: de pagina ziet alleen een vaste redactie-markering.
 const SECRET_KEYS = ['sms.webhookToken', 'sms.cheapconnectKey', 'sms.twilioSid', 'sms.twilioToken'];
 
 function cleanString(value, max) {
@@ -159,9 +158,7 @@ function createProfiles({ db, fetchImpl = globalThis.fetch, cheapconnectUrl = CH
   const readSetting = key => (db.prepare('SELECT value FROM settings WHERE key=?').get(key) || {}).value || '';
 
   function maskSecret(value) {
-    const tekst = String(value || '');
-    if (!tekst) return '';
-    return `••••${tekst.slice(-4)}`;
+    return String(value || '') ? '[REDACTED]' : '';
   }
 
   function getSmsSettings() {
