@@ -242,14 +242,14 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
   // de verzameling ook zonder internet compleet en laadt hij op een telefoon meteen.
   const hoesMap = () => path.join(mediaDir || path.dirname(process.env.DB_PATH || './data/voorraad.db'), 'platen');
   try { db.exec("ALTER TABLE platen ADD COLUMN hoes_bron TEXT NOT NULL DEFAULT ''") } catch { /* bestaat al */ }
+  try { db.exec("ALTER TABLE platen ADD COLUMN hoes_probeerd_op TEXT NOT NULL DEFAULT ''") } catch { /* bestaat al */ }
 
-  function bewaarHoes(id) {
-    const plaat = db.prepare('SELECT id,hoes,hoes_bron FROM platen WHERE id=?').get(Number(id));
-    if (!plaat) return;
-    const bron = plaat.hoes_bron || plaat.hoes;
-    if (!/^https?:\/\//i.test(bron)) return;
-    if (plaat.hoes_bron !== bron) db.prepare('UPDATE platen SET hoes_bron=? WHERE id=?').run(bron, Number(id));
-    if (/^\/api\/platen\/hoes\//.test(plaat.hoes)) return;   // al lokaal
+  const lokaal = (hoes) => /^\/api\/platen\/hoes\//.test(String(hoes || ''));
+  const webadres = (bron) => /^https?:\/\//i.test(String(bron || ''));
+
+  function haalHoesOp(id, bron) {
+    if (!webadres(bron)) return;
+    db.prepare('UPDATE platen SET hoes_bron=? WHERE id=?').run(bron, Number(id));
     const map = hoesMap();
     try { fs.mkdirSync(map, { recursive: true }) } catch { return }
     const doel = path.join(map, `${id}.jpg`);
@@ -264,6 +264,78 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
         db.prepare('UPDATE platen SET hoes=? WHERE id=?').run(`/api/platen/hoes/${id}`, Number(id));
       })
       .catch(() => { /* zonder hoes verder */ });
+  }
+
+  // Een plaat zonder hoes krijgt later alsnog een kans. De gegevens komen vaak uit de eigen
+  // lp-lijst of uit de Discogs-catalogus (waarvan we geen hoezen herpubliceren), terwijl het
+  // Cover Art Archive de hoes wél heeft. Daarom halen we ontbrekende hoezen rustig bij: één
+  // plaat per keer, en dezelfde plaat pas opnieuw als het eerder niets opleverde.
+  const hoesWachtrij = new Set();
+  let hoesBezig = false;
+  const hoesAuto = () => process.env.PLATEN_HOES_AUTO !== '0';
+  const hoesPauze = () => Number(process.env.PLATEN_HOES_PAUZE ?? 1500);
+  const hoesOpnieuwDagen = () => Number(process.env.PLATEN_HOES_OPNIEUW_DAGEN ?? 7);
+  const leesHoesPlaat = db.prepare('SELECT id,barcode,hoes,hoes_bron,hoes_probeerd_op FROM platen WHERE id=?');
+
+  function vraagHoesAan(id) {
+    if (!hoesAuto()) return;
+    const plaat = leesHoesPlaat.get(Number(id));
+    if (!plaat || !plaat.barcode || lokaal(plaat.hoes)) return;
+    if (plaat.hoes_probeerd_op) {
+      const dagen = (Date.now() - new Date(`${plaat.hoes_probeerd_op.replace(' ', 'T')}Z`).getTime()) / 86400000;
+      if (dagen < hoesOpnieuwDagen()) return;
+    }
+    hoesWachtrij.add(Number(id));
+    verwerkHoesWachtrij();
+  }
+
+  async function verwerkHoesWachtrij() {
+    if (hoesBezig) return;
+    hoesBezig = true;
+    try {
+      while (hoesWachtrij.size) {
+        const [id] = hoesWachtrij;
+        hoesWachtrij.delete(id);
+        try { await zoekHoesVoor(id) } catch { /* zonder hoes verder */ }
+        if (hoesWachtrij.size) await new Promise(r => setTimeout(r, hoesPauze()));
+      }
+    } finally {
+      hoesBezig = false;
+    }
+  }
+
+  // Eerst kijken of de eigen lp-lijst de MusicBrainz-uitgave al kent: dan kost het één
+  // verzoek aan het Cover Art Archive. Pas als dat niets geeft, gaan we online zoeken.
+  async function zoekHoesVoor(id) {
+    const plaat = leesHoesPlaat.get(Number(id));
+    if (!plaat || !plaat.barcode || lokaal(plaat.hoes)) return;
+    const markeer = () => db.prepare('UPDATE platen SET hoes_probeerd_op=CURRENT_TIMESTAMP WHERE id=?').run(Number(id));
+    if (webadres(plaat.hoes)) { haalHoesOp(Number(id), plaat.hoes); markeer(); return }
+    let bron = '';
+    let gelukt = true;
+    const eigen = uitEigenTabel(plaat.barcode);
+    if (eigen && eigen.mbid) {
+      // De eigen lijst kent de uitgave: het archief vertelt of er een hoes is. Een storing
+      // telt niet als 'geen hoes', anders zouden we een week wachten op niets.
+      try { bron = await hoesBij(eigen.mbid) || '' } catch { gelukt = false }
+    } else {
+      const online = await zoekOnline(plaat.barcode).catch(() => null);
+      if (!online || online.storing) gelukt = false;
+      else if (online.gevonden) bron = online.hoes || '';
+    }
+    // Alleen een echte poging onthouden; bij een storing proberen we het gewoon opnieuw.
+    if (gelukt) markeer();
+    if (bron) haalHoesOp(Number(id), bron);
+  }
+
+  function bewaarHoes(id) {
+    const plaat = db.prepare('SELECT id,hoes,hoes_bron FROM platen WHERE id=?').get(Number(id));
+    if (!plaat) return;
+    const bron = plaat.hoes_bron || plaat.hoes;
+    if (!webadres(bron)) { vraagHoesAan(id); return; }   // nog geen hoes: later alsnog proberen
+    if (plaat.hoes_bron !== bron) db.prepare('UPDATE platen SET hoes_bron=? WHERE id=?').run(bron, Number(id));
+    if (lokaal(plaat.hoes)) return;   // al lokaal
+    haalHoesOp(Number(id), bron);
   }
 
   function serveerHoes(res, id) {
@@ -366,6 +438,8 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
 
   const antwoord = (rijen, filters) => {
     const prijsStat = db.prepare('SELECT AVG(prijs) AS gemiddelde, COUNT(prijs) AS aantal FROM platen WHERE gewenst=1 AND prijs IS NOT NULL').get();
+    // Ontbrekende hoezen worden rustig bijgehaald terwijl je de verzameling bekijkt.
+    for (const p of rijen) vraagHoesAan(p.id);
     return {
       platen: rijen,
       totaal: rijen.length,

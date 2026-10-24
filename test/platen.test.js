@@ -41,9 +41,24 @@ const EAN_FOUTIEF = '8717662593284'; // MusicBrainz koppelt deze foutief aan Whi
 let mbVerzoeken = 0, caaVerzoeken = 0, mbStoring = false;
 
 let stub, server, db, base;
+let STUB_ORIGIN = 'http://hoes.test';
+// Een nep-afbeelding van ruim duizend bytes, zodat de app hem als hoes accepteert.
+const proefHoes = Buffer.concat([Buffer.from([0xFF, 0xD8, 0xFF, 0xE0]), Buffer.alloc(1200, 0x41)]);
+let hoesVerzoeken = 0;
+let stubVerzoeken = 0;
+const mbGevraagd = [];
+// De wachtrij die ontbrekende hoezen bijhaalt draait op de achtergrond; in de gewone
+// tests zetten we hem uit zodat de metingen niet door elkaar lopen.
+process.env.PLATEN_HOES_AUTO = '0';
 test.before(async () => {
   stub = http.createServer((req, res) => {
     const url = req.url || '';
+    stubVerzoeken += 1;
+    if (url.startsWith('/hoes/')) {
+      hoesVerzoeken += 1;
+      res.writeHead(200, { 'content-type': 'image/jpeg' });
+      return res.end(proefHoes);
+    }
     if (url.startsWith('/release-group/')) {
       res.writeHead(200, {'content-type': 'application/json'});
       return res.end(JSON.stringify({id: 'rg-1', genres: [{name: 'progressive rock', count: 3}, {name: 'rock', count: 7}], tags: [{name: 'psychedelic', count: 1}]}));
@@ -52,9 +67,10 @@ test.before(async () => {
       caaVerzoeken += 1;
       if (url.includes('geenhoes')) { res.writeHead(404); return res.end('{}'); }
       res.writeHead(200, { 'content-type': 'application/json' });
-      return res.end(JSON.stringify({ images: [{ front: true, thumbnails: { large: 'http://hoes.test/voor-500.jpg', small: 'http://hoes.test/voor-250.jpg' }, image: 'http://hoes.test/voor.jpg' }] }));
+      return res.end(JSON.stringify({ images: [{ front: true, thumbnails: { large: `${STUB_ORIGIN}/hoes/voor-500.jpg`, small: `${STUB_ORIGIN}/hoes/voor-250.jpg` }, image: `${STUB_ORIGIN}/hoes/voor.jpg` }] }));
     }
     mbVerzoeken += 1;
+    mbGevraagd.push(decodeURIComponent(url));
     if (mbStoring) { res.writeHead(503); return res.end('{}'); }
     const vraag = decodeURIComponent(url);
     res.writeHead(200, { 'content-type': 'application/json' });
@@ -78,6 +94,7 @@ test.before(async () => {
     res.end(JSON.stringify({ releases: [] }));
   });
   await new Promise(r => stub.listen(0, '127.0.0.1', r));
+  STUB_ORIGIN = `http://127.0.0.1:${stub.address().port}`;
   process.env.PLATEN_MB_BASIS = `http://127.0.0.1:${stub.address().port}`;
   process.env.PLATEN_CAA_BASIS = `http://127.0.0.1:${stub.address().port}`;
   ({ server, db } = require('../server'));
@@ -105,7 +122,7 @@ test('een gescande barcode levert de plaat op, met hoes', async () => {
   assert.match(uitkomst.body.formaat, /Vinyl/);
   assert.match(uitkomst.body.formaat, /10 nummers/);
   assert.equal(uitkomst.body.genre, 'Rock', 'het genre komt uit de uitgave-groep, niet het soort uitgave');
-  assert.equal(uitkomst.body.hoes, 'http://hoes.test/voor-500.jpg', 'de voorplaat hoort gekozen te worden');
+  assert.equal(uitkomst.body.hoes, `${STUB_ORIGIN}/hoes/voor-500.jpg`, 'de voorplaat hoort gekozen te worden');
   assert.equal(uitkomst.body.bron, 'MusicBrainz');
 });
 
@@ -114,7 +131,7 @@ test('dezelfde barcode wordt niet opnieuw opgezocht', async () => {
   const uitkomst = await api(`/api/platen/zoek?code=${EAN}`);
   assert.equal(uitkomst.body.cached, true);
   assert.equal(mbVerzoeken, voor, 'de tweede keer komt de plaat uit de eigen bewaarde gegevens');
-  assert.equal(uitkomst.body.hoes, 'http://hoes.test/voor-500.jpg');
+  assert.equal(uitkomst.body.hoes, `${STUB_ORIGIN}/hoes/voor-500.jpg`);
 });
 
 test('een Discogs-barcode wordt lokaal herkend zonder hem aan mijn verzameling toe te voegen', async () => {
@@ -145,7 +162,7 @@ test('een plaat toevoegen aan de verzameling', async () => {
   const uitkomst = await stuur('/api/platen', 'POST', {
     barcode: EAN, titel: 'The Dark Side of the Moon', artiest: 'Pink Floyd', jaar: '1973',
     label: 'Harvest', formaat: '12 inch Vinyl · 10 nummers', genre: 'Album',
-    hoes: 'http://hoes.test/voor-500.jpg', locatie: 'Woonkamer', notitie: 'Eerste persing', aantal: 2,
+    hoes: `${STUB_ORIGIN}/hoes/voor-500.jpg`, locatie: 'Woonkamer', notitie: 'Eerste persing', aantal: 2,
   });
   assert.equal(uitkomst.status, 201);
   assert.equal(uitkomst.body.plaat.locatie, 'Woonkamer');
@@ -548,6 +565,132 @@ test('een plaat die al in bezit is wordt niet ook op de verlanglijst gezet', asy
   const reactie = await stuur('/api/platen', 'POST', {barcode: code, titel: 'Al in bezit', artiest: 'Proefartiest', gewenst: true});
   assert.equal(reactie.body.alInVerzameling, true);
   assert.equal((await api('/api/platen?status=wens')).body.platen.some(p => p.barcode === code), false);
+});
+
+// Een plaat die zonder hoes in de verzameling staat krijgt die hoes alsnog: de gegevens
+// komen uit de eigen lp-lijst of de Discogs-catalogus, terwijl het Cover Art Archive de
+// hoes vaak wél heeft. Dat gebeurt op de achtergrond, met mate, en nooit twee keer voor
+// dezelfde plaat zolang er niets te vinden was.
+const wachtOpHoes = async (id, seconden = 15) => {
+  const einde = Date.now() + seconden * 1000;
+  let rij = null;
+  while (Date.now() < einde) {
+    rij = (await api('/api/platen')).body.platen.find(p => p.id === id) || null;
+    if (rij && rij.hoes) return rij;
+    await new Promise(r => setTimeout(r, 100));
+  }
+  return rij || { id, hoes: '' };
+};
+// Wachten tot de opzoeking voor deze barcode klaar is: minstens één verzoek, en daarna
+// een halve seconde geen nieuwe verzoeken meer.
+const wachtTotRustig = async (code) => {
+  let vorig = -1, rustig = 0;
+  while (rustig < 5) {
+    const nu = gevraagdVoor(code);
+    if (nu > 0 && nu === vorig) rustig += 1; else rustig = 0;
+    vorig = nu;
+    await new Promise(r => setTimeout(r, 100));
+  }
+  return vorig;
+};
+const metWachtrij = async (werk) => {
+  const oud = process.env.PLATEN_HOES_AUTO;
+  process.env.PLATEN_HOES_AUTO = '1';
+  process.env.PLATEN_HOES_PAUZE = '0';
+  try { return await werk() } finally {
+    // Wachten tot de achtergrondwachtrij niets meer doet, zodat volgende tests rustig beginnen.
+    let vorig = -1, rustig = 0;
+    while (rustig < 5) {
+      if (stubVerzoeken === vorig) rustig += 1; else { vorig = stubVerzoeken; rustig = 0 }
+      await new Promise(r => setTimeout(r, 100));
+    }
+    process.env.PLATEN_HOES_AUTO = oud || '0';
+  }
+};
+const gevraagdVoor = (code) => mbGevraagd.filter(u => u.includes(code)).length;
+
+test('een plaat zonder hoes krijgt de hoes alsnog opgehaald', async () => {
+  await metWachtrij(async () => {
+    schrijfTabel({});
+    const toegevoegd = await stuur('/api/platen', 'POST', {
+      barcode: EAN, titel: 'The Dark Side of the Moon', artiest: 'Pink Floyd', hoes: '',
+      locatie: 'Kelder', aantal: 1,
+    });
+    const id = toegevoegd.body.plaat.id;
+    assert.equal(toegevoegd.body.plaat.hoes, '', 'de plaat komt zonder hoes binnen');
+    const rij = await wachtOpHoes(id);
+    assert.equal(rij.hoes, `/api/platen/hoes/${id}`, 'de hoes wordt later opgehaald en lokaal bewaard');
+    assert.ok(fs.existsSync(path.join(process.env.MEDIA_DIR, 'platen', `${id}.jpg`)), 'de hoes staat in de eigen opslag');
+    const beeld = await fetch(`${base}/api/platen/hoes/${id}`);
+    assert.equal(beeld.status, 200);
+    assert.equal(beeld.headers.get('content-type'), 'image/jpeg');
+  });
+});
+
+test('een plaat uit de eigen lp-lijst haalt de hoes op zonder de databank te vragen', async () => {
+  await metWachtrij(async () => {
+    const code = '8719000000043';
+    schrijfTabel({ [code]: {t: 'Rumours', a: 'Fleetwood Mac', j: '1977', m: 'mbid-lokaal-3', g: 'rg-lokaal-3'} });
+    const toegevoegd = await stuur('/api/platen', 'POST', {
+      barcode: code, titel: 'Rumours', artiest: 'Fleetwood Mac', hoes: '', locatie: 'Kelder', aantal: 1,
+    });
+    const rij = await wachtOpHoes(toegevoegd.body.plaat.id);
+    assert.equal(rij.hoes, `/api/platen/hoes/${rij.id}`, 'de hoes komt uit het Cover Art Archive');
+    assert.equal(gevraagdVoor(code), 0, 'de eigen lp-lijst weet de uitgave al');
+  });
+});
+
+test('een plaat met een eigen hoes wordt niet opnieuw opgezocht', async () => {
+  await metWachtrij(async () => {
+    const toegevoegd = await stuur('/api/platen', 'POST', {
+      barcode: '8719000000050', titel: 'Met eigen hoes', artiest: 'Proefartiest',
+      hoes: `${STUB_ORIGIN}/hoes/voor-500.jpg`, locatie: 'Woonkamer', aantal: 1,
+    });
+    const rij = await wachtOpHoes(toegevoegd.body.plaat.id);
+    assert.equal(rij.hoes, `/api/platen/hoes/${rij.id}`, 'de hoes wordt één keer lokaal bewaard');
+    await new Promise(r => setTimeout(r, 300));
+    assert.equal(gevraagdVoor('8719000000050'), 0, 'een plaat die al een hoes heeft vraagt de databank niet');
+  });
+});
+
+test('een plaat zonder uitzicht op een hoes wordt niet eindeloos opnieuw gezocht', async () => {
+  await metWachtrij(async () => {
+    schrijfTabel({});
+    const toegevoegd = await stuur('/api/platen', 'POST', {
+      barcode: EAN_LEEG, titel: 'Onvindbaar', artiest: 'Proefartiest', hoes: '', locatie: 'Kelder', aantal: 1,
+    });
+    const id = toegevoegd.body.plaat.id;
+    const na = await wachtTotRustig(EAN_LEEG);
+    assert.ok(na > 0, 'de plaat zonder hoes is één keer opgezocht');
+    await api('/api/platen');
+    await api('/api/platen');
+    await new Promise(r => setTimeout(r, 400));
+    assert.equal(gevraagdVoor(EAN_LEEG), na, 'dezelfde plaat wordt niet telkens opnieuw gezocht');
+    const rij = (await api('/api/platen')).body.platen.find(p => p.id === id);
+    assert.equal(rij.hoes, '', 'zonder hoes blijft de plaat gewoon in de verzameling staan');
+  });
+});
+
+test('een storing bij de databank stelt de hoes niet een week uit', async () => {
+  await metWachtrij(async () => {
+    schrijfTabel({});
+    const code = `${EAN}0`;
+    mbStoring = true;
+    try {
+      const toegevoegd = await stuur('/api/platen', 'POST', {
+        barcode: code, titel: 'Tijdelijk onbereikbaar', artiest: 'Proefartiest', hoes: '', locatie: 'Kelder', aantal: 1,
+      });
+      const id = toegevoegd.body.plaat.id;
+      await wachtTotRustig(code);
+      const poging = db.prepare('SELECT hoes_probeerd_op FROM platen WHERE id=?').get(id).hoes_probeerd_op;
+      assert.equal(poging, '', 'een mislukte opzoeking telt niet als een echte poging');
+      mbStoring = false;
+      const rij = await wachtOpHoes(id);
+      assert.equal(rij.hoes, `/api/platen/hoes/${id}`, 'zodra de databank het weer doet komt de hoes alsnog');
+    } finally {
+      mbStoring = false;
+    }
+  });
 });
 
  test('de app vertelt hoeveel lp-barcodes er in de eigen lijst staan', async () => {
