@@ -74,6 +74,31 @@ test.before(async () => {
     if (mbStoring) { res.writeHead(503); return res.end('{}'); }
     const vraag = decodeURIComponent(url);
     res.writeHead(200, { 'content-type': 'application/json' });
+    // Zoeken op titel en artiest: voor platen waarvan de barcode niets oplevert.
+    if (vraag.includes('release:"')) {
+      const gezocht = (vraag.match(/release:"([^"]+)"/) || [])[1] || '';
+      if (gezocht.toLowerCase().includes('nachtvlinder')) {
+        return res.end(JSON.stringify({releases: [
+          { id: 'mbid-titel-1', title: 'Nachtvlinder', score: 100, date: '1999', 'artist-credit': [{name: 'Proefartiest'}], 'release-group': {id: 'rg-titel-1', 'primary-type': 'Album'} },
+        ]}));
+      }
+      if (gezocht.toLowerCase().includes('nagemaakt')) {
+        return res.end(JSON.stringify({releases: [
+          { id: 'mbid-titel-2', title: 'Nagemaakt', score: 100, date: '2001', 'artist-credit': [{name: 'Iemand Anders'}], 'release-group': {id: 'rg-titel-2'} },
+        ]}));
+      }
+      if (gezocht.toLowerCase().includes('ondertitel')) {
+        return res.end(JSON.stringify({releases: [
+          { id: 'mbid-titel-3', title: 'Ondertitel: De Luxe Editie', score: 100, date: '2004', 'artist-credit': [{name: 'Proefartiest'}], 'release-group': {id: 'rg-titel-3'} },
+        ]}));
+      }
+      if (gezocht.toLowerCase().includes('grootste treffers')) {
+        return res.end(JSON.stringify({releases: [
+          { id: 'mbid-titel-4', title: 'Grootste treffers II', score: 100, date: '1998', 'artist-credit': [{name: 'Proefartiest'}], 'release-group': {id: 'rg-titel-4'} },
+        ]}));
+      }
+      return res.end(JSON.stringify({ releases: [] }));
+    }
     if (vraag.includes(EAN_FOUTIEF)) {
       return res.end(JSON.stringify({releases: [{id: 'mbid-verkeerd', title: 'Cow Palace Hollywood 1992: Live Radio Broadcast', score: 100, date: '2017', barcode: EAN_FOUTIEF, 'artist-credit': [{name: 'White Zombie'}], media: [{format: 'Digital Media'}]}]}));
     }
@@ -584,8 +609,10 @@ const wachtOpHoes = async (id, seconden = 15) => {
 // Wachten tot de opzoeking voor deze barcode klaar is: minstens één verzoek, en daarna
 // een halve seconde geen nieuwe verzoeken meer.
 const wachtTotRustig = async (code) => {
+  const einde = Date.now() + 20000;
   let vorig = -1, rustig = 0;
   while (rustig < 5) {
+    if (Date.now() > einde) break;
     const nu = gevraagdVoor(code);
     if (nu > 0 && nu === vorig) rustig += 1; else rustig = 0;
     vorig = nu;
@@ -668,6 +695,70 @@ test('een plaat zonder uitzicht op een hoes wordt niet eindeloos opnieuw gezocht
     assert.equal(gevraagdVoor(EAN_LEEG), na, 'dezelfde plaat wordt niet telkens opnieuw gezocht');
     const rij = (await api('/api/platen')).body.platen.find(p => p.id === id);
     assert.equal(rij.hoes, '', 'zonder hoes blijft de plaat gewoon in de verzameling staan');
+  });
+});
+
+test('een plaat zonder hoes wordt op titel en artiest gevonden', async () => {
+  await metWachtrij(async () => {
+    schrijfTabel({});
+    const toegevoegd = await stuur('/api/platen', 'POST', {
+      barcode: '8719000000074', titel: 'Nachtvlinder', artiest: 'Proefartiest', hoes: '', locatie: 'Kelder', aantal: 1,
+    });
+    const id = toegevoegd.body.plaat.id;
+    const rij = await wachtOpHoes(id);
+    assert.equal(rij.hoes, `/api/platen/hoes/${id}`, 'de hoes is via titel en artiest gevonden');
+    assert.ok(fs.existsSync(path.join(process.env.MEDIA_DIR, 'platen', `${id}.jpg`)));
+  });
+});
+
+test('een andere artiest met dezelfde titel levert geen hoes op', async () => {
+  await metWachtrij(async () => {
+    schrijfTabel({});
+    const toegevoegd = await stuur('/api/platen', 'POST', {
+      barcode: '8719000000081', titel: 'Nagemaakt', artiest: 'Proefartiest', hoes: '', locatie: 'Kelder', aantal: 1,
+    });
+    const id = toegevoegd.body.plaat.id;
+    await wachtTotRustig('Nagemaakt');
+    const rij = (await api('/api/platen')).body.platen.find(p => p.id === id);
+    assert.equal(rij.hoes, '', 'een hoes van een andere artiest hoort niet op deze plaat te komen');
+  });
+});
+
+test('een andere titel van dezelfde artiest levert geen hoes op', async () => {
+  await metWachtrij(async () => {
+    schrijfTabel({});
+    const toegevoegd = await stuur('/api/platen', 'POST', {
+      barcode: '8719000000098', titel: 'Onbekend werk', artiest: 'Proefartiest', hoes: '', locatie: 'Kelder', aantal: 1,
+    });
+    const id = toegevoegd.body.plaat.id;
+    await wachtTotRustig('Onbekend werk');
+    const rij = (await api('/api/platen')).body.platen.find(p => p.id === id);
+    assert.equal(rij.hoes, '', 'zonder titel-treffer blijft de plaat zonder hoes');
+  });
+});
+
+test('een ondertitel bij de titel mag verschillen', async () => {
+  await metWachtrij(async () => {
+    schrijfTabel({});
+    const toegevoegd = await stuur('/api/platen', 'POST', {
+      barcode: '8719000000104', titel: 'Ondertitel', artiest: 'Proefartiest', hoes: '', locatie: 'Kelder', aantal: 1,
+    });
+    const id = toegevoegd.body.plaat.id;
+    const rij = await wachtOpHoes(id);
+    assert.equal(rij.hoes, `/api/platen/hoes/${id}`, 'de uitgave met ondertitel hoort bij deze plaat');
+  });
+});
+
+test('een vervolg met dezelfde titel erft de hoes niet', async () => {
+  await metWachtrij(async () => {
+    schrijfTabel({});
+    const toegevoegd = await stuur('/api/platen', 'POST', {
+      barcode: '8719000000111', titel: 'Grootste treffers', artiest: 'Proefartiest', hoes: '', locatie: 'Kelder', aantal: 1,
+    });
+    const id = toegevoegd.body.plaat.id;
+    await wachtTotRustig('Grootste treffers');
+    const rij = (await api('/api/platen')).body.platen.find(p => p.id === id);
+    assert.equal(rij.hoes, '', 'deel twee is een andere plaat, dus geen hoes overnemen');
   });
 });
 

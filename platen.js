@@ -275,7 +275,41 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
   const hoesAuto = () => process.env.PLATEN_HOES_AUTO !== '0';
   const hoesPauze = () => Number(process.env.PLATEN_HOES_PAUZE ?? 1500);
   const hoesOpnieuwDagen = () => Number(process.env.PLATEN_HOES_OPNIEUW_DAGEN ?? 7);
-  const leesHoesPlaat = db.prepare('SELECT id,barcode,hoes,hoes_bron,hoes_probeerd_op FROM platen WHERE id=?');
+  const leesHoesPlaat = db.prepare('SELECT id,barcode,titel,artiest,hoes,hoes_bron,hoes_probeerd_op FROM platen WHERE id=?');
+  // Titels en artiesten vergelijken we op de kern: zonder accenten, leestekens of
+  // hoofdletters, zodat "Ik Besta Voor Altijd" en "Ik besta voor altijd" bij elkaar horen.
+  const kern = (tekst) => String(tekst || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]+/g, '');
+  // "The Platinum Collection" en "The Platinum Collection: Greatest Hits I, II & III" zijn
+  // dezelfde plaat; "Grootste treffers" en "Grootste treffers II" niet. Daarom vergelijken we
+  // op het stuk vóór een dubbele punt, haakje of blokhaak, en niet op losse streepjes.
+  const hoofdtitel = (tekst) => kern(String(tekst || '').split(/[:(\[]/)[0]);
+
+  // Zoeken op titel en artiest is de tweede weg naar een hoes, voor platen waarvan de
+  // barcode niets oplevert (live-opnamen, heruitgaven, ontbrekende barcodes). Alleen een
+  // uitgave met dezelfde titel én dezelfde artiest telt, anders komt er een hoes van een
+  // andere plaat op je verzameling te staan.
+  function zelfdeUitgave(plaat, uitgave) {
+    const titel = kern(plaat.titel);
+    if (!titel) return false;
+    if (kern(uitgave && uitgave.title) !== titel && hoofdtitel(uitgave && uitgave.title) !== hoofdtitel(plaat.titel)) return false;
+    const artiest = kern(plaat.artiest);
+    if (!artiest) return false;
+    return (uitgave['artist-credit'] || [])
+      .map((credit) => kern(credit && credit.name))
+      .filter(Boolean)
+      .some((naam) => naam === artiest || naam.includes(artiest) || artiest.includes(naam));
+  }
+
+  async function hoesViaTitel(plaat) {
+    if (!plaat.titel || !plaat.artiest) return '';
+    const vraag = `release:"${plaat.titel}" AND artist:"${plaat.artiest}"`;
+    const gegevens = await vraagJson(`${MB_BASIS()}/release/?query=${encodeURIComponent(vraag)}&fmt=json&limit=5`);
+    if (gegevens === null) throw new Error('de databank gaf geen antwoord');
+    const uitgave = (gegevens.releases || []).find((r) => zelfdeUitgave(plaat, r));
+    if (!uitgave) return '';
+    return await hoesBij(uitgave.id);
+  }
 
   function vraagHoesAan(id) {
     if (!hoesAuto()) return;
@@ -322,6 +356,10 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       const online = await zoekOnline(plaat.barcode).catch(() => null);
       if (!online || online.storing) gelukt = false;
       else if (online.gevonden) bron = online.hoes || '';
+    }
+    // De barcode leverde niets op: dan zoeken we de uitgave op titel en artiest.
+    if (!bron && gelukt) {
+      try { bron = await hoesViaTitel(plaat) || '' } catch { gelukt = false }
     }
     // Alleen een echte poging onthouden; bij een storing proberen we het gewoon opnieuw.
     if (gelukt) markeer();
