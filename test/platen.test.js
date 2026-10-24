@@ -97,6 +97,31 @@ test.before(async () => {
           { id: 'mbid-titel-4', title: 'Grootste treffers II', score: 100, date: '1998', 'artist-credit': [{name: 'Proefartiest'}], 'release-group': {id: 'rg-titel-4'} },
         ]}));
       }
+      if (gezocht.toLowerCase().includes('zilvermeeuw')) {
+        return res.end(JSON.stringify({releases: [
+          { id: 'mbid-titel-5', title: 'Zilvermeeuw', score: 100, date: '1995', 'artist-credit': [{name: 'Proefartiest'}], 'release-group': {id: 'rg-titel-5'} },
+        ]}));
+      }
+      if (gezocht.toLowerCase().includes('twee uitgaven')) {
+        // De eerste uitgave heeft geen hoes in het archief, de tweede wel.
+        return res.end(JSON.stringify({releases: [
+          { id: 'geenhoes', title: 'Twee uitgaven', score: 100, date: '1990', 'artist-credit': [{name: 'Proefartiest'}] },
+          { id: 'mbid-titel-6', title: 'Twee uitgaven', score: 100, date: '1991', 'artist-credit': [{name: 'Proefartiest'}] },
+        ]}));
+      }
+      if (gezocht.toLowerCase().includes('alleen titel')) {
+        const metArtiest = (vraag.match(/artist:"([^"]+)"/) || [])[1] || '';
+        // Met een verkeerd gespelde artiest vindt de databank niets; op titel alleen wel.
+        if (metArtiest === 'Proefartiestt') return res.end(JSON.stringify({ releases: [] }));
+        return res.end(JSON.stringify({releases: [
+          { id: 'mbid-titel-7', title: 'Alleen titel', score: 100, date: '2002', 'artist-credit': [{name: 'Proefartiest'}], 'release-group': {id: 'rg-titel-7'} },
+        ]}));
+      }
+      if (gezocht.toLowerCase().includes('platinum')) {
+        return res.end(JSON.stringify({releases: [
+          { id: 'mbid-titel-8', title: 'Grootste hits: Platinum', score: 100, date: '1999', 'artist-credit': [{name: 'Proefartiest'}], 'release-group': {id: 'rg-titel-8'} },
+        ]}));
+      }
       return res.end(JSON.stringify({ releases: [] }));
     }
     if (vraag.includes(EAN_FOUTIEF)) {
@@ -596,12 +621,14 @@ test('een plaat die al in bezit is wordt niet ook op de verlanglijst gezet', asy
 // komen uit de eigen lp-lijst of de Discogs-catalogus, terwijl het Cover Art Archive de
 // hoes vaak wél heeft. Dat gebeurt op de achtergrond, met mate, en nooit twee keer voor
 // dezelfde plaat zolang er niets te vinden was.
-const wachtOpHoes = async (id, seconden = 15) => {
+// De databank rechtstreeks lezen, niet via de pagina: het openen van de verzameling zet
+// zelf nieuwe hoesopzoekingen in gang, en dan meet je je eigen nasleep.
+const wachtOpHoes = async (id, seconden = 45) => {
   const einde = Date.now() + seconden * 1000;
   let rij = null;
   while (Date.now() < einde) {
-    rij = (await api('/api/platen')).body.platen.find(p => p.id === id) || null;
-    if (rij && rij.hoes) return rij;
+    rij = db.prepare('SELECT id,hoes FROM platen WHERE id=?').get(id) || null;
+    if (rij && /^\/api\/platen\/hoes\//.test(rij.hoes || '')) return rij;
     await new Promise(r => setTimeout(r, 100));
   }
   return rij || { id, hoes: '' };
@@ -619,6 +646,13 @@ const wachtTotRustig = async (code) => {
     await new Promise(r => setTimeout(r, 100));
   }
   return vorig;
+};
+const wachtTotGeprobeerd = async (id, seconden = 20) => {
+  const einde = Date.now() + seconden * 1000;
+  while (Date.now() < einde) {
+    if (db.prepare('SELECT hoes_probeerd_op FROM platen WHERE id=?').get(id).hoes_probeerd_op) return;
+    await new Promise(r => setTimeout(r, 100));
+  }
 };
 const metWachtrij = async (werk) => {
   const oud = process.env.PLATEN_HOES_AUTO;
@@ -762,6 +796,141 @@ test('een vervolg met dezelfde titel erft de hoes niet', async () => {
   });
 });
 
+test('een plaat zonder barcode krijgt de hoes op titel en artiest', async () => {
+  await metWachtrij(async () => {
+    schrijfTabel({});
+    const toegevoegd = await stuur('/api/platen', 'POST', {
+      barcode: '', titel: 'Nachtvlinder', artiest: 'Proefartiest', hoes: '', locatie: 'Kelder', aantal: 1,
+    });
+    const id = toegevoegd.body.plaat.id;
+    const rij = await wachtOpHoes(id);
+    assert.equal(rij.hoes, `/api/platen/hoes/${id}`, 'ook zonder barcode hoort de hoes opgehaald te worden');
+  });
+});
+
+test('een kleine typefout in de artiestennaam mag', async () => {
+  await metWachtrij(async () => {
+    schrijfTabel({});
+    const toegevoegd = await stuur('/api/platen', 'POST', {
+      barcode: '8719000000128', titel: 'Ondertitel', artiest: 'Proefartiestt', hoes: '', locatie: 'Kelder', aantal: 1,
+    });
+    const id = toegevoegd.body.plaat.id;
+    const rij = await wachtOpHoes(id);
+    assert.equal(rij.hoes, `/api/platen/hoes/${id}`, 'een typefout in de artiestennaam houdt de hoes niet tegen');
+  });
+});
+
+test('een heel andere artiest levert geen hoes op', async () => {
+  await metWachtrij(async () => {
+    schrijfTabel({});
+    const toegevoegd = await stuur('/api/platen', 'POST', {
+      barcode: '8719000000135', titel: 'Zilvermeeuw', artiest: 'Iemand Anders', hoes: '', locatie: 'Kelder', aantal: 1,
+    });
+    const id = toegevoegd.body.plaat.id;
+    await wachtTotRustig('Zilvermeeuw');
+    const rij = (await api('/api/platen')).body.platen.find(p => p.id === id);
+    assert.equal(rij.hoes, '', 'een andere artiest betekent een andere plaat');
+  });
+});
+
+test('een uitgave zonder hoes houdt de volgende uitgave niet tegen', async () => {
+  await metWachtrij(async () => {
+    schrijfTabel({});
+    const toegevoegd = await stuur('/api/platen', 'POST', {
+      barcode: '', titel: 'Twee uitgaven', artiest: 'Proefartiest', hoes: '', locatie: 'Kelder', aantal: 1,
+    });
+    const id = toegevoegd.body.plaat.id;
+    const rij = await wachtOpHoes(id);
+    assert.equal(rij.hoes, `/api/platen/hoes/${id}`, 'de tweede uitgave met hoes hoort gebruikt te worden');
+  });
+});
+
+test('dezelfde plaat wordt niet twee keer tegelijk opgezocht', async () => {
+  await metWachtrij(async () => {
+    schrijfTabel({});
+    await stuur('/api/platen', 'POST', {
+      barcode: '8719000000142', titel: 'Eenmalig', artiest: 'Proefartiest', hoes: '', locatie: 'Kelder', aantal: 1,
+    });
+    await api('/api/platen');           // de verzameling openen terwijl de opzoeking nog loopt
+    const aantal = await wachtTotRustig('Eenmalig');
+    assert.equal(aantal, 1, 'de databank wordt één keer gevraagd, niet twee keer');
+  });
+});
+
+test('een verkeerd gespelde artiest wordt via de titel opgelost', async () => {
+  await metWachtrij(async () => {
+    schrijfTabel({});
+    const toegevoegd = await stuur('/api/platen', 'POST', {
+      barcode: '', titel: 'Alleen titel', artiest: 'Proefartiestt', hoes: '', locatie: 'Kelder', aantal: 1,
+    });
+    const id = toegevoegd.body.plaat.id;
+    const rij = await wachtOpHoes(id);
+    assert.equal(rij.hoes, `/api/platen/hoes/${id}`, 'op titel alleen vindt de app de uitgave alsnog');
+  });
+});
+
+test('een titelzoektocht levert geen hoes van een andere artiest op', async () => {
+  await metWachtrij(async () => {
+    schrijfTabel({});
+    const toegevoegd = await stuur('/api/platen', 'POST', {
+      barcode: '', titel: 'Alleen titel', artiest: 'Heel Andere Naam', hoes: '', locatie: 'Kelder', aantal: 1,
+    });
+    const id = toegevoegd.body.plaat.id;
+    await wachtTotRustig('Alleen titel');
+    const rij = (await api('/api/platen')).body.platen.find(p => p.id === id);
+    assert.equal(rij.hoes, '', 'de artiest moet nog steeds kloppen');
+  });
+});
+
+test('een ondertitel vóór de titel hoort er ook bij', async () => {
+  await metWachtrij(async () => {
+    schrijfTabel({});
+    const toegevoegd = await stuur('/api/platen', 'POST', {
+      barcode: '', titel: 'Platinum', artiest: 'Proefartiest', hoes: '', locatie: 'Kelder', aantal: 1,
+    });
+    const id = toegevoegd.body.plaat.id;
+    const rij = await wachtOpHoes(id);
+    assert.equal(rij.hoes, `/api/platen/hoes/${id}`, 'de uitgave met de ondertitel vooraan hoort bij deze plaat');
+  });
+});
+
+test('een plaat zonder hoes wordt na een dag opnieuw geprobeerd', async () => {
+  await metWachtrij(async () => {
+    process.env.PLATEN_HOES_OPNIEUW_DAGEN = '0';
+    try {
+      schrijfTabel({});
+      const toegevoegd = await stuur('/api/platen', 'POST', {
+        barcode: EAN_LEEG, titel: 'Onvindbaar', artiest: 'Proefartiest', hoes: '', locatie: 'Zolder', aantal: 1,
+      });
+      const id = toegevoegd.body.plaat.id;
+      await wachtTotGeprobeerd(id);
+      assert.ok(db.prepare('SELECT hoes_probeerd_op FROM platen WHERE id=?').get(id).hoes_probeerd_op, 'eerst is het geprobeerd');
+      const voor = gevraagdVoor(EAN_LEEG);
+      await api('/api/platen');
+      // Er kunnen meer platen in de rij staan; ruim de tijd nemen voordat we concluderen.
+      const einde = Date.now() + 60000;
+      while (Date.now() < einde && gevraagdVoor(EAN_LEEG) <= voor) await new Promise(r => setTimeout(r, 200));
+      assert.ok(gevraagdVoor(EAN_LEEG) > voor, 'na de wachttijd wordt het opnieuw geprobeerd');
+    } finally {
+      delete process.env.PLATEN_HOES_OPNIEUW_DAGEN;
+    }
+  });
+});
+
+test('na een herstart krijgt een plaat zonder hoes meteen een nieuwe kans', async () => {
+  const toegevoegd = await stuur('/api/platen', 'POST', {
+    barcode: '', titel: 'Blijft leeg', artiest: 'Proefartiest', hoes: '', locatie: 'Zolder', aantal: 1,
+  });
+  const id = toegevoegd.body.plaat.id;
+  db.prepare('UPDATE platen SET hoes_probeerd_op=? WHERE id=?').run('2026-10-24 12:00:00', id);
+  const { createPlaten } = require('../platen');
+  createPlaten({ db, mediaDir: process.env.MEDIA_DIR });   // alsof de app opnieuw start
+  assert.equal(
+    db.prepare('SELECT hoes_probeerd_op FROM platen WHERE id=?').get(id).hoes_probeerd_op, '',
+    'een herstart wist de wachttijd voor platen zonder hoes',
+  );
+});
+
 test('een storing bij de databank stelt de hoes niet een week uit', async () => {
   await metWachtrij(async () => {
     schrijfTabel({});
@@ -776,6 +945,7 @@ test('een storing bij de databank stelt de hoes niet een week uit', async () => 
       const poging = db.prepare('SELECT hoes_probeerd_op FROM platen WHERE id=?').get(id).hoes_probeerd_op;
       assert.equal(poging, '', 'een mislukte opzoeking telt niet als een echte poging');
       mbStoring = false;
+      await api('/api/platen');   // de verzameling openen geeft de mislukte plaat een nieuwe kans
       const rij = await wachtOpHoes(id);
       assert.equal(rij.hoes, `/api/platen/hoes/${id}`, 'zodra de databank het weer doet komt de hoes alsnog');
     } finally {
