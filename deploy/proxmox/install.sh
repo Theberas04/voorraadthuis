@@ -14,6 +14,7 @@ FILES=(
   "deploy/proxmox/create-voorraadthuis-lxc.sh"
   "deploy/proxmox/provision-voorraadthuis.sh"
   "deploy/proxmox/update-from-github.sh"
+  "deploy/proxmox/fetch-discogs-catalog.sh"
   "deploy/proxmox/upgrade-debian-13.sh"
   "deploy/proxmox/check-voorraadthuis.sh"
   "deploy/proxmox/README.md"

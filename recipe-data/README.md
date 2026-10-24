@@ -2,7 +2,7 @@
 
 This directory contains only recipe text and structured source data; the app does not redistribute recipe photographs. Imported recipes are translated into Dutch for display (see *Dutch translation* below); the source text stays with the linked upstream page, and per-recipe source and licence links are rendered in the recipe card.
 
-Counts: 115 original Dutch home recipes + 9,435 imported recipes = **9,550 recipes**, from fourteen openly licensed sources (450 of the imports are Dutch to begin with, so 8,985 need a Dutch translation).
+Counts: 115 original Dutch home recipes + 9,692 imported recipes = **9,807 recipes**, from sixteen CC BY-SA 4.0 sources. Of the imported recipes, 9,241 require a Dutch translation; 451 are already Dutch (450 from the Dutch Kookboek and one Dutch borrelhapje).
 
 ## UniTools World Recipes — 500 recipes
 
@@ -101,27 +101,49 @@ Counts: 115 original Dutch home recipes + 9,435 imported recipes = **9,550 recip
 - Licence: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/); see [Wikibooks copyrights](https://fi.wikibooks.org/wiki/Wikibooks:Tekijänoikeudet).
 - Selection: every unique page with at least three ingredient lines and two preparation steps (11 recipes). The book is included for completeness; the count is stated honestly rather than padded.
 
+## Wikibooks Cocktails — 201 recipes
+
+- Sources: [Cocktails](https://de.wikibooks.org/wiki/Cocktails), [Bartending](https://en.wikibooks.org/wiki/Bartending), and the linked Hungarian and French Wikibooks cocktail pages. Each recipe retains its own source URL and revision id.
+- Licence: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), recorded in the source metadata.
+- Selection: 201 distinct cocktail recipes with ingredients and preparation steps; titles are deduplicated against the earlier imports and the curated recipes.
+- Source languages: German (141), Hungarian (23), English (20) and French (17).
+
+## Wikibooks Borrelhapjes — 56 recipes
+
+- Sources: [Dutch Wikibooks Kookboek](https://nl.wikibooks.org/wiki/Kookboek), [English Wikibooks Cookbook](https://en.wikibooks.org/wiki/Cookbook), and the linked Hungarian, Polish and Portuguese source pages. Each recipe retains its own source URL and revision id.
+- Licence: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), recorded in the source metadata.
+- Selection: 56 distinct recipes from appetizer/snack categories with at least three ingredients and a preparation step; titles are deduplicated against the earlier imports and the curated recipes.
+- Source languages: Hungarian (39), English (12), Portuguese (3), Dutch (1) and Polish (1). The Dutch item is already Dutch and has no translation label.
+
 ## Ranged and unquantified amounts
 
 Wikibooks ingredient lines that carry a ranged quantity (“2–4 cups rice”) keep that range verbatim as a single display line (unit `bronregel`); the quantity is never averaged into a midpoint. Amounts the source does not quantify are labelled as not stated.
 
 ## Dutch translation
 
-All 7,206 imported recipes from English, Spanish, German, French, Italian and Catalan sources are available in Dutch: name, description, ingredient names and preparation steps. The 450 recipes of the Dutch Kookboek are Dutch already and are imported as they are. The translation lives in `translations-nl.json` and is applied at load time by `recipes-open.js`. It never replaces identifiers, quantities, units, cooking times, servings, source URLs or licence fields — every imported recipe still points at its original and stays attributed.
+All **9,241 imported recipes that originate in another language** are presented in Dutch: name, description, ingredient names and preparation steps. A further 451 imported recipes are already Dutch (450 from the Dutch Kookboek and one borrelhapje). The translation lives in `translations-nl.json` and is applied at load time by `recipes-open.js`. It never replaces identifiers, quantities, units, cooking times, servings, source URLs or licence fields — every imported recipe still points at its original and stays attributed.
 
-- Keys: translations are stored per **source key** (`unitools:…`, `wikibooks-en:…`, `wikibooks-es:…`, `wikibooks-de:…`), not per row number, so the selection can grow without orphaning earlier translations.
-- Method: block-wise translation of 45 recipes per block (`input-NN.json` → `output-NN.json`), from English, Spanish or German into Dutch. Each block is validated for record count, key order, ingredient and step counts, empty fields and display-line parity before it is accepted.
-- Verify without writing: `python3 scripts/merge-recipe-translations.py --report`. Without `--report` the script writes `translations-nl.json` and refuses to write anything unless all 7,206 recipes are present.
-- The application refuses to start when even one imported recipe has no translation, so a partial merge can never be deployed silently.
+- Keys: translations are stored per **source key** (`unitools:…`, `wikibooks-en:…`, `wikibooks-es:…`, `wikibooks-de:…`, `wikibooks-cocktails:…`, `wikibooks-borrelhapjes:…`), not per row number, so the selection can grow without orphaning earlier translations.
+- Method: block-wise translation of 45 recipes per block (`input-NN.json` → `output-NN.json`) from the imported source languages into Dutch. Each block is validated for record count, key order, ingredient and step counts, empty fields and display-line parity before it is accepted.
+- The merge script expects verified `input-NN.json`/`output-NN.json` batches; those working files are not included in the repository. Pass their directory with `--dir /path/to/translation-batches`. The committed `translations-nl.json` is the complete output; `npm test` verifies all 9,241 translation records and the app’s fail-closed startup check.
+- The application refuses to start if even one non-Dutch imported recipe has no translation; already-Dutch imports are explicitly marked, so a partial merge can never be deployed silently.
 
 ## Rebuilding the selected data
 
 ```
-python3 scripts/build-open-recipe-data.py            # downloads all sources, writes the JSON files here
-python3 scripts/build-open-recipe-data.py --report   # counts only, writes nothing
+python3 scripts/build-open-recipe-data.py                 # rebuild the base open sources
+python3 scripts/fetch-cocktails-en-borrelhapjes.py       # rebuild cocktails and borrelhapjes
+python3 scripts/build-open-recipe-data.py --report      # report for the base-source build
+
+# Only when you have the translation batches (not bundled in this repository):
+python3 scripts/merge-recipe-translations.py --dir /path/to/translation-batches --report
+python3 scripts/merge-recipe-translations.py --dir /path/to/translation-batches
+
+# Verify the committed recipe and translation data:
+npm test
 ```
 
-The script needs network access. It pins the UniTools commit and the Cookbook dataset revision, retrieves the Spanish and German Cookbook pages through the MediaWiki API (recording their revision ids), applies deterministic selection and duplicate checks against the 115 curated recipes, and refuses to write unless the expected per-source counts are met. `ES_RAW_FILE`, `DE_RAW_FILE`, `NL_RAW_FILE`, `FR_RAW_FILE`, `IT_RAW_FILE` and `CA_RAW_FILE` point the fetches at a saved raw dump so the same input can be rebuilt without touching the wikis. Review the source pages and attribution before redistributing changes.
+Both fetchers need network access. `build-open-recipe-data.py` pins the UniTools commit and Cookbook dataset revision, retrieves the Wikibooks source pages, and applies deterministic per-source selection and deduplication against the 115 curated recipes. `fetch-cocktails-en-borrelhapjes.py` queries Wikibooks categories and prefixes through the MediaWiki API, retains each page URL and revision id, and writes the two extra datasets; it can be restricted with `--taal de,en,fr,hu`. `ES_RAW_FILE`, `DE_RAW_FILE`, `NL_RAW_FILE`, `FR_RAW_FILE`, `IT_RAW_FILE` and `CA_RAW_FILE` point the base fetches at saved raw dumps. Review source pages and attribution before redistributing changes.
 
 `node scripts/export-recipe-sources.js <file>` writes exactly the import records the app builds, so the translation pipeline works on the same text.
 
