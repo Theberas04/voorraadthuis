@@ -105,6 +105,33 @@ if [ -n "$IP" ]; then
   proef "http://$IP/api/barcode/8710400058519" 'found' || { echo 'Barcodeherkenning niet bereikbaar.' >&2; rollback; }
   proef "http://$IP/favicon.svg" '<svg' || { echo 'App-pictogram niet bereikbaar.' >&2; rollback; }
   proef "http://$IP/manifest.webmanifest" '"display"' || { echo 'Webapp-manifest niet bereikbaar.' >&2; rollback; }
+  # Draait de app ook echt de nieuwe versie? Een oude service die nog op poort 80 luistert
+  # laat de pagina wel nieuw lijken (die komt van schijf), maar de nieuwe routes ontbreken
+  # dan: op de pagina staat dan wel 'Wat kan ik koken?', maar de knop geeft niets terug.
+  # Daarom vergelijken we hier de bestanden die de app uitserveert met wat we net ophaalden.
+  nieuweVersieDraait(){
+    proef "http://$IP/api/kookpot?max=2&aantal=1" '"samenvatting"' || return 1
+    curl -fsS --max-time 20 -H 'Cache-Control: no-cache' "http://$IP/sw.js" -o "$TMP/sw-gediend.js" 2>/dev/null || return 1
+    cmp -s "$TMP/sw-gediend.js" "$TMP/public/sw.js"
+  }
+  if ! nieuweVersieDraait; then
+    echo 'De nieuwe versie draait nog niet; ik start de app nog een keer opnieuw.' >&2
+    pct exec "$CTID" -- systemctl restart voorraadthuis
+    ok2=0
+    for _ in $(seq 1 60); do
+      if proef "http://$IP/healthz" '^ok$'; then ok2=1; break; fi
+      sleep 2
+    done
+    if [ "$ok2" != 1 ] || ! nieuweVersieDraait; then
+      echo 'De bestanden staan goed, maar op poort 80 antwoordt nog een oudere versie.' >&2
+      echo 'Kijk welk proces daar luistert en wat de service start:' >&2
+      echo "  pct exec $CTID -- ss -ltnp | grep ':80'" >&2
+      echo "  pct exec $CTID -- systemctl cat voorraadthuis" >&2
+      diagnose
+      exit 1
+    fi
+    echo 'De app draait nu de nieuwe versie.'
+  fi
   pct exec "$CTID" -- rm -rf "$BACKUP"
   if proefTls "https://$IP/healthz" '^ok$'; then
     echo "VoorraadThuis bijgewerkt; controle: http://$IP/ en https://$IP/ (terugvaloptie verwijderd na geslaagde controle)"
