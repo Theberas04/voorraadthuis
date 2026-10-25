@@ -7,6 +7,8 @@ Voorraad · boodschappen · 9.807 Nederlandstalige recepten · planning · garde
   <a href="https://nodejs.org/"><img alt="Node.js 22.5+" src="https://img.shields.io/badge/Node.js-22.5%2B-5fa04e?logo=nodedotjs&logoColor=white"></a>
   <a href="test/app.test.js"><img alt="Tests" src="https://img.shields.io/badge/tests-node%3Atest-1f6848"></a>
   <a href="recipe-data/README.md"><img alt="9.807 Nederlandse recepten" src="https://img.shields.io/badge/recepten-9.807-1f6848"></a>
+  <a href="keuken.js"><img alt="Kookpot: wat kan ik maken met wat ik in huis heb" src="https://img.shields.io/badge/kookpot-wat%20kan%20ik%20maken-3a7d5c"></a>
+  <a href="weer.js"><img alt="Weer in het kledingadvies via Open-Meteo" src="https://img.shields.io/badge/weer-Open--Meteo-2a6f7f"></a>
   <a href="recipe-data/README.md"><img alt="Nederlandstalig" src="https://img.shields.io/badge/taal-Nederlands-1f6848"></a>
   <a href="https://creativecommons.org/licenses/by-sa/4.0/"><img alt="Recepten CC BY-SA 4.0" src="https://img.shields.io/badge/receptenbron-CC%20BY--SA%204.0-ef9421"></a>
   <a href="wardrobe.js"><img alt="Garderobe" src="https://img.shields.io/badge/kledingkast-garderobe-2a6f7f"></a>
@@ -20,7 +22,7 @@ Voorraad · boodschappen · 9.807 Nederlandstalige recepten · planning · garde
 <p align="center"><a href="docs/img/voorraadthuis-rondleiding.mp4"><img src="docs/img/rondleiding-poster.jpg" alt="Klik om de stille rondleiding door VoorraadThuis te bekijken" width="100%"></a></p>
 <p align="center"><sub>Klik op de poster voor de stille rondleiding (21 sec, 1280×720, zonder audio). Screenshots en video gebruiken een geïsoleerde demodatabase.</sub></p>
 
-VoorraadThuis is een Nederlandstalige thuisapp met zes onderdelen: voorraad, boodschappen, recepten, kalender en werkrooster, kledingkast en lp-verzameling. Alles draait in één Proxmox-LXC als Node.js-service; je gegevens blijven lokaal in SQLite en er zijn geen Docker- of nginx-lagen nodig. De app werkt als mobiele webapp en barcode-scannen gebruikt de ingebouwde HTTPS-dienst.
+VoorraadThuis is een Nederlandstalige thuisapp met zes onderdelen: voorraad, boodschappen, recepten (met de kookpot die je voorraad met 9.807 recepten vergelijkt), kalender en werkrooster, kledingkast (met het weer in het combineeradvies) en lp-verzameling. Alles draait in één Proxmox-LXC als Node.js-service; je gegevens blijven lokaal in SQLite en er zijn geen Docker- of nginx-lagen nodig. De app werkt als mobiele webapp en barcode-scannen gebruikt de ingebouwde HTTPS-dienst.
 
 🎬 **[Stille rondleiding (21 sec · 1280×720 · zonder audio)](docs/img/voorraadthuis-rondleiding.mp4)** — voorraad, recepten, planning, garderobe, boodschappen en de lokale vinylcatalogus.
 
@@ -79,6 +81,8 @@ Open de app via `https://<LXC-IP>/`, accepteer eenmalig de waarschuwing van het 
 
 ## Wat de app doet
 
+Alles in één app: **voorraad en boodschappen**, **receptenboek met kookpot**, **maaltijd- & werkplanning**, **kledingkast met weer**, **platen** en **profielen**. Alles Nederlandstalig, alles in één SQLite-database naast de app, en zonder account of abonnement.
+
 ### Voorraad en boodschappen
 
 | Barcode op de telefoon | Product toevoegen | Barcode op desktop |
@@ -99,6 +103,14 @@ Open de app via `https://<LXC-IP>/`, accepteer eenmalig de waarschuwing van het 
 - De opzoeking gaat langs vier open databanken: **Open Food Facts** (voeding), **Open Products Facts** (huishoud- en schoonmaakproducten), **Open Beauty Facts** (verzorging) en **Open Pet Food Facts** (dierenvoeding). Zo worden ook Nederlandse schoonmaak- en verzorgingsproducten herkend die in de voedingsdatabank niet staan.
 - **Nederlands eerst**: de app vraagt de databanken om Nederlandse gegevens (`lc=nl` en de `product_name_nl`-velden) en kiest de Nederlandse naam als die er is. Heeft de databank alleen een buitenlandse naam, dan staat erbij in welke taal die is, zodat je weet waarom de naam afwijkt.
 - **Opnieuw proberen bij drukte**: de databanken geven bij veel verkeer status `429` of `503`. De app probeert het dan nog twee keer met korte tussenpozen, en zegt het pas als het echt niet lukt.
+- **Boodschappen van een hele week in één keer.** Met **+ Week erbij** op de boodschappenlijst kies je twee datums; de app zoekt alle geplande recepten in die periode op, telt de hoeveelheden van hetzelfde product bij elkaar op (400 gram tomaten op maandag plus 250 gram op donderdag wordt 650 gram) en zet het resultaat als één regel per product op je lijst. Grote hoeveelheden worden leesbaar: 1500 ml wordt 1,5 liter. Wat per stuk gaat blijft per stuk, en de app vertelt vooraf hoeveel maaltijden en recepten er in die dagen staan.
+- **Afvinken in de winkel werkt door in je voorraad.** Vink je een regel af, dan gaat het product van de lijst en in je voorraad; één stuks erbij, of zoveel stuks als er op de lijst stonden (*Eieren · 3 stuks* wordt 3 eieren erbij). De app zegt wat het geworden is, bijvoorbeeld *Ui staat nu 3× in je voorraad.*
+
+| De boodschappen van een week | Afvinken in de winkel |
+| --- | --- |
+| ![Dialoog om de boodschappen van een week samen te voegen](docs/img/week-samenvoegen.jpg) | ![Boodschappenlijst met afvinkvakjes en het resultaat in de voorraad](docs/img/afvinken-in-de-winkel.jpg) |
+| Kies twee datums; de app telt de ingrediënten van alle geplande recepten op. | Afvinken haalt de regel van de lijst en zet het product in je voorraad. |
+
 - **Aantal stuks per product.** Elk product heeft naast de inhoud van één stuk (bijv. 1500 ml) ook een aantal: hoeveel stuks je ervan in huis hebt. Dat vul je in bij het toevoegen en stel je in de voorraadlijst bij met **−** en **+** of door het getal direct te typen. De statistiekkaart telt de stuks mee, en zet je het laatste stuk eraf, dan gaat het product naar de boodschappenlijst. De inhoud van één stuk en het aantal blijven zo twee losse dingen: drie pakken melk van 1500 ml is *3 stuks × 1500 ml*.
 - **Huismerken van Nederlandse, Duitse en Belgische supermarkten** staan in een eigen tabel in de app: **45.623 producten van veertig ketens** — Lidl 10.259, REWE 5.286, Kaufland 3.901, Edeka 3.105, Delhaize 2.925, Aldi 2.820, Albert Heijn 2.469, Penny 2.444, Boni 1.100, Carrefour 1.086, Netto 1.056, Jumbo 990, PLUS 977, Colruyt 938, Globus 897, Dennree 769, dm 749, tegut 649, Alnatura 634, Rossmann 595, Norma 358, Cora 238, real 235, Vomar 229, Spar 195, Hoogvliet 166, Dirk 129, HIT 72, DekaMarkt 70, Poiesz 52, Match 51, Aldi Süd 38, Intermarché 36, Famila 34, Marktkauf 26, nahkauf 18, Aldi Nord 13, Okay 12, Jan Linders en MCD. Naar land: **Duitsland 20.521, Nederland 17.347, België 7.755**. Naast de producten staan er **289 barcode-reeksen** in de tabel, waarmee een nog onbekend huismerk toch aan de juiste winkel wordt toegeschreven. Een scan van een huismerk wordt daardoor meteen herkend — zonder opzoeking, zonder wachttijd en ook zonder internet. De tabel kent zowel gewone EAN-13 als de korte EAN-8-codes die supermarkten voor kleine artikelen gebruiken, en bewaart per product de taal van de naam: is die niet Nederlands, dan zegt de app dat erbij.
 | Huismerk van Lidl herkend | Huismerk van Aldi herkend |
@@ -162,6 +174,36 @@ Op elke receptkaart staat naast **Ingrediënten op boodschappenlijst** ook **Pla
 | ![Gepland recept en werkdienst in de kalender](docs/img/recepten-plannen-kalender.jpg) | ![Recept plannen op de telefoon](docs/img/recepten-plannen-mobiel.jpg) |
 | Recept, landkeuken en werkdienst staan samen in de dagcel en in de dagplanning. | Dezelfde route op een smal scherm. |
 
+#### Wat kan ik koken met wat ik in huis heb?
+
+In het receptenboek staat naast **Alle recepten** de knop **Wat kan ik koken?**. De app vergelijkt dan je hele voorraad met alle 9.807 recepten:
+
+- **Nu te maken** staat bovenaan: recepten waarvan alles in huis is.
+- Daaronder wat je met één of twee boodschappen kunt maken; met het keuzemenu bepaal je zelf of er 0, 1, 2 of 3 ingrediënten mogen ontbreken.
+- Elke kaart zegt wat er nog mist (bijvoorbeeld *Ontbreekt nog: prei, room*) met de knop **+ Ontbrekende op de lijst** die precies die producten op je boodschappenlijst zet — wat al in huis is blijft eraf.
+- **Voorraadkast-basis telt mee**: zout, peper, water, olie, suiker, bloem, bakpoeder en azijn hoef je niet in te voeren; de app zegt erbij dat ze als aanwezig gelden.
+- Wat je zelf in je voorraad typt blijft leidend. Enkelvoud en meervoud horen bij elkaar (*ei* en *eieren*, *ui* en *uien*), en samengestelde namen matchen op het deel dat je hebt (*cherrytomaten* of *tomatenblokjes* bij *tomaten*). Een écht ander product wordt niet goedgekeurd: met melk in huis wordt *kokosmelk* niet goedgekeurd.
+
+De samenvatting boven de lijst zegt hoeveel recepten er nu te maken zijn en hoeveel er met jouw marge bijkomen; zoeken en filteren op land werken in deze stand hetzelfde.
+
+| Wat kan ik koken | Porties omrekenen |
+| --- | --- |
+| ![Kookpot met recepten die je nu kunt maken](docs/img/kookpot-wat-kan-ik-maken.jpg) | ![Porties omrekenen in een recept](docs/img/porties-omrekenen.jpg) |
+| Recepten die je met je voorraad kunt maken, met per kaart wat er nog mist. | Met **−** en **+** zet je de hoeveelheden op het aantal personen dat je nodig hebt. |
+
+#### Porties omrekenen en kookmodus
+
+- **Porties omrekenen**: elk recept met losse hoeveelheden heeft een porties-kiezer. Zet je een recept voor 4 op 3 personen, dan rekenen alle hoeveelheden mee (350 gram pasta wordt 263 gram, 1 potje pesto wordt 0,8). Ingrediënten die je per stuk koopt blijven heel: vier eieren voor drie personen wordt er voor twee personen drie, geen 2,7.
+- **Zelfde porties op de boodschappenlijst**: wat je kiest, gaat zo op de lijst. Ook bij **Porties die dag** in de dagplanning; die keuze onthoudt de app per dag en gebruikt hij bij het samenvoegen van een week.
+- **Kookmodus**: het hele scherm wordt een kookboek op ooghoogte — grote stappen, de ingrediëntenlijst met de omgerekende hoeveelheden ernaast, en **Vorige**/**Volgende** (of de pijltjes op je toetsenbord). Het scherm blijft aan zolang de kookmodus openstaat.
+- **Timer per stap**: noemt een stap een tijd (*laat 15 minuten sudderen*), dan staat er een timer-knop bij. Tik erop en er loopt een aftellende timer met piepje en, als je dat toestaat, een melding op je telefoon.
+
+| Kookmodus met timer |
+| --- |
+| ![Kookmodus met stappen en een lopende timer](docs/img/kookmodus-met-timer.jpg) |
+
+🎬 **[Stille rondleiding: koken met je voorraad (21 sec · 1280×720 · zonder audio)](docs/img/voorraadthuis-keuken-rondleiding.mp4)** — kookpot, porties omrekenen, kookmodus met timer, een week samenvoegen, afvinken in de winkel en het weer in het kledingadvies.
+
 🎬 **[Stille rondleiding: een recept plannen (15 sec · 1280×720 · zonder audio)](docs/img/recepten-plannen-rondleiding.mp4)** — van receptkaart tot kalender, met echte schermen uit een geïsoleerde demodatabase.
 
 
@@ -183,6 +225,21 @@ Op elke receptkaart staat naast **Ingrediënten op boodschappenlijst** ook **Pla
 - **Setjes**: vaste combinaties bewaren en in één tik opnieuw dragen; ze verschijnen ook in de draaghistorie.
 - **Analyse**: aantal per categorie, kleurverdeling, meest en nooit gedragen, te wassen, prijs per keer dragen en de totale waarde van je kast. Daarnaast een maandkalender met wat je per dag droeg.
 - Foto's maak je met de camera-knop in het formulier of kies je uit je album; ze worden opgeslagen in een aparte fotomap.
+
+#### Het weer in het advies
+
+Vul onder het advies een plaats in (bijvoorbeeld *Delft*) en druk op **Zoek en bewaar**: de app haalt de verwachting van vandaag op bij [Open-Meteo](https://open-meteo.com/) — een openbare dienst zonder sleutel en zonder account — en laat die meewegen:
+
+- **Regen** (50% of meer): het advies kiest waterdichte schoenen en laat leer en suède staan, met de regel erbij waarom.
+- **Koud** (5 °C of minder) of **fris** (tot 12 °C): een warme jas en een extra laag; ook bij het sporten gaat er dan een jas mee.
+- **Warm** (22 °C of meer): lichte kleding en de jas blijft thuis.
+- **Hardewind** (40 km/u of meer): een winddichte jas.
+
+De verwachting wordt in je eigen database bewaard (drie uur geldig), dus het advies haalt niet bij elk verzoek opnieuw op. Zonder internet, zonder plaats of met het weer uitgevinkt blijft het advies gewoon werken op seizoen en gelegenheid — er staat dan alleen geen weerregel bij.
+
+| Weer in het kledingadvies |
+| --- |
+| ![Kledingadvies met de verwachting van vandaag en de regen- en windtips](docs/img/weer-in-het-kledingadvies.jpg) |
 
 #### Hoe het combineeradvies werkt
 
@@ -332,6 +389,12 @@ npm start    # http://localhost:3000
 | `GET/POST /api/products`, `PATCH/DELETE /api/products/<id>` | Voorraad lezen, toevoegen, op/herstel en verwijderen. |
 | `GET /api/shopping`, `POST /api/shopping`, `POST /api/shopping/recipes/<id>` | Boodschappenlijst en ingrediënten van een recept toevoegen. |
 | `GET /api/recipes?country=` | De receptencollectie, optioneel per land. |
+| `GET /api/recipes/<id>?porties=3` | Eén recept; met `porties` rekenen de hoeveelheden mee naar dat aantal personen. De bereiding krijgt per stap de tijden mee (`stapTimers`) voor de kookmodus. |
+| `GET /api/kookpot?max=2&q=&country=&vanaf=&aantal=` | Wat je met je voorraad kunt maken: per recept wat er nog ontbreekt, hoeveel ingrediënten je al in huis hebt en of het nu te maken is. `max` is hoeveel ingrediënten er mogen ontbreken (0–3). |
+| `POST /api/shopping/recipes/<id>` | Ingrediënten op de boodschappenlijst; met `{porties}` omgerekend, met `{alleenOntbrekend:true}` alleen wat nog niet in huis is. |
+| `POST /api/shopping/week` | Met `{van,tot}` alle geplande recepten in die periode (maximaal 31 dagen) samengevoegd op de lijst; het antwoord vertelt per regel uit welke dagen hij komt. |
+| `POST /api/shopping/<id>/afvinken` | Afvinken in de winkel: het product gaat de voorraad in en van de lijst af. |
+| `GET /api/weer`, `PUT /api/weer/instellingen` | De plaats voor het weer lezen en zetten (`{plaats}`, `{lat,lon}` of `{aan}`), met de verwachting van vandaag en de bron. |
 | `GET/PUT/DELETE /api/planner/<datum>`, `GET /api/planner?month=` | Dagplanning met recept, landkeuken en diensten. |
 | `GET/POST/DELETE /api/shift-templates` | Herbruikbare diensten. |
 | `GET/POST /api/platen`, `PATCH/DELETE /api/platen/<id>` | De platenverzameling: lezen, toevoegen, verplaatsen of wijzigen en verwijderen. Lezen kan gefilterd met `?locatie=` (of `leeg`), `?genre=`, `?artiest=`, `?decennium=` (of `onbekend`), `?van=`/`?tot=` en `?q=`; het antwoord bevat ook `keuzelijsten` met de genres, artiesten, decennia en locaties met aantallen. |

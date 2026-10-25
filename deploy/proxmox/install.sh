@@ -22,7 +22,7 @@ FILES=(
   "package.json"
   "recipes-international.js"
   "recipes-open.js"
-  "wardrobe.js"
+  "wardrobe.js" "keuken.js" "weer.js"
   "barcodes.js" "profiles.js" "platen.js"
   "recipe-data/unitools-recipes.json"
   "recipe-data/wikibooks-en-recipes.json" "recipe-data/wikibooks-es-recipes.json" "recipe-data/wikibooks-de-recipes.json" "recipe-data/wikibooks-nl-recipes.json" "recipe-data/wikibooks-fr-recipes.json" "recipe-data/wikibooks-it-recipes.json" "recipe-data/wikibooks-ca-recipes.json" "recipe-data/wikibooks-pt-recipes.json" "recipe-data/wikibooks-ja-recipes.json" "recipe-data/wikibooks-pl-recipes.json" "recipe-data/wikibooks-sv-recipes.json" "recipe-data/wikibooks-nb-recipes.json" "recipe-data/wikibooks-fi-recipes.json" "recipe-data/wikibooks-cocktails-recipes.json" "recipe-data/wikibooks-borrelhapjes-recipes.json"
