@@ -20,7 +20,7 @@ Voorraad · boodschappen · 9.807 Nederlandstalige recepten · planning · garde
 <p align="center"><a href="docs/img/voorraadthuis-rondleiding.mp4"><img src="docs/img/rondleiding-poster.jpg" alt="Klik om de stille rondleiding door VoorraadThuis te bekijken" width="100%"></a></p>
 <p align="center"><sub>Klik op de poster voor de stille rondleiding (21 sec, 1280×720, zonder audio). Screenshots en video gebruiken een geïsoleerde demodatabase.</sub></p>
 
-VoorraadThuis is een Nederlandstalige thuisapp met zes onderdelen: voorraad, boodschappen, recepten, kalender en werkrooster, kledingkast en lp-verzameling. Alles draait in één Proxmox-LXC als Node.js-service; je gegevens blijven lokaal in SQLite en er zijn geen Docker- of nginx-lagen nodig. De app werkt als mobiele webapp en barcode-scannen gebruikt de ingebouwde HTTPS-dienst.
+VoorraadThuis is een Nederlandstalige thuisapp met acht onderdelen: voorraad met houdbaarheidswaarschuwingen, schoonmaak- en klusplanning, boodschappen, recepten, kalender en werkrooster, kledingkast en lp-verzameling. Meldingen over producten die binnen zeven dagen verlopen en taken die binnen zeven dagen aan de beurt zijn verschijnen in de app. Schoonmaak- en klustaken kunnen eenmalig of terugkerend worden ingepland en aan een persoon worden toegewezen. Alles draait in één Proxmox-LXC als Node.js-service; je gegevens blijven lokaal in SQLite en er zijn geen Docker- of nginx-lagen nodig. De app werkt als mobiele webapp en barcode-scannen gebruikt de ingebouwde HTTPS-dienst.
 
 🎬 **[Stille rondleiding (21 sec · 1280×720 · zonder audio)](docs/img/voorraadthuis-rondleiding.mp4)** — voorraad, recepten, planning, garderobe, boodschappen en de lokale vinylcatalogus.
 
@@ -34,7 +34,7 @@ VoorraadThuis is een Nederlandstalige thuisapp met zes onderdelen: voorraad, boo
 | --- | --- | --- | --- |
 | ![Combineeradvies op de telefoon](docs/img/mobiel-kast-vandaag.jpg) | ![Was op de telefoon](docs/img/mobiel-kast-was.jpg) | ![Analyse op de telefoon](docs/img/mobiel-kast-analyse.jpg) | ![Boodschappenlijst op de telefoon](docs/img/mobiel-boodschappen.jpg) |
 
-- Zes hoofdonderdelen in de navigatie, ook bruikbaar op smalle telefoonschermen.
+- Acht hoofdonderdelen in de navigatie, ook bruikbaar op smalle telefoonschermen.
 - Invoervelden op 16 px, zodat iOS niet inzoomt bij het typen; knoppen en velden zijn minimaal 44 px hoog.
 - Recepten komen in delen van 48 van de server, met **Nog … recepten laden**; zoeken en filteren gebeurt op de server en ingrediënten worden pas bij het openklappen opgehaald, zodat de pagina ook met 9.807 recepten vlot blijft.
 - Veilige marges voor toestellen met een inkeping (`viewport-fit=cover` en `env(safe-area-inset-bottom)`).
@@ -100,6 +100,8 @@ Open de app via `https://<LXC-IP>/`, accepteer eenmalig de waarschuwing van het 
 - **Nederlands eerst**: de app vraagt de databanken om Nederlandse gegevens (`lc=nl` en de `product_name_nl`-velden) en kiest de Nederlandse naam als die er is. Heeft de databank alleen een buitenlandse naam, dan staat erbij in welke taal die is, zodat je weet waarom de naam afwijkt.
 - **Opnieuw proberen bij drukte**: de databanken geven bij veel verkeer status `429` of `503`. De app probeert het dan nog twee keer met korte tussenpozen, en zegt het pas als het echt niet lukt.
 - **Aantal stuks per product.** Elk product heeft naast de inhoud van één stuk (bijv. 1500 ml) ook een aantal: hoeveel stuks je ervan in huis hebt. Dat vul je in bij het toevoegen en stel je in de voorraadlijst bij met **−** en **+** of door het getal direct te typen. De statistiekkaart telt de stuks mee, en zet je het laatste stuk eraf, dan gaat het product naar de boodschappenlijst. De inhoud van één stuk en het aantal blijven zo twee losse dingen: drie pakken melk van 1500 ml is *3 stuks × 1500 ml*.
+- **Houdbaarheid en meldingen.** Geef per voorraadproduct een datum op. Producten die verlopen zijn of binnen zeven dagen verlopen verschijnen boven de voorraad en op het Huishouden-scherm; de datum blijft aan het product gekoppeld en kan later worden aangepast. Dit zijn meldingen in de app, geen pushbericht of sms.
+- **Schoonmaak en klussen.** Plan eenmalige of terugkerende taken, kies een datum, optioneel een verantwoordelijke en notitie. Vink taken af; een terugkerende taak schuift automatisch door naar de volgende datum. Taken die vandaag of binnen zeven dagen aan de beurt zijn staan in de meldingen.
 - **Huismerken van Nederlandse, Duitse en Belgische supermarkten** staan in een eigen tabel in de app: **45.623 producten van veertig ketens** — Lidl 10.259, REWE 5.286, Kaufland 3.901, Edeka 3.105, Delhaize 2.925, Aldi 2.820, Albert Heijn 2.469, Penny 2.444, Boni 1.100, Carrefour 1.086, Netto 1.056, Jumbo 990, PLUS 977, Colruyt 938, Globus 897, Dennree 769, dm 749, tegut 649, Alnatura 634, Rossmann 595, Norma 358, Cora 238, real 235, Vomar 229, Spar 195, Hoogvliet 166, Dirk 129, HIT 72, DekaMarkt 70, Poiesz 52, Match 51, Aldi Süd 38, Intermarché 36, Famila 34, Marktkauf 26, nahkauf 18, Aldi Nord 13, Okay 12, Jan Linders en MCD. Naar land: **Duitsland 20.521, Nederland 17.347, België 7.755**. Naast de producten staan er **289 barcode-reeksen** in de tabel, waarmee een nog onbekend huismerk toch aan de juiste winkel wordt toegeschreven. Een scan van een huismerk wordt daardoor meteen herkend — zonder opzoeking, zonder wachttijd en ook zonder internet. De tabel kent zowel gewone EAN-13 als de korte EAN-8-codes die supermarkten voor kleine artikelen gebruiken, en bewaart per product de taal van de naam: is die niet Nederlands, dan zegt de app dat erbij.
 | Huismerk van Lidl herkend | Huismerk van Aldi herkend |
 | --- | --- |
@@ -262,7 +264,7 @@ Meer Proxmox-instellingen, beheercommando's en back-upinstructies staan in [`dep
 
 | Pad in de LXC | Inhoud |
 | --- | --- |
-| `/var/lib/voorraadthuis/voorraad.db` | Voorraad, boodschappen, planning, werkdiensten, kleding, wasbeurten en draaghistorie (SQLite). |
+| `/var/lib/voorraadthuis/voorraad.db` | Voorraad, houdbaarheidsdatums, boodschappen, huishoudtaken, planning, werkdiensten, kleding, wasbeurten en draaghistorie (SQLite). |
 | `/var/lib/voorraadthuis/fotos/` | De geüploade kledingfoto's, één bestand per kledingstuk. |
 | `/var/lib/voorraadthuis/discogs-vinyl.sqlite` | Optionele, alleen-lezen Discogs-vinylcatalogus; staat los van je persoonlijke platenverzameling. |
 
