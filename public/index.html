@@ -110,11 +110,55 @@
 #page-platen .filterStand strong{color:#173c32}
 @media (max-width:560px){#page-platen .filterBalk{grid-template-columns:1fr 1fr;padding:10px}}
 #page-platen .panelhead input{max-width:230px}
+
+/* Kookpot, porties, kookmodus, weekboodschappen, afvinken en het weer. */
+.segmented{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.segmented .btn{flex:0 1 auto;min-height:40px}
+.segmented .btn.active{background:var(--g);color:#fff;border-color:var(--g)}
+.recipeFilters .segmented{grid-column:1/-1}
+.pill.kookpotKlaar{background:#e4f4e9;color:#1f6b3f;border-color:#b9e0c6}
+.pill.kookpotBijna{background:#fdf1dc;color:#8a5a12;border-color:#f0dcb4}
+.recipe.kookpot{border-left:4px solid #34714d}
+.kookpotOntbreekt{font-size:12px;color:#94522a;margin:4px 0 8px}
+.portions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0 12px;padding:8px 10px;background:#f6f9f5;border:1px solid #e4eadf;border-radius:11px}
+.portions .btn{padding:4px 12px;min-height:32px}
+.portions strong{min-width:22px;text-align:center}
+.weekDialog{width:min(520px,calc(100vw - 28px));border:1px solid var(--l);border-radius:18px;padding:24px;background:#fff;color:#1c2822;box-shadow:0 22px 70px #14271d44}
+.weekDialog::backdrop{background:#10251dcc;backdrop-filter:blur(3px)}
+.weekDialog h2{margin:0 0 8px;color:var(--g)}
+.weekDialog .two{margin-top:10px}
+.afvink{display:flex;align-items:center;gap:7px;font-size:12px;color:#46544b;margin-top:6px}
+.afvink input{width:20px;height:20px;min-height:0}
+.weerRow{display:flex;gap:8px;align-items:end;flex-wrap:wrap;margin:10px 0 4px;padding:10px;background:#f6f9f5;border:1px solid #e4eadf;border-radius:11px}
+.weerRow label{min-width:0}
+.weerRow input[type=text],.weerRow input:not([type]){max-width:200px}
+.weerRow .check{display:flex;align-items:center;gap:7px;font-size:12.5px;color:#46544b}
+.weerRow .check input{width:20px;height:20px;min-height:0}
+.kookmodus{position:fixed;inset:0;z-index:80;background:#0d1c15f7;color:#eef4ee;display:flex;flex-direction:column;gap:12px;padding:16px;overflow:auto}
+.kookmodus[hidden]{display:none}
+.kookmodus h2{color:#fff;margin:0;font-size:20px}
+.kookmodus .kookKop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.kookmodus .kookInhoud{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(240px,.9fr);gap:14px;align-items:start}
+.kookmodus ol.kookStappen{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.kookStap{background:#16332a;border-radius:14px;padding:14px 16px;font-size:18px;line-height:1.5}
+.kookStap.actief{background:#1f4a37;box-shadow:0 0 0 2px #64c48d}
+.kookStapNr{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8fd0a8;margin-bottom:6px}
+.timerChips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.timerChip{background:#0f2a1f;color:#d8f0e2;border:1px solid #2f6b4f;font-size:13px;padding:6px 10px;min-height:34px}
+.kookmodus .kookIngredienten{background:#12291f;border-radius:14px;padding:14px;font-size:13.5px}
+.kookmodus .kookIngredienten ul{padding-left:18px;line-height:1.7;margin:8px 0 0}
+.kookmodus footer{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid #23504080;padding-top:12px}
+.kookmodus footer .btn{background:#17352a;color:#eef4ee;border-color:#2f6b4f}
+.kookTimer{display:flex;align-items:center;gap:12px;background:#17352a;border:1px solid #2f6b4f;border-radius:14px;padding:12px 14px}
+.kookTimer strong{font-size:26px;letter-spacing:.04em}
+@media(max-width:760px){.kookmodus .kookInhoud{grid-template-columns:1fr}.kookStap{font-size:16.5px}}
 </style></head><body>
 <header class="top"><div class="brand"><svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="15" fill="#b9d2a3"/><path d="M32 12 11 30.5h6.5V51h29V30.5H53Z" fill="#173c32"/><path d="M32 21 21 30.8V46h22V30.8Z" fill="#f5f5f0"/><path d="M29 46V36h6v10Z" fill="#1f6848"/><circle cx="32" cy="29" r="3.2" fill="#1f6848"/></svg><span>VoorraadThuis</span><span class="brandsub">· thuisinventaris</span></div><h1>Goed eten begint met overzicht.</h1><p class="sub">Voorraad, recepten, weekplanning en boodschappen op één plek.</p><nav class="nav" aria-label="Hoofdnavigatie"><button class="active" data-page="stock">Voorraad</button><button data-page="recipes">Recepten</button><button data-page="kast">Kleding</button><button data-page="platen">Platen</button><button data-page="calendar">Kalender</button><button data-page="profielen">Profielen</button><button class="shopnav" data-page="shopping"><span class="navfull">Boodschappen</span><span class="navshort">Lijst</span> <span class="badgeCount" id="navCount">0</span></button></nav></header>
 <main class="wrap">
 <section class="view" id="page-stock"><div class="stats"><div class="stat">Producten in huis<strong id="countHave">0</strong><span class="muted" id="countStuks"></span></div><div class="stat">Niet meer in huis<strong id="countNeed">0</strong></div><div class="stat">Recepten in het boek<strong id="countRecipes">—</strong></div></div><div class="layout"><section class="panel"><h2>Product toevoegen</h2><form id="addForm"><label class="field" for="name">Productnaam</label><input id="name" placeholder="Bijv. havermelk" required maxlength="120"><label class="field" for="barcode">Barcode <span class="muted">(optioneel)</span></label><div class="scan"><input id="barcode" inputmode="numeric" placeholder="Scan of typ barcode"><button class="btn" type="button" id="scanBtn">▦ Scan</button></div><video id="camera" class="camera" hidden playsinline></video><p class="scanresult" id="barcodeResult" hidden></p><div class="two"><div><label class="field" for="quantity">Hoeveelheid per stuk</label><input id="quantity" type="number" min="0.01" step="any" value="1" onfocus="this.select()"></div><div><label class="field" for="unit">Eenheid</label><input id="unit" value="stuks" maxlength="24"></div></div><label class="field" for="aantal">Aantal in huis <span class="muted">(stuks)</span></label><input id="aantal" type="number" min="1" max="9999" step="1" value="1" onfocus="this.select()"><p class="hint">Hoeveelheid is wat er in één stuk zit (bijv. 1500 ml of 4 stuks); aantal is hoeveel stuks je er in huis hebt (bijv. 3 pakken).</p><button class="btn primary wide">+ Voeg toe aan voorraad</button></form><p class="notice" id="stockNotice"></p><p class="hint">Scan of typ een barcode: de app zoekt het product op in de open productendatabanken (Open Food Facts voor voeding, daarnaast huishoud-, verzorgings- en dierenvoedingsproducten; open data, ODbL 1.0) en vult de naam vast in. Alles wordt lokaal bewaard en wat je zelf invult blijft leidend — ook als de databank het product niet kent.</p></section><section class="panel"><div class="panelhead"><h2>Mijn voorraad</h2><span class="pill">Bijgewerkt</span></div><div class="tabs"><button class="tab active" data-stock="have">In huis <span id="haveTab">0</span></button><button class="tab" data-stock="need">Niet meer in huis <span id="needTab">0</span></button></div><div id="stockList" class="list"></div></section></div></section>
-<section class="view" id="page-recipes" hidden><div class="panelhead"><div><h2>Receptenboek</h2><div class="hint">9.807 recepten: 115 Nederlandse thuisvarianten, aangevuld met 9.692 recepten uit zestien open bronnen — het Wikibooks-kookboek in het Engels (3.393), Spaans (664), Duits (407) en Nederlands (450), de Franse (986), Italiaanse (583), Catalaanse (673), Portugese (237), Japanse (276), Poolse (863), Zweedse (313), Noorse (79) en Finse (11) kookboeken en 500 recepten uit UniTools World Recipes. Alles wat niet Nederlands is, is naar het Nederlands vertaald; alles met bronvermelding (CC BY-SA 4.0).</div></div><span class="pill" id="recipeTotal">— recepten</span></div><div class="recipeFilters"><label><span class="field">Land</span><select id="recipeCountry"><option value="">Alle landen</option></select></label><label><span class="field">Zoeken</span><input id="recipeSearch" type="search" placeholder="Zoek op gerecht of ingrediënt"></label></div><div id="recipeGrid"></div><p class="notice" id="recipeNotice"></p></section>
+<section class="view" id="page-recipes" hidden><div class="panelhead"><div><h2>Receptenboek</h2><div class="hint">9.807 recepten: 115 Nederlandse thuisvarianten, aangevuld met 9.692 recepten uit zestien open bronnen — het Wikibooks-kookboek in het Engels (3.393), Spaans (664), Duits (407) en Nederlands (450), de Franse (986), Italiaanse (583), Catalaanse (673), Portugese (237), Japanse (276), Poolse (863), Zweedse (313), Noorse (79) en Finse (11) kookboeken en 500 recepten uit UniTools World Recipes. Alles wat niet Nederlands is, is naar het Nederlands vertaald; alles met bronvermelding (CC BY-SA 4.0).</div></div><span class="pill" id="recipeTotal">— recepten</span></div><div class="recipeFilters"><label><span class="field">Land</span><select id="recipeCountry"><option value="">Alle landen</option></select></label><label><span class="field">Zoeken</span><input id="recipeSearch" type="search" placeholder="Zoek op gerecht of ingrediënt"></label></div><div class="recipeFilters"><div><span class="field">Soort lijst</span><div class="segmented" id="receptModus" role="group" aria-label="Soort receptenlijst"><button class="btn active" type="button" id="modusAlle" data-modus="alle">Alle recepten</button><button class="btn" type="button" id="modusKookpot" data-modus="kookpot">Wat kan ik koken?</button></div></div><label id="kookpotMargeLabel" hidden><span class="field">Mag nog ontbreken</span><select id="kookpotMarge"><option value="0">niets — alles in huis</option><option value="1">1 ingrediënt</option><option value="2" selected>2 ingrediënten</option><option value="3">3 ingrediënten</option></select></label></div>
+<p class="hint" id="kookpotUitleg" hidden></p>
+<div id="recipeGrid"></div><p class="notice" id="recipeNotice"></p></section>
 <section class="view" id="page-kast" hidden>
 <div class="tabs kastTabs" aria-label="Garderobe-onderdelen"><button class="tab active" data-kast="kast">Kast <span class="badgeCount" id="navItems">0</span></button><button class="tab" data-kast="vandaag">Vandaag</button><button class="tab" data-kast="was">Was <span class="badgeCount" id="navWas">0</span></button><button class="tab" data-kast="setjes">Setjes</button><button class="tab" data-kast="analyse">Analyse</button></div>
 <section class="kastview" id="kast-kast">
@@ -187,6 +231,12 @@
       <div><label class="field" for="adviceRating">Beoordeling na het dragen</label><select id="adviceRating"><option value="">geen</option><option value="5">5 · top</option><option value="4">4 · goed</option><option value="3">3 · prima</option><option value="2">2 · matig</option><option value="1">1 · niets</option></select></div>
     </div>
     <div class="formactions"><button class="btn primary" id="newAdvice">Nieuw advies</button><button class="btn" id="wearAdvice">Dragen vandaag</button><button class="btn" id="saveAdvice">Bewaar als setje</button></div>
+    <div class="weerRow">
+      <div><label class="field" for="weerPlaats">Plaats voor het weer</label><input id="weerPlaats" maxlength="60" placeholder="Bijv. Delft"></div>
+      <button class="btn" type="button" id="weerZoek">Zoek en bewaar</button>
+      <label class="check"><input type="checkbox" id="weerAan"> Weer meenemen in het advies</label>
+    </div>
+    <p class="hint" id="weerRegel">Het weer komt van Open-Meteo (openbaar, zonder sleutel).</p>
     <p class="notice" id="adviceNotice"></p>
     <div id="adviceBox"></div>
   </div>
@@ -240,8 +290,23 @@
   <div class="panel" style="margin-top:16px"><h2>Nooit gedragen</h2><div id="neverWorn" class="list"></div></div>
 </section>
 </section>
-<section class="view" id="page-platen" hidden><div class="panelhead"><div><h2>Mijn platen</h2><div class="hint">Scan de barcode van een lp of typ hem in: de app zoekt de uitgave op en haalt de hoes erbij. Je verzameling kun je per locatie bekijken, en filteren op genre, artiest en jaartal.</div></div><span class="pill" id="platenTotaal">0 platen</span><span class="pill" id="platenGemiddelde" hidden>Gemiddelde richtprijs: nog geen prijzen</span></div><div class="layout"><section class="panel" id="plaatToevoegenPanel"><h2>Plaat toevoegen</h2><form id="plaatForm"><label class="field" for="plaatBarcode">Barcode <span class="muted">(scannen of typen)</span></label><div class="scan"><input id="plaatBarcode" inputmode="numeric" placeholder="Scan of typ de barcode"><button class="btn" type="button" id="plaatScan">▦ Scan</button></div><video id="plaatCamera" class="camera" hidden playsinline></video><p class="scanresult" id="plaatZoekVak" hidden></p><div class="hoesVak" id="plaatHoesVak" hidden><img id="plaatHoes" alt="Hoes van deze plaat"></div><label class="field" for="plaatTitel">Titel</label><input id="plaatTitel" maxlength="160" required placeholder="Bijv. The Dark Side of the Moon"><label class="field" for="plaatArtiest">Artiest</label><input id="plaatArtiest" maxlength="160" placeholder="Bijv. Pink Floyd"><div class="two"><div><label class="field" for="plaatJaar">Jaar</label><input id="plaatJaar" maxlength="12" placeholder="1973"></div><div><label class="field" for="plaatFormaat">Formaat</label><input id="plaatFormaat" maxlength="160" placeholder="12 inch Vinyl"></div></div><div class="two"><div><label class="field" for="plaatLabel">Label</label><input id="plaatLabel" maxlength="160" placeholder="Harvest"></div><div><label class="field" for="plaatAantal">Aantal exemplaren</label><input id="plaatAantal" type="number" min="1" max="99" step="1" value="1" onfocus="this.select()"></div></div><label class="field" for="plaatLocatie">Waar staat deze plaat? <span class="muted">(typ een eigen plek)</span></label><input id="plaatLocatie" list="plaatLocaties" maxlength="60" placeholder="Typ een plek, bijv. de kast bij de bank"><datalist id="plaatLocaties"></datalist><label class="field" for="plaatNotitie">Notitie</label><textarea id="plaatNotitie" maxlength="300" rows="2" placeholder="Bijv. eerste persing, klein krasje op kant B"></textarea><button class="btn primary wide" type="submit">+ Zet in mijn verzameling</button><button class="btn wide" id="plaatWensButton" type="button">♡ Aan verlanglijst toevoegen</button></form><p class="notice" id="plaatNotice"></p><p class="hint">De gegevens komen uit MusicBrainz (open data, CC0) en de hoes uit het Cover Art Archive. Wat je zelf invult blijft leidend, en alles wordt lokaal bewaard: een volgende scan is meteen raak, ook zonder internet.</p></section><section class="panel" id="plaatVerlanglijstZoekPanel" hidden><h2>Zoek platen voor je verlanglijst</h2><p class="hint">Zoek in de lokale vinylbarcodelijst op titel of artiest. Nog geen barcode bekend? Voeg de plaat toe via scannen of handmatig invullen.</p><label class="field" for="plaatWensZoek">Titel of artiest</label><input id="plaatWensZoek" type="search" placeholder="Bijv. Elton John of BBC Sessions" autocomplete="off"><p class="notice" id="plaatWensZoekMelding"></p><div id="plaatWensResultaten" class="wensZoekResultaten"></div></section><section class="panel"><div class="panelhead"><h2 id="plaatLijstTitel">Mijn verzameling</h2><input id="plaatZoek" placeholder="Zoek op titel of artiest" aria-label="Zoeken in mijn platen"></div><div class="tabs" id="platenVerlanglijstTabs"></div><div class="filterBalk" id="plaatFilters"><div><label for="plaatGenre">Genre</label><select id="plaatGenre"><option value="">Alles</option></select></div><div><label for="plaatArtiestFilter">Artiest</label><select id="plaatArtiestFilter"><option value="">Alles</option></select></div><div><label for="plaatDecennium">Decennium</label><select id="plaatDecennium"><option value="">Alles</option></select></div><div><label for="plaatVan">Jaartal</label><div class="jaarVak"><input id="plaatVan" type="number" inputmode="numeric" min="1900" max="2100" step="1" placeholder="van" onfocus="this.select()"><span>–</span><input id="plaatTot" type="number" inputmode="numeric" min="1900" max="2100" step="1" placeholder="tot" onfocus="this.select()"></div></div><div class="knopVak"><button class="btn ghost" type="button" id="plaatWisFilters">Filters wissen</button></div></div><p class="filterStand" id="plaatFilterStand"></p><div class="tabs" id="plaatLocatieTabs"></div><div id="plaatGrid" class="plaatGrid"></div><p class="hint" id="plaatLeeg" hidden></p></section></div></section><section class="view" id="page-calendar" hidden><div class="panelhead"><div><h2>Maaltijd- & werkplanning</h2><div class="hint">Plan een recept, landkeuken en je werkdienst per dag.</div></div><button class="btn primary" type="button" id="openRecipesToPlan">+ Recept plannen</button></div><div class="calendarShell"><section class="panel"><div class="monthbar"><button id="prevMonth" aria-label="Vorige maand">‹</button><h2 id="monthTitle"></h2><button id="nextMonth" aria-label="Volgende maand">›</button></div><div class="calendar" id="calendarGrid"></div><div class="panelhead" style="margin:16px 0 3px"><h2 style="font-size:15px">Werkagenda</h2><span class="pill" id="workAgendaTotaal"></span></div><div id="workAgenda" class="agendaList"></div></section><section class="panel"><h2>Dagplanning</h2><div class="dateLabel" id="selectedLabel"></div><form id="planForm"><label class="field" for="planRecipeZoek">Recept zoeken</label><input id="planRecipeZoek" type="search" placeholder="Typ een gerecht of ingrediënt…" autocomplete="off"><div class="hint" id="planRecipeHint"></div><label class="field" for="planRecipe">Recept van de dag</label><select id="planRecipe"><option value="">Geen recept gepland</option></select><label class="field" for="planCuisine">Landkeuken</label><input id="planCuisine" list="cuisines" placeholder="Bijv. Italië"><datalist id="cuisines"><option>Nederland</option><option>Italië</option><option>Mexico</option><option>India</option><option>Tunesië</option><option>Japan</option><option>Thailand</option><option>Frankrijk</option><option>Marokko</option><option>Griekenland</option><option>Indonesië</option><option>Turkije</option></datalist><div class="panelhead" style="margin:18px 0 3px"><h2 style="font-size:15px">Werkrooster</h2><span class="pill">24-uurs klok</span></div><p class="hint" style="margin:0 0 8px">Typ vier cijfers, bijvoorbeeld 1930 wordt 19:30. Kies per dienst een kleur; in de agenda en in de werkagenda zie je dan meteen welke dienst het is.</p><div id="shiftList" class="shiftList"></div><div class="savedShiftBox"><label class="field" for="savedShiftSelect">Opgeslagen dienst toevoegen aan deze dag</label><div class="savedShiftRow"><select id="savedShiftSelect"><option value="">Kies een opgeslagen dienst</option></select><button class="btn primary" type="button" id="addSavedShift">Zet op agenda</button></div><p class="hint">Sla een ingevulde dienst op via ‘Bewaar dienst’; geselecteerde diensten worden direct aan deze dag toegevoegd.</p></div><button class="btn addShift" type="button" id="addShift">+ Dienst toevoegen</button><div class="formactions"><button class="btn primary" type="submit">Bewaar dag</button><button class="btn danger" type="button" id="clearPlan">Wis</button></div><div class="saved" id="planNotice"></div></form></section></div></section><dialog class="recipePlanDialog" id="recipePlanDialog"><form id="recipePlanForm"><h2>Recept in de kalender plannen</h2><p class="hint" id="recipePlanName"></p><label class="field" for="recipePlanDate">Kies een dag</label><input id="recipePlanDate" type="date" required><div class="hint" id="recipePlanUitleg"></div><div class="saved" id="recipePlanNotice" role="status"></div><div class="formactions"><button class="btn" type="button" id="recipePlanCancel">Annuleren</button><button class="btn primary" type="submit">Plan recept</button></div></form></dialog>
-<section class="view" id="page-shopping" hidden><section class="panel"><div class="shophead"><div><h2>Boodschappenlijst</h2><div class="hint">Producten die op zijn en ingrediënten uit je gekozen recepten.</div></div><div class="smsbox"><label class="field" for="smsRecipient">Ontvanger</label><select id="smsRecipient" aria-label="Ontvanger van de boodschappenlijst"></select><button class="btn sms" id="sms">✉ Verstuur via SMS</button></div></div><form class="inlineform" id="manualShopping"><div><label class="field" for="shoppingName">Zelf iets toevoegen</label><input id="shoppingName" placeholder="Product" required maxlength="120"></div><div style="max-width:110px"><label class="field" for="shoppingQuantity">Aantal</label><input id="shoppingQuantity" type="number" step="any" min=".01" value="1"></div><div style="max-width:120px"><label class="field" for="shoppingUnit">Eenheid</label><input id="shoppingUnit" value="stuks"></div><button class="btn primary">+ Toevoegen</button></form><p class="notice" id="shoppingNotice"></p><div id="shoppingList" class="list" style="margin-top:12px"></div><p class="hint">De lijst gaat naar het telefoonnummer van het gekozen profiel. Zonder eigen sms-dienst opent de knop je berichten-app met nummer en lijst ingevuld; met een gateway of Twilio in de Profielen-tab verstuurt de app het bericht zelf.</p></section></section>
+<section class="view" id="page-platen" hidden><div class="panelhead"><div><h2>Mijn platen</h2><div class="hint">Scan de barcode van een lp of typ hem in: de app zoekt de uitgave op en haalt de hoes erbij. Je verzameling kun je per locatie bekijken, en filteren op genre, artiest en jaartal.</div></div><span class="pill" id="platenTotaal">0 platen</span><span class="pill" id="platenGemiddelde" hidden>Gemiddelde richtprijs: nog geen prijzen</span></div><div class="layout"><section class="panel" id="plaatToevoegenPanel"><h2>Plaat toevoegen</h2><form id="plaatForm"><label class="field" for="plaatBarcode">Barcode <span class="muted">(scannen of typen)</span></label><div class="scan"><input id="plaatBarcode" inputmode="numeric" placeholder="Scan of typ de barcode"><button class="btn" type="button" id="plaatScan">▦ Scan</button></div><video id="plaatCamera" class="camera" hidden playsinline></video><p class="scanresult" id="plaatZoekVak" hidden></p><div class="hoesVak" id="plaatHoesVak" hidden><img id="plaatHoes" alt="Hoes van deze plaat"></div><label class="field" for="plaatTitel">Titel</label><input id="plaatTitel" maxlength="160" required placeholder="Bijv. The Dark Side of the Moon"><label class="field" for="plaatArtiest">Artiest</label><input id="plaatArtiest" maxlength="160" placeholder="Bijv. Pink Floyd"><div class="two"><div><label class="field" for="plaatJaar">Jaar</label><input id="plaatJaar" maxlength="12" placeholder="1973"></div><div><label class="field" for="plaatFormaat">Formaat</label><input id="plaatFormaat" maxlength="160" placeholder="12 inch Vinyl"></div></div><div class="two"><div><label class="field" for="plaatLabel">Label</label><input id="plaatLabel" maxlength="160" placeholder="Harvest"></div><div><label class="field" for="plaatAantal">Aantal exemplaren</label><input id="plaatAantal" type="number" min="1" max="99" step="1" value="1" onfocus="this.select()"></div></div><label class="field" for="plaatLocatie">Waar staat deze plaat? <span class="muted">(typ een eigen plek)</span></label><input id="plaatLocatie" list="plaatLocaties" maxlength="60" placeholder="Typ een plek, bijv. de kast bij de bank"><datalist id="plaatLocaties"></datalist><label class="field" for="plaatNotitie">Notitie</label><textarea id="plaatNotitie" maxlength="300" rows="2" placeholder="Bijv. eerste persing, klein krasje op kant B"></textarea><button class="btn primary wide" type="submit">+ Zet in mijn verzameling</button><button class="btn wide" id="plaatWensButton" type="button">♡ Aan verlanglijst toevoegen</button></form><p class="notice" id="plaatNotice"></p><p class="hint">De gegevens komen uit MusicBrainz (open data, CC0) en de hoes uit het Cover Art Archive. Wat je zelf invult blijft leidend, en alles wordt lokaal bewaard: een volgende scan is meteen raak, ook zonder internet.</p></section><section class="panel" id="plaatVerlanglijstZoekPanel" hidden><h2>Zoek platen voor je verlanglijst</h2><p class="hint">Zoek in de lokale vinylbarcodelijst op titel of artiest. Nog geen barcode bekend? Voeg de plaat toe via scannen of handmatig invullen.</p><label class="field" for="plaatWensZoek">Titel of artiest</label><input id="plaatWensZoek" type="search" placeholder="Bijv. Elton John of BBC Sessions" autocomplete="off"><p class="notice" id="plaatWensZoekMelding"></p><div id="plaatWensResultaten" class="wensZoekResultaten"></div></section><section class="panel"><div class="panelhead"><h2 id="plaatLijstTitel">Mijn verzameling</h2><input id="plaatZoek" placeholder="Zoek op titel of artiest" aria-label="Zoeken in mijn platen"></div><div class="tabs" id="platenVerlanglijstTabs"></div><div class="filterBalk" id="plaatFilters"><div><label for="plaatGenre">Genre</label><select id="plaatGenre"><option value="">Alles</option></select></div><div><label for="plaatArtiestFilter">Artiest</label><select id="plaatArtiestFilter"><option value="">Alles</option></select></div><div><label for="plaatDecennium">Decennium</label><select id="plaatDecennium"><option value="">Alles</option></select></div><div><label for="plaatVan">Jaartal</label><div class="jaarVak"><input id="plaatVan" type="number" inputmode="numeric" min="1900" max="2100" step="1" placeholder="van" onfocus="this.select()"><span>–</span><input id="plaatTot" type="number" inputmode="numeric" min="1900" max="2100" step="1" placeholder="tot" onfocus="this.select()"></div></div><div class="knopVak"><button class="btn ghost" type="button" id="plaatWisFilters">Filters wissen</button></div></div><p class="filterStand" id="plaatFilterStand"></p><div class="tabs" id="plaatLocatieTabs"></div><div id="plaatGrid" class="plaatGrid"></div><p class="hint" id="plaatLeeg" hidden></p></section></div></section><section class="view" id="page-calendar" hidden><div class="panelhead"><div><h2>Maaltijd- & werkplanning</h2><div class="hint">Plan een recept, landkeuken en je werkdienst per dag.</div></div><button class="btn primary" type="button" id="openRecipesToPlan">+ Recept plannen</button></div><div class="calendarShell"><section class="panel"><div class="monthbar"><button id="prevMonth" aria-label="Vorige maand">‹</button><h2 id="monthTitle"></h2><button id="nextMonth" aria-label="Volgende maand">›</button></div><div class="calendar" id="calendarGrid"></div><div class="panelhead" style="margin:16px 0 3px"><h2 style="font-size:15px">Werkagenda</h2><span class="pill" id="workAgendaTotaal"></span></div><div id="workAgenda" class="agendaList"></div></section><section class="panel"><h2>Dagplanning</h2><div class="dateLabel" id="selectedLabel"></div><form id="planForm"><label class="field" for="planRecipeZoek">Recept zoeken</label><input id="planRecipeZoek" type="search" placeholder="Typ een gerecht of ingrediënt…" autocomplete="off"><div class="hint" id="planRecipeHint"></div><label class="field" for="planRecipe">Recept van de dag</label><select id="planRecipe"><option value="">Geen recept gepland</option></select><label class="field" for="planCuisine">Landkeuken</label><input id="planCuisine" list="cuisines" placeholder="Bijv. Italië">
+<div class="two"><div><label class="field" for="planPorties">Porties die dag</label><input id="planPorties" type="number" min="1" max="24" step="1" placeholder="aantal van het recept" onfocus="this.select()"></div><div><span class="field">Koken</span><button class="btn wide" type="button" id="planKookmodus" hidden>▶ Kookmodus</button></div></div><datalist id="cuisines"><option>Nederland</option><option>Italië</option><option>Mexico</option><option>India</option><option>Tunesië</option><option>Japan</option><option>Thailand</option><option>Frankrijk</option><option>Marokko</option><option>Griekenland</option><option>Indonesië</option><option>Turkije</option></datalist><div class="panelhead" style="margin:18px 0 3px"><h2 style="font-size:15px">Werkrooster</h2><span class="pill">24-uurs klok</span></div><p class="hint" style="margin:0 0 8px">Typ vier cijfers, bijvoorbeeld 1930 wordt 19:30. Kies per dienst een kleur; in de agenda en in de werkagenda zie je dan meteen welke dienst het is.</p><div id="shiftList" class="shiftList"></div><div class="savedShiftBox"><label class="field" for="savedShiftSelect">Opgeslagen dienst toevoegen aan deze dag</label><div class="savedShiftRow"><select id="savedShiftSelect"><option value="">Kies een opgeslagen dienst</option></select><button class="btn primary" type="button" id="addSavedShift">Zet op agenda</button></div><p class="hint">Sla een ingevulde dienst op via ‘Bewaar dienst’; geselecteerde diensten worden direct aan deze dag toegevoegd.</p></div><button class="btn addShift" type="button" id="addShift">+ Dienst toevoegen</button><div class="formactions"><button class="btn primary" type="submit">Bewaar dag</button><button class="btn danger" type="button" id="clearPlan">Wis</button></div><div class="saved" id="planNotice"></div></form></section></div></section><dialog class="recipePlanDialog" id="recipePlanDialog"><form id="recipePlanForm"><h2>Recept in de kalender plannen</h2><p class="hint" id="recipePlanName"></p><label class="field" for="recipePlanDate">Kies een dag</label><input id="recipePlanDate" type="date" required><label class="field" for="recipePlanPorties">Porties</label><input id="recipePlanPorties" type="number" min="1" max="24" step="1" placeholder="aantal personen">
+    <div class="hint" id="recipePlanUitleg"></div><div class="saved" id="recipePlanNotice" role="status"></div><div class="formactions"><button class="btn" type="button" id="recipePlanCancel">Annuleren</button><button class="btn primary" type="submit">Plan recept</button></div></form></dialog>
+<section class="view" id="page-shopping" hidden><section class="panel"><div class="shophead"><div><h2>Boodschappenlijst</h2><div class="hint">Producten die op zijn en ingrediënten uit je gekozen recepten.</div></div><div class="smsbox"><label class="field" for="smsRecipient">Ontvanger</label><select id="smsRecipient" aria-label="Ontvanger van de boodschappenlijst"></select><button class="btn" type="button" id="weekBoodschappen">+ Week erbij</button><button class="btn sms" id="sms">✉ Verstuur via SMS</button></div></div><form class="inlineform" id="manualShopping"><div><label class="field" for="shoppingName">Zelf iets toevoegen</label><input id="shoppingName" placeholder="Product" required maxlength="120"></div><div style="max-width:110px"><label class="field" for="shoppingQuantity">Aantal</label><input id="shoppingQuantity" type="number" step="any" min=".01" value="1"></div><div style="max-width:120px"><label class="field" for="shoppingUnit">Eenheid</label><input id="shoppingUnit" value="stuks"></div><button class="btn primary">+ Toevoegen</button></form><p class="notice" id="shoppingNotice"></p><div id="shoppingList" class="list" style="margin-top:12px"></div><dialog class="weekDialog" id="weekDialog">
+  <form id="weekForm">
+    <h2>Boodschappen van een week</h2>
+    <p class="hint">Alle recepten die je tussen deze twee dagen gepland hebt, komen samengevoegd op je lijst te staan: hetzelfde product wordt één regel met de hoeveelheden opgeteld.</p>
+    <div class="two">
+      <div><label class="field" for="weekVan">Van</label><input id="weekVan" type="date" required></div>
+      <div><label class="field" for="weekTot">Tot en met</label><input id="weekTot" type="date" required></div>
+    </div>
+    <div class="hint" id="weekUitleg"></div>
+    <div class="saved" id="weekNotice" role="status"></div>
+    <div class="formactions"><button class="btn" type="button" id="weekCancel">Annuleren</button><button class="btn primary" type="submit" id="weekOpslaan">Op de lijst zetten</button></div>
+  </form>
+</dialog>
+<p class="hint">De lijst gaat naar het telefoonnummer van het gekozen profiel. Zonder eigen sms-dienst opent de knop je berichten-app met nummer en lijst ingevuld; met een gateway of Twilio in de Profielen-tab verstuurt de app het bericht zelf.</p></section></section>
 <section class="view" id="page-profielen" hidden>
 <div class="layout">
 <section class="panel">
@@ -301,12 +366,23 @@
 </section>
 </div>
 </section>
-</main><script>
-const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];function localDate(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}let state={have:[],need:[],recipes:[],recipeTotaal:0,recipeQuery:'',recipeLand:'',recipeDetails:new Map(),plans:[],shiftTemplates:[],profiles:[],smsSettings:null,recipeToSchedule:null,stock:'have',page:'stock',selectedDate:localDate(new Date()),recipeLimit:24,month:new Date()};const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));async function api(url,options={}){const r=await fetch(url,{...options,headers:{'content-type':'application/json',...(options.headers||{})}});let d;try{d=await r.json()}catch{d={}}if(!r.ok)throw Error(d.error||'Er ging iets mis.');return d}const payload=(method,data)=>({method,body:JSON.stringify(data)});
+</main><div class="kookmodus" id="kookmodus" hidden role="dialog" aria-modal="true" aria-label="Kookmodus">
+  <div class="kookKop"><div><h2 id="kookmodusNaam"></h2><div class="hint" id="kookmodusPorties"></div></div><button class="btn" type="button" id="kookmodusSluiten">Sluiten</button></div>
+  <div class="kookInhoud">
+    <ol class="kookStappen" id="kookmodusStappen"></ol>
+    <aside class="kookIngredienten" id="kookmodusIngredienten"></aside>
+  </div>
+  <div class="kookTimer" id="kookmodusTimer" hidden></div>
+  <footer><button class="btn" type="button" id="kookmodusVorige">← Vorige stap</button><span class="hint" id="kookmodusTeller"></span><button class="btn primary" type="button" id="kookmodusVolgende">Volgende stap →</button></footer>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];function localDate(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}let state={have:[],need:[],recipes:[],recipeTotaal:0,recipeQuery:'',recipeLand:'',recipeDetails:new Map(),plans:[],shiftTemplates:[],profiles:[],smsSettings:null,recipeToSchedule:null,stock:'have',page:'stock',selectedDate:localDate(new Date()),recipeLimit:24,month:new Date(),recipeModus:'alle',kookpotMarge:2,kookpotSamenvatting:null,porties:{},kookmodus:null,weekVan:'',weekTot:'',weer:null};const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));async function api(url,options={}){const r=await fetch(url,{...options,headers:{'content-type':'application/json',...(options.headers||{})}});let d;try{d=await r.json()}catch{d={}}if(!r.ok)throw Error(d.error||'Er ging iets mis.');return d}const payload=(method,data)=>({method,body:JSON.stringify(data)});const nlGetal=waarde=>{const n=Number(waarde);return Number.isFinite(n)?String(n).replace('.',','):String(waarde??'')};
 async function refresh(){[state.have,state.need]=await Promise.all([api('/api/products'),api('/api/shopping')]);await laadRecepten(true);await fillRecipeFilter();renderStock();renderShopping();await fillRecipeSelect();[state.profiles,state.smsSettings]=await Promise.all([api('/api/profielen'),api('/api/instellingen/sms')]);fillSmsRecipients();renderProfiles();renderSmsSettings(true);renderSmsLog();if(state.page==='calendar')await loadPlans()}
 // Recepten komen per stukje van de server: alleen wat de lijst laat zien. Zo hoeft de
 // browser geen 9.807 recepten met ingrediënten en bereiding te verwerken.
 async function laadRecepten(opnieuw=false){
+  if(state.recipeModus==='kookpot')return laadKookpot(opnieuw);
   const aantal=Math.max(RECIPE_STEP,(opnieuw?RECIPE_STEP:state.recipes.length+RECIPE_STEP));
   const params=new URLSearchParams({compact:'1',aantal:String(Math.min(aantal,200)),vanaf:opnieuw?'0':String(state.recipes.length)});
   if(state.recipeQuery)params.set('q',state.recipeQuery);
@@ -324,16 +400,30 @@ async function fillRecipeFilter(){
   select.innerHTML='<option value="">Alle landen</option>'+state.landen.map(l=>`<option value="${esc(l.cuisine)}">${esc(l.cuisine)} (${l.aantal})</option>`).join('');
   if(state.landen.some(l=>l.cuisine===value))select.value=value;
 }
-async function receptDetail(id){
-  if(!state.recipeDetails.has(id))state.recipeDetails.set(id,await api('/api/recipes/'+id));
-  return state.recipeDetails.get(id);
+async function receptDetail(id,porties=null){
+  const sleutel=porties?`${id}@${porties}`:id;
+  if(!state.recipeDetails.has(sleutel))state.recipeDetails.set(sleutel,await api(`/api/recipes/${id}${porties?`?porties=${porties}`:''}`));
+  return state.recipeDetails.get(sleutel);
 }
-async function vulReceptDetail(details){
+// Met hoeveel personen kook je dit recept? Zonder eigen keuze het aantal van het recept.
+function portiesVoor(id,recept){const gekozen=Number(state.porties[id]);return gekozen>0?gekozen:(recept?.servings||null)}
+async function vulReceptDetail(details,opnieuw=false){
   const body=details.querySelector('.detailBody');
-  if(!body||body.dataset.klaar==='1')return;
-  const recept=await receptDetail(Number(details.dataset.recipeDetails));
-  const ingredientText=i=>i.display||(i.unit==='naar smaak'?`Naar smaak · ${i.name}`:`${i.quantity} ${i.unit} ${i.name}${i.note?` (${i.note})`:''}`);
-  body.innerHTML=`<strong>Ingrediënten</strong><ul>${recept.ingredients.map(i=>`<li>${esc(ingredientText(i))}</li>`).join('')}</ul><strong>Bereiding</strong><ol>${recept.steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>`;
+  if(!body||(body.dataset.klaar==='1'&&!opnieuw))return;
+  const id=Number(details.dataset.recipeDetails);
+  const basis=await receptDetail(id);
+  const porties=portiesVoor(id,basis);
+  const recept=basis.servings&&porties!==basis.servings?await receptDetail(id,porties):basis;
+  const ingredientText=i=>i.display||(i.unit==='naar smaak'?`Naar smaak · ${i.name}`:`${nlGetal(i.quantity)} ${i.unit} ${i.name}${i.note?` (${i.note})`:''}`);
+  const kookknop=`<button class="btn primary" type="button" data-kookmodus="${id}">▶ Kookmodus</button>`;
+  // Omrekenen kan alleen als de hoeveelheden los in het recept staan; bij
+  // geïmporteerde bronregels zit de hoeveelheid in de tekst zelf.
+  const losseHoeveelheden=basis.ingredients.some(i=>!i.display&&i.unit!=='bronregel'&&i.unit!=='niet vermeld'&&i.unit!=='naar smaak');
+  let portiesBlok;
+  if(basis.servings&&losseHoeveelheden)portiesBlok=`<div class="portions"><span class="field">Porties</span><button class="btn" type="button" data-porties-min="${id}" aria-label="Minder porties">−</button><strong data-porties-waarde="${id}">${porties}</strong><button class="btn" type="button" data-porties-plus="${id}" aria-label="Meer porties">+</button><span class="muted">recept is voor ${basis.servings}${porties!==basis.servings?` · omgerekend naar ${porties}`:''}</span>${kookknop}</div>`;
+  else if(basis.servings)portiesBlok=`<div class="portions"><span class="muted">De hoeveelheden van dit recept staan als bronregel in de tekst, dus die kan ik niet omrekenen. De kookmodus werkt wel.</span>${kookknop}</div>`;
+  else portiesBlok=`<div class="portions"><span class="muted">Dit recept vermeldt geen aantal personen.</span>${kookknop}</div>`;
+  body.innerHTML=`${portiesBlok}<strong>Ingrediënten</strong><ul>${recept.ingredients.map(i=>`<li>${esc(ingredientText(i))}</li>`).join('')}</ul><strong>Bereiding</strong><ol>${recept.steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>`;
   body.dataset.klaar='1';
 }
 async function fillRecipeSelect(zoek=''){
@@ -353,11 +443,11 @@ async function zetPlanRecept(id){
     s.insertAdjacentHTML('beforeend',`<option value="${recept.id}">${esc(recept.name)} · ${esc(recept.cuisine)}</option>`);
   }catch{/* gepland recept bestaat niet meer */}
 }
-function openRecipePlanner(id){const recipe=state.recipes.find(r=>String(r.id)===String(id));if(!recipe){$('#recipeNotice').textContent='Dit recept is niet meer geladen. Zoek het opnieuw en probeer nog eens.';return}state.recipeToSchedule=recipe;$('#recipePlanName').textContent=`${recipe.name} · ${recipe.cuisine}`;$('#recipePlanDate').value=state.selectedDate||localDate(new Date());$('#recipePlanNotice').textContent='';updateRecipePlanUitleg();$('#recipePlanDialog').showModal()}
+function openRecipePlanner(id){const recipe=state.recipes.find(r=>String(r.id)===String(id));if(!recipe){$('#recipeNotice').textContent='Dit recept is niet meer geladen. Zoek het opnieuw en probeer nog eens.';return}state.recipeToSchedule=recipe;$('#recipePlanName').textContent=`${recipe.name} · ${recipe.cuisine}`;$('#recipePlanDate').value=state.selectedDate||localDate(new Date());$('#recipePlanPorties').value=recipe.servings||'';$('#recipePlanNotice').textContent='';updateRecipePlanUitleg();$('#recipePlanDialog').showModal()}
 async function updateRecipePlanUitleg(){const veld=$('#recipePlanDate'),uitleg=$('#recipePlanUitleg');if(!veld||!uitleg)return;const waarde=veld.value;if(!waarde){uitleg.textContent='';return}const datum=new Date(waarde+'T12:00:00');if(Number.isNaN(datum.getTime())){uitleg.textContent='';return}const dag=new Intl.DateTimeFormat('nl-NL',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(datum);const vandaag=localDate(new Date());let extra='';try{const plannen=await api('/api/planner?month='+encodeURIComponent(waarde.slice(0,7)));if(veld.value!==waarde)return;const bestaand=plannen.find(p=>p.plan_date===waarde);if(bestaand?.recipe_id){const naam=state.recipes.find(r=>Number(r.id)===Number(bestaand.recipe_id))?.name||state.recipeDetails.get(Number(bestaand.recipe_id))?.name||'een ander recept';extra=` Op deze dag staat al ${naam} gepland; dat wordt vervangen en je diensten blijven staan.`}else if(bestaand?.shifts?.length){extra=' Je werkdiensten van die dag blijven staan.'}}catch{/* de uitleg is niet essentieel */}if(veld.value!==waarde)return;uitleg.textContent=(waarde===vandaag?'Vandaag — ':'')+dag+'.'+extra}
-async function saveRecipePlanner(e){e.preventDefault();const recipe=state.recipeToSchedule,date=$('#recipePlanDate').value,submit=$('#recipePlanForm button[type="submit"]');if(!recipe||!date)return;submit.disabled=true;$('#recipePlanNotice').textContent='Opslaan…';try{const plans=await api('/api/planner?month='+encodeURIComponent(date.slice(0,7))),existing=plans.find(p=>p.plan_date===date);if(existing?.recipe_id&&Number(existing.recipe_id)!==Number(recipe.id)&&!window.confirm(`Op ${new Intl.DateTimeFormat('nl-NL',{day:'numeric',month:'long'}).format(new Date(date+'T12:00:00'))} staat al een recept gepland. Vervangen door ${recipe.name}? De diensten blijven behouden.`)){submit.disabled=false;$('#recipePlanNotice').textContent='Bestaande planning behouden.';return}const shifts=existing?.shifts||((existing?.work_start&&existing?.work_end)?[{name:existing.work_notes||'Dienst',startTime:existing.work_start,endTime:existing.work_end,notes:''}]:[]);await api('/api/planner/'+date,payload('PUT',{recipeId:recipe.id,cuisine:recipe.cuisine||existing?.cuisine||'',shifts}));state.selectedDate=date;state.month=new Date(date+'T12:00:00');$('#recipePlanDialog').close();await showPage('calendar',true);$('#planNotice').textContent=`${recipe.name} ingepland voor ${new Intl.DateTimeFormat('nl-NL',{weekday:'long',day:'numeric',month:'long'}).format(new Date(date+'T12:00:00'))}.`;$('#planNotice').scrollIntoView({block:'nearest'})}catch(err){$('#recipePlanNotice').textContent=err.message}finally{submit.disabled=false}}
+async function saveRecipePlanner(e){e.preventDefault();const recipe=state.recipeToSchedule,date=$('#recipePlanDate').value,submit=$('#recipePlanForm button[type="submit"]');if(!recipe||!date)return;submit.disabled=true;$('#recipePlanNotice').textContent='Opslaan…';try{const plans=await api('/api/planner?month='+encodeURIComponent(date.slice(0,7))),existing=plans.find(p=>p.plan_date===date);if(existing?.recipe_id&&Number(existing.recipe_id)!==Number(recipe.id)&&!window.confirm(`Op ${new Intl.DateTimeFormat('nl-NL',{day:'numeric',month:'long'}).format(new Date(date+'T12:00:00'))} staat al een recept gepland. Vervangen door ${recipe.name}? De diensten blijven behouden.`)){submit.disabled=false;$('#recipePlanNotice').textContent='Bestaande planning behouden.';return}const shifts=existing?.shifts||((existing?.work_start&&existing?.work_end)?[{name:existing.work_notes||'Dienst',startTime:existing.work_start,endTime:existing.work_end,notes:''}]:[]);await api('/api/planner/'+date,payload('PUT',{recipeId:recipe.id,cuisine:recipe.cuisine||existing?.cuisine||'',shifts,porties:$('#recipePlanPorties').value||null}));state.selectedDate=date;state.month=new Date(date+'T12:00:00');$('#recipePlanDialog').close();await showPage('calendar',true);$('#planNotice').textContent=`${recipe.name} ingepland voor ${new Intl.DateTimeFormat('nl-NL',{weekday:'long',day:'numeric',month:'long'}).format(new Date(date+'T12:00:00'))}.`;$('#planNotice').scrollIntoView({block:'nearest'})}catch(err){$('#recipePlanNotice').textContent=err.message}finally{submit.disabled=false}}
 function showPage(name,keepMessage=false){state.page=name;$$('.view').forEach(v=>v.hidden=v.id!==`page-${name}`);$$('.nav [data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===name));if(name==='calendar')return loadPlans(keepMessage);if(name==='kast'&&window.Kledingkast)window.Kledingkast.open();if(name==='platen'&&window.Platen)window.Platen.open()}
-function renderStock(){const h=state.have.length,n=state.need.length;$('#countHave').textContent=h;$('#countNeed').textContent=n;$('#haveTab').textContent=h;$('#needTab').textContent=n;$$('[data-stock]').forEach(b=>b.classList.toggle('active',b.dataset.stock===state.stock));const items=state.stock==='have'?state.have:state.need;const stukTotaal=state.have.reduce((som,p)=>som+(Number(p.aantal)||1),0);$('#countStuks').textContent=h?`· ${stukTotaal} stuks`:'';$('#stockList').innerHTML=items.length?items.map(p=>`<article class="row"><div class="icon">${state.stock==='have'?'+':'↗'}</div><div class="info"><strong>${esc(p.name)}</strong><div class="muted">${Number(p.aantal)>1?`${Number(p.aantal)} stuks × `:''}${esc(p.quantity)} ${esc(p.unit)}${p.barcode?' · '+esc(p.barcode):''}</div>${state.stock==='have'?`<div class="countStuks"><button class="btn" type="button" data-min="${p.id}" aria-label="Eén minder">−</button><input type="number" min="1" max="9999" step="1" value="${Number(p.aantal)||1}" data-aantal="${p.id}" aria-label="Aantal stuks in huis"><button class="btn" type="button" data-plus="${p.id}" aria-label="Eén meer">+</button><span class="muted">stuks</span></div>`:''}</div><div class="actions">${state.stock==='have'?`<button class="btn danger" data-consume="${p.id}">Niet meer</button>`:`<button class="btn" data-restore="${p.id}">↶ Herstel</button><button class="btn danger" data-delete="${p.id}">×</button>`}</div></article>`).join(''):`<div class="empty">${state.stock==='have'?'Je voorraad is nog leeg. Voeg hierboven een product toe.':'Niets op? Je boodschappenlijst is bijgewerkt.'}</div>`}
+function renderStock(){const h=state.have.length,n=state.need.length;$('#countHave').textContent=h;$('#countNeed').textContent=n;$('#haveTab').textContent=h;$('#needTab').textContent=n;$$('[data-stock]').forEach(b=>b.classList.toggle('active',b.dataset.stock===state.stock));const items=state.stock==='have'?state.have:state.need;const stukTotaal=state.have.reduce((som,p)=>som+(Number(p.aantal)||1),0);$('#countStuks').textContent=h?`· ${stukTotaal} stuks`:'';$('#stockList').innerHTML=items.length?items.map(p=>`<article class="row"><div class="icon">${state.stock==='have'?'+':'↗'}</div><div class="info"><strong>${esc(p.name)}</strong><div class="muted">${Number(p.aantal)>1?`${Number(p.aantal)} stuks × `:''}${esc(nlGetal(p.quantity))} ${esc(p.unit)}${p.barcode?' · '+esc(p.barcode):''}</div>${state.stock==='have'?`<div class="countStuks"><button class="btn" type="button" data-min="${p.id}" aria-label="Eén minder">−</button><input type="number" min="1" max="9999" step="1" value="${Number(p.aantal)||1}" data-aantal="${p.id}" aria-label="Aantal stuks in huis"><button class="btn" type="button" data-plus="${p.id}" aria-label="Eén meer">+</button><span class="muted">stuks</span></div>`:''}</div><div class="actions">${state.stock==='have'?`<button class="btn danger" data-consume="${p.id}">Niet meer</button>`:`<button class="btn" data-restore="${p.id}">↶ Herstel</button><button class="btn danger" data-delete="${p.id}">×</button>`}</div></article>`).join(''):`<div class="empty">${state.stock==='have'?'Je voorraad is nog leeg. Voeg hierboven een product toe.':'Niets op? Je boodschappenlijst is bijgewerkt.'}</div>`}
 const TAAL_NAAM={en:'het Engels',es:'het Spaans',de:'het Duits',ru:'het Russisch',pl:'het Pools',ja:'het Japans',id:'het Indonesisch',uk:'het Oekraïens',it:'het Italiaans',pt:'het Portugees',fr:'het Frans',nl:'het Nederlands',zh:'het Chinees',ar:'het Arabisch',cs:'het Tsjechisch',sv:'het Zweeds',fi:'het Fins',hu:'het Hongaars',tr:'het Turks',ca:'het Catalaans',hi:'het Hindi',ro:'het Roemeens',fa:'het Perzisch',hr:'het Kroatisch',be:'het Wit-Russisch',lt:'het Litouws',ms:'het Maleisisch',th:'het Thais',az:'het Azerbeidzjaans',sl:'het Sloveens',el:'het Grieks',ko:'het Koreaans',vi:'het Vietnamees',ta:'het Tamil',he:'het Hebreeuws',is:'het IJslands',nb:'het Noors',da:'het Deens',bg:'het Bulgaars',mk:'het Macedonisch',sq:'het Albanees',sr:'het Servisch',sk:'het Slowaaks',eo:'het Esperanto',hy:'het Armeens',ka:'het Georgisch',ml:'het Malayalam',si:'het Singalees',tl:'het Tagalog',bn:'het Bengaals',oc:'het Occitaans',cv:'het Tsjoevasjisch',ku:'het Koerdisch',nn:'het Noors'},TAAL_ONBEKEND='een andere taal';const RECIPE_STEP=48;
 // De lijst komt kant-en-klaar van de server (per land, per zoekvraag en in stukjes van
 // 48). Ingrediënten en bereiding worden pas opgehaald als je ze openklapt.
@@ -367,7 +457,7 @@ function renderRecipes(){
   for(const recipe of state.recipes){if(!groups.has(recipe.cuisine))groups.set(recipe.cuisine,[]);groups.get(recipe.cuisine).push(recipe)}
   const sections=[];
   for(const [cuisine,recipes] of groups){
-    sections.push(`<section class="recipeCountry"><h3 class="countryHeading">${esc(cuisine)} <span class="muted">· ${recipes.length} recepten</span></h3><div class="cards">${recipes.map(r=>`<article class="recipe"><div class="recipeTop"><div><h3>${esc(r.name)} ${r.translatedFrom?'<span class="pill">Vertaald</span>':''}</h3><div class="muted">◷ ${r.time==null?'Tijd niet vermeld':`${r.time} min`} · ${r.servings==null?'porties niet vermeld':`${r.servings} personen`}</div></div></div><p>${esc(r.description||'')}</p><details data-recipe-details="${r.id}"><summary>Bekijk ingrediënten & bereiding</summary><div class="detailBody"><div class="hint">Bezig met laden…</div></div></details>${r.sourceName?`<p class="hint">Bron: <a href="${esc(r.sourceUrl)}" target="_blank" rel="noopener noreferrer">${esc(r.sourceName)}</a> · <a href="${esc(r.sourceLicenseUrl)}" target="_blank" rel="noopener noreferrer">${esc(r.sourceLicense)}</a>${r.translatedFrom?' · vertaald uit '+TAAL_NAAM[r.translatedFrom]:''}</p>`:''}<div class="recipeActions"><button class="btn primary" data-recipe="${r.id}">+ Ingrediënten op boodschappenlijst</button><button class="btn" type="button" data-plan-recipe="${r.id}" aria-label="Plan ${esc(r.name)} in de kalender">▦ Plan in kalender</button></div></article>`).join('')}</div></section>`);
+    sections.push(`<section class="recipeCountry"><h3 class="countryHeading">${esc(cuisine)} <span class="muted">· ${recipes.length} recepten</span></h3><div class="cards">${recipes.map(r=>`<article class="recipe${state.recipeModus==='kookpot'?' kookpot':''}"><div class="recipeTop"><div><h3>${esc(r.name)} ${r.translatedFrom?'<span class="pill">Vertaald</span>':''}</h3><div class="muted">◷ ${r.time==null?'Tijd niet vermeld':`${r.time} min`} · ${r.servings==null?'porties niet vermeld':`${r.servings} personen`}</div>${kookpotBadge(r)}</div></div><p>${esc(r.description||'')}</p><details data-recipe-details="${r.id}"><summary>Bekijk ingrediënten & bereiding</summary><div class="detailBody"><div class="hint">Bezig met laden…</div></div></details>${r.sourceName?`<p class="hint">Bron: <a href="${esc(r.sourceUrl)}" target="_blank" rel="noopener noreferrer">${esc(r.sourceName)}</a> · <a href="${esc(r.sourceLicenseUrl)}" target="_blank" rel="noopener noreferrer">${esc(r.sourceLicense)}</a>${r.translatedFrom?' · vertaald uit '+TAAL_NAAM[r.translatedFrom]:''}</p>`:''}${kookpotRegel(r)}<div class="recipeActions"><button class="btn primary" data-recipe="${r.id}">+ Ingrediënten op boodschappenlijst</button><button class="btn" type="button" data-plan-recipe="${r.id}" aria-label="Plan ${esc(r.name)} in de kalender">▦ Plan in kalender</button>${state.recipeModus==='kookpot'&&!r.klaar?`<button class="btn" type="button" data-ontbrekende="${r.id}">+ Ontbrekende op de lijst</button>`:''}</div></article>`).join('')}</div></section>`);
   }
   const geladen=state.recipes.length,rest=state.recipeTotaal-geladen;
   $('#recipeGrid').innerHTML=sections.join('')+(rest>0?`<div class="moreBox"><button class="btn primary" id="recipeMore">Nog ${Math.min(rest,RECIPE_STEP)} recepten laden</button><div class="hint">Je ziet ${geladen} van ${state.recipeTotaal} recepten.</div></div>`:`<div class="hint">Alle ${state.recipeTotaal} recepten in beeld.</div>`);
@@ -376,7 +466,7 @@ function renderRecipes(){
 }
 // Aantal stuks in huis bijstellen. Op nul is het product op en gaat het naar de boodschappenlijst.
 async function stelAantal(id,waarde){const x=typeof waarde==='number'?{aantal:waarde}:{action:waarde};const r=await api('/api/products/'+id,payload('PATCH',x));$('#stockNotice').textContent=r&&r.op?'Dat product is op en staat weer op je boodschappenlijst.':'Aantal bijgewerkt.';return r}
-function renderShopping(){const items=state.need;$('#navCount').textContent=items.length;$('#shoppingList').innerHTML=items.length?items.map(p=>`<article class="row"><div class="icon">🛒</div><div class="info"><strong>${esc(p.name)}</strong><div class="muted">${p.unit==='niet vermeld'?'Hoeveelheid niet vermeld':p.unit==='bronregel'?'Hoeveelheid staat in de receptregel':`${esc(p.quantity)} ${esc(p.unit)}`}${p.product_id?' · op uit voorraad':''}</div></div><button class="btn danger" data-shopdelete="${p.id}" aria-label="Verwijderen">×</button></article>`).join(''):'<div class="empty">Je lijst is nog leeg. Markeer voorraad als op of voeg ingrediënten toe vanuit een recept.</div>';$('#sms').disabled=!items.length;$('#sms').style.opacity=items.length?'1':'.55'}
+function renderShopping(){const items=state.need;$('#navCount').textContent=items.length;$('#shoppingList').innerHTML=items.length?items.map(p=>`<article class="row"><div class="icon">🛒</div><div class="info"><strong>${esc(p.name)}</strong><div class="muted">${p.unit==='niet vermeld'?'Hoeveelheid niet vermeld':p.unit==='bronregel'?'Hoeveelheid staat in de receptregel':`${esc(nlGetal(p.quantity))} ${esc(p.unit)}`}${p.product_id?' · op uit voorraad':''}<label class="afvink"><input type="checkbox" data-afvinken="${p.id}" aria-label="Afvinken: ${esc(p.name)}"><span>gekocht — in mijn voorraad</span></label></div></div><button class="btn danger" data-shopdelete="${p.id}" aria-label="Verwijderen">×</button></article>`).join(''):'<div class="empty">Je lijst is nog leeg. Markeer voorraad als op of voeg ingrediënten toe vanuit een recept.</div>';$('#sms').disabled=!items.length;$('#sms').style.opacity=items.length?'1':'.55'}
 async function loadShiftTemplates(){state.shiftTemplates=await api('/api/shift-templates');$('#savedShiftSelect').innerHTML='<option value="">Kies een opgeslagen dienst</option>'+state.shiftTemplates.map(s=>`<option value="${s.id}">${esc(s.name)} · ${esc(s.startTime)}–${esc(s.endTime)}</option>`).join('')}
 async function loadPlans(keepMessage=false){const month=`${state.month.getFullYear()}-${String(state.month.getMonth()+1).padStart(2,'0')}`;[state.plans]=await Promise.all([api('/api/planner?month='+month),loadShiftTemplates()]);const ontbrekend=[...new Set(state.plans.filter(p=>p.recipe_id&&!state.recipes.some(r=>Number(r.id)===Number(p.recipe_id))&&!state.recipeDetails.has(Number(p.recipe_id))).map(p=>Number(p.recipe_id)))];await Promise.all(ontbrekend.map(id=>receptDetail(id).catch(()=>null)));renderCalendar();loadDayForm(keepMessage)}
 function renderCalendar(){const y=state.month.getFullYear(),m=state.month.getMonth();$('#monthTitle').textContent=new Intl.DateTimeFormat('nl-NL',{month:'long',year:'numeric'}).format(state.month);const grid=$('#calendarGrid'),days=['Ma','Di','Wo','Do','Vr','Za','Zo'];grid.innerHTML=days.map(d=>`<div class="dow">${d}</div>`).join('');const first=new Date(y,m,1),offset=(first.getDay()+6)%7,start=new Date(y,m,1-offset),today=localDate(new Date());for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const iso=localDate(d),p=state.plans.find(x=>x.plan_date===iso),r=state.recipes.find(x=>Number(x.id)===Number(p?.recipe_id))||state.recipeDetails.get(Number(p?.recipe_id)),b=document.createElement('button');b.type='button';b.className=`day ${d.getMonth()!==m?'outside':''} ${iso===state.selectedDate?'selected':''} ${iso===today?'today':''}`;b.dataset.date=iso;const diensten=p?.shifts||[];if(diensten.length)b.title=diensten.map(s=>`${s.startTime}–${s.endTime} ${s.name}${s.notes?` (${s.notes})`:''}`).join('\n');b.innerHTML=`<span class="num">${d.getDate()}</span>${r?`<span class="eventline">${esc(r.name)}</span>`:''}${p?.cuisine?`<span class="eventline">${esc(p.cuisine)}</span>`:''}${diensten.slice(0,3).map(s=>`<span class="eventline workline"${s.color?` style="border-left:3px solid ${KLEUR_HEX[s.color]||'#935f23'};padding-left:4px"`:''}>${esc(s.startTime)}<span class="tijdrest">–${esc(s.endTime)}</span></span>`).join('')}${diensten.length>3?`<span class="eventline workline">+${diensten.length-3}</span>`:''}`;grid.append(b)}renderWorkAgenda()}
@@ -388,8 +478,8 @@ function shiftUren(s){const [uh,um]=String(s.startTime||'').split(':').map(Numbe
 function renderWorkAgenda(){const box=$('#workAgenda');if(!box)return;const dagen=state.plans.filter(p=>p.shifts&&p.shifts.length).sort((a,b)=>String(a.plan_date).localeCompare(String(b.plan_date)));let minuten=0;box.innerHTML=dagen.length?dagen.map(p=>{const tekst=p.shifts.map(s=>{minuten+=shiftUren(s);return `${kleurStip(s)}${esc(s.startTime)}–${esc(s.endTime)} ${esc(s.name)}${s.notes?` · ${esc(s.notes)}`:''}`}).join(' · ');const datum=new Intl.DateTimeFormat('nl-NL',{weekday:'short',day:'numeric',month:'short'}).format(new Date(`${p.plan_date}T12:00:00`));return `<button type="button" class="agendaRow${p.plan_date===state.selectedDate?' geselecteerd':''}" data-date="${p.plan_date}"><span class="agendaDag">${datum}</span><span class="agendaDiensten">${tekst}</span></button>`}).join(''):'<div class="hint">Nog geen diensten in deze maand. Zet een dienst op een dag via het formulier hiernaast.</div>';const uren=Math.floor(minuten/60),rest=minuten%60;$('#workAgendaTotaal').textContent=minuten?`${uren} u ${String(rest).padStart(2,'0')} min`:'';}
 function renderShiftList(shifts){$('#shiftList').innerHTML=shifts.length?shifts.map((s,i)=>`<article class="shiftCard" data-shift-card="${i}" data-color="${esc(s.color||'')}"><div class="shiftHeading"><span>Dienst ${i+1}</span><div class="shiftActions"><button class="btn" type="button" data-save-shift="${i}">Bewaar dienst</button><button class="btn" type="button" data-remove-shift="${i}">Verwijderen</button></div></div><div class="shiftFields"><div><label class="field" for="shiftName-${i}">Naam van dienst</label><input id="shiftName-${i}" data-shift-field="name" value="${esc(s.name)}" maxlength="80" placeholder="Bijv. Ochtenddienst" required></div><div><label class="field" for="shiftNotes-${i}">Notitie (optioneel)</label><input id="shiftNotes-${i}" data-shift-field="notes" value="${esc(s.notes)}" maxlength="200" placeholder="Bijv. kassa"></div><div><label class="field" for="shiftStart-${i}">Begintijd · 24 uur</label><input id="shiftStart-${i}" class="time24" data-shift-field="startTime" value="${esc(s.startTime)}" maxlength="5" inputmode="numeric" autocomplete="off" placeholder="08:30" required></div><div><label class="field" for="shiftEnd-${i}">Eindtijd · 24 uur</label><input id="shiftEnd-${i}" class="time24" data-shift-field="endTime" value="${esc(s.endTime)}" maxlength="5" inputmode="numeric" autocomplete="off" placeholder="16:30" required></div><div><span class="field">Kleur van deze dienst</span><div class="swatchRow" data-kleur-rij>${KLEUREN.map(k=>`<button type="button" class="swatch k-${k}${s.color===k?' actief':''}" data-kleur="${k}" title="${k}" aria-label="Kleur ${k}"></button>`).join('')}<button type="button" class="swatch wis${s.color?'':' actief'}" data-kleur="" title="geen kleur" aria-label="Geen kleur">×</button></div></div></div></article>`).join(''):'<div class="shiftEmpty">Nog geen diensten voor deze dag.</div>'}
 function readShiftForm(){return $$('#shiftList [data-shift-card]').map(card=>{const velden=Object.fromEntries([...card.querySelectorAll('input[data-shift-field]')].map(input=>[input.dataset.shiftField,input.value.trim()]));return {...velden,color:card.dataset.color||''}}) }
-async function loadDayForm(keepMessage=false){const date=state.selectedDate,p=state.plans.find(x=>x.plan_date===date);$('#selectedLabel').textContent=new Intl.DateTimeFormat('nl-NL',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(new Date(date+'T12:00:00'));$('#planRecipe').value='';if(p?.recipe_id){await zetPlanRecept(p.recipe_id);$('#planRecipe').value=String(p.recipe_id)}$('#planCuisine').value=p?.cuisine||'';const shifts=p?.shifts||((p?.work_start&&p?.work_end)?[{name:p.work_notes||'Dienst',startTime:p.work_start,endTime:p.work_end,notes:''}]:[]);renderShiftList(shifts);if(!keepMessage)$('#planNotice').textContent=p?'Planning geladen.':''}
-async function savePlan(message='Dagplanning opgeslagen.'){await api('/api/planner/'+state.selectedDate,payload('PUT',{recipeId:$('#planRecipe').value||null,cuisine:$('#planCuisine').value,shifts:readShiftForm()}));$('#planNotice').textContent=message;await loadPlans(true)}
+async function loadDayForm(keepMessage=false){const date=state.selectedDate,p=state.plans.find(x=>x.plan_date===date);$('#selectedLabel').textContent=new Intl.DateTimeFormat('nl-NL',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(new Date(date+'T12:00:00'));$('#planRecipe').value='';if(p?.recipe_id){await zetPlanRecept(p.recipe_id);$('#planRecipe').value=String(p.recipe_id)}$('#planCuisine').value=p?.cuisine||'';const portiesVeld=$('#planPorties');if(portiesVeld)portiesVeld.value=p?.porties??'';const kookKnop=$('#planKookmodus');if(kookKnop){kookKnop.hidden=!p?.recipe_id;kookKnop.dataset.kookid=p?.recipe_id||'';kookKnop.dataset.kookporties=p?.porties||''}const shifts=p?.shifts||((p?.work_start&&p?.work_end)?[{name:p.work_notes||'Dienst',startTime:p.work_start,endTime:p.work_end,notes:''}]:[]);renderShiftList(shifts);if(!keepMessage)$('#planNotice').textContent=p?'Planning geladen.':''}
+async function savePlan(message='Dagplanning opgeslagen.'){await api('/api/planner/'+state.selectedDate,payload('PUT',{recipeId:$('#planRecipe').value||null,cuisine:$('#planCuisine').value,shifts:readShiftForm(),porties:$('#planPorties')?.value||null}));$('#planNotice').textContent=message;await loadPlans(true)}
 $$('.nav [data-page]').forEach(b=>b.onclick=()=>showPage(b.dataset.page));$('#openRecipesToPlan').addEventListener('click',()=>showPage('recipes'));$('#recipePlanCancel').addEventListener('click',()=>$('#recipePlanDialog').close());$('#recipePlanForm').addEventListener('submit',saveRecipePlanner);$('#recipePlanDate').addEventListener('change',updateRecipePlanUitleg);$('#recipePlanDate').addEventListener('input',updateRecipePlanUitleg);$('#recipeGrid').addEventListener('click',e=>{const b=e.target.closest('[data-plan-recipe]');if(b)openRecipePlanner(b.dataset.planRecipe)});$('#recipeCountry').addEventListener('change',async()=>{state.recipeLand=$('#recipeCountry').value;await laadRecepten(true)});
 let receptZoekTimer;const receptZoeken=()=>{clearTimeout(receptZoekTimer);receptZoekTimer=setTimeout(async()=>{state.recipeQuery=$('#recipeSearch').value.trim().toLocaleLowerCase('nl');await laadRecepten(true)},250)};
 $('#recipeSearch').addEventListener('input',receptZoeken);
@@ -467,6 +557,289 @@ $('#smsProvider').addEventListener('change',()=>toonSmsKanaal($('#smsProvider').
 $('#smsForm').addEventListener('submit',async e=>{e.preventDefault();const data={provider:$('#smsProvider').value,webhookUrl:$('#smsWebhookUrl').value,twilioFrom:$('#smsTwilioFrom').value,sender:$('#smsSender').value,from:$('#smsFrom').value};for(const [veld,id] of [['webhookToken','#smsWebhookToken'],['cheapconnectKey','#smsCheapconnectKey'],['twilioSid','#smsTwilioSid'],['twilioToken','#smsTwilioToken']]){const waarde=$(id).value.trim();if(waarde)data[veld]=waarde}try{state.smsSettings=await api('/api/instellingen/sms',payload('PUT',data));['#smsWebhookToken','#smsTwilioSid','#smsTwilioToken','#smsCheapconnectKey'].forEach(id=>{$(id).value=''});renderSmsSettings(true);$('#smsNotice').textContent='Kanaal opgeslagen.';$('#smsNotice').className='notice'}catch(err){$('#smsNotice').textContent=err.message;$('#smsNotice').className='notice error'}});
 $('#smsTest').onclick=()=>{const profielId=$('#smsRecipient').value||(state.profiles||[]).find(p=>p.smsRecipient)?.id;if(!profielId){$('#smsNotice').textContent='Voeg eerst een profiel met telefoonnummer toe.';return}verstuurSms(profielId,true)};
 $('#smsClearSecrets').onclick=async()=>{try{state.smsSettings=await api('/api/instellingen/sms',payload('PUT',{provider:$('#smsProvider').value,clear:['sms.twilioToken','sms.twilioSid','sms.webhookToken','sms.cheapconnectKey']}));renderSmsSettings(true);$('#smsNotice').textContent='Opgeslagen wachtwoorden gewist.';$('#smsNotice').className='notice'}catch(err){$('#smsNotice').textContent=err.message;$('#smsNotice').className='notice error'}};
+// ---------------------------------------------------------------------------
+// Kookpot: welke recepten kun je maken met wat er in huis is?
+// ---------------------------------------------------------------------------
+function kookpotBadge(r){
+  if(state.recipeModus!=='kookpot')return '';
+  if(r.klaar)return '<div><span class="pill kookpotKlaar">Nu te maken</span></div>';
+  return `<div><span class="pill kookpotBijna">nog ${(r.ontbreekt||[]).length} nodig</span></div>`;
+}
+function kookpotRegel(r){
+  if(state.recipeModus!=='kookpot')return '';
+  const stukken=[];
+  if(r.klaar)stukken.push(`Alles in huis${r.aanwezig?` — ${r.aanwezig} ingrediënt${r.aanwezig===1?'':'en'} uit je voorraad`:''}${r.basis?.length?` en ${r.basis.length} uit de voorraadkast`:''}.`);
+  else{
+    stukken.push(`Ontbreekt nog: ${(r.ontbreekt||[]).slice(0,4).map(n=>esc(n)).join(', ')}${(r.ontbreekt||[]).length>4?` en ${r.ontbreekt.length-4} meer`:''}.`);
+    if(r.basis?.length)stukken.push(`${r.basis.length} basisingrediënt${r.basis.length===1?'':'en'} (zout, peper, olie) reken ik mee als aanwezig.`);
+  }
+  return `<p class="kookpotOntbreekt">${stukken.join(' ')}</p>`;
+}
+async function laadKookpot(opnieuw=false){
+  const aantal=Math.max(RECIPE_STEP,(opnieuw?RECIPE_STEP:state.recipes.length+RECIPE_STEP));
+  const params=new URLSearchParams({max:String(state.kookpotMarge),aantal:String(Math.min(aantal,200)),vanaf:opnieuw?'0':String(state.recipes.length)});
+  if(state.recipeQuery)params.set('q',state.recipeQuery);
+  if(state.recipeLand)params.set('country',state.recipeLand);
+  const data=await api('/api/kookpot?'+params.toString());
+  state.recipeTotaal=data.totaal;
+  state.recipes=opnieuw?data.items:[...state.recipes,...data.items];
+  state.kookpotSamenvatting=data.samenvatting;
+  $('#countRecipes').textContent=data.totaal;
+  $('#recipeTotal').textContent=`${data.totaal} te maken`;
+  renderRecipes();renderKookpotUitleg();
+}
+function renderKookpotUitleg(){
+  const uitleg=$('#kookpotUitleg');
+  if(!uitleg)return;
+  if(state.recipeModus!=='kookpot'){uitleg.hidden=true;uitleg.textContent='';return}
+  const s=state.kookpotSamenvatting||{klaar:0,bijna:0,totaal:state.recipeTotaal};
+  const marge=state.kookpotMarge;
+  uitleg.hidden=false;
+  uitleg.textContent=`Met je huidige voorraad kun je ${s.klaar} recepten meteen maken en ${s.bijna} met hooguit ${marge} boodschap${marge===1?'':'pen'} erbij (van ${s.totaal} recepten). Zout, peper, olie en andere voorraadkast-basis reken ik mee als aanwezig; zoeken en filteren op land werken hier ook.`;
+}
+async function zetReceptModus(modus){
+  state.recipeModus=modus;
+  $$('#receptModus [data-modus]').forEach(b=>b.classList.toggle('active',b.dataset.modus===modus));
+  const margeVeld=$('#kookpotMargeLabel');
+  if(margeVeld)margeVeld.hidden=modus!=='kookpot';
+  await laadRecepten(true);
+}
+async function veranderPorties(id,delta){
+  const recept=await receptDetail(id);
+  const huidig=portiesVoor(id,recept)||recept.servings||1;
+  state.porties[id]=Math.min(24,Math.max(1,huidig+delta));
+  const details=$(`#recipeGrid details[data-recipe-details="${id}"]`);
+  if(details){details.open=true;await vulReceptDetail(details,true)}
+}
+// ---------------------------------------------------------------------------
+// Afvinken in de winkel: het product gaat de voorraad in, van de lijst af.
+// ---------------------------------------------------------------------------
+async function afvinken(id){
+  try{
+    const r=await api(`/api/shopping/${id}/afvinken`,{method:'POST'});
+    $('#shoppingNotice').textContent=`${r.naam} staat nu ${r.aantal}× in je voorraad${r.stuks>1?` (${r.stuks} stuks erbij)`:''}.`;
+    await refresh();
+  }catch(fout){$('#shoppingNotice').textContent=fout.message;await refresh()}
+}
+// ---------------------------------------------------------------------------
+// De boodschappen van een hele week samenvoegen.
+// ---------------------------------------------------------------------------
+function weekBereik(){
+  const d=new Date((state.selectedDate||localDate(new Date()))+'T12:00:00');
+  const verschuiving=(d.getDay()+6)%7;
+  d.setDate(d.getDate()-verschuiving);
+  const van=localDate(d);
+  d.setDate(d.getDate()+6);
+  return {van,tot:localDate(d)};
+}
+async function openWeekBoodschappen(){
+  const bereik=weekBereik();
+  $('#weekVan').value=state.weekVan||bereik.van;
+  $('#weekTot').value=state.weekTot||bereik.tot;
+  $('#weekNotice').textContent='';
+  $('#weekDialog').showModal();
+  await updateWeekUitleg();
+}
+async function updateWeekUitleg(){
+  const van=$('#weekVan').value,tot=$('#weekTot').value,uitleg=$('#weekUitleg');
+  if(!van||!tot){uitleg.textContent='Kies een begin- en een einddatum.';return}
+  if(tot<van){uitleg.textContent='De einddatum ligt voor de begindatum.';return}
+  const dagen=Math.round((new Date(tot+'T12:00:00')-new Date(van+'T12:00:00'))/86400000)+1;
+  if(dagen>31){uitleg.textContent='Kies een periode van maximaal 31 dagen.';return}
+  try{
+    const maanden=[...new Set([van.slice(0,7),tot.slice(0,7)])];
+    const plannen=(await Promise.all(maanden.map(m=>api('/api/planner?month='+m)))).flat().filter(p=>p.plan_date>=van&&p.plan_date<=tot&&p.recipe_id);
+    if(!plannen.length){uitleg.textContent='In deze periode staat nog geen recept gepland. Plan eerst een gerecht in de kalender.';return}
+    uitleg.textContent=`In deze ${dagen} dagen staan ${plannen.length} geplande maaltijden (${new Set(plannen.map(p=>p.recipe_id)).size} verschillende recepten). De ingrediënten komen samengevoegd op je lijst, met de hoeveelheden opgeteld.`;
+  }catch{uitleg.textContent=''}
+}
+async function zetWeekOpLijst(event){
+  event.preventDefault();
+  const van=$('#weekVan').value,tot=$('#weekTot').value,knop=$('#weekOpslaan');
+  if(!van||!tot)return;
+  knop.disabled=true;$('#weekNotice').textContent='Bezig…';
+  try{
+    const r=await api('/api/shopping/week',payload('POST',{van,tot}));
+    state.weekVan=van;state.weekTot=tot;
+    $('#weekDialog').close();
+    $('#shoppingNotice').textContent=r.aantalRecepten?`${r.regels.length} regels van ${r.aantalRecepten} recepten over ${r.aantalDagen} dagen op je lijst gezet.`:'In deze periode stond geen recept gepland.';
+    await refresh();
+  }catch(fout){$('#weekNotice').textContent=fout.message}finally{knop.disabled=false}
+}
+// ---------------------------------------------------------------------------
+// Kookmodus: grote stappen, timers en het scherm aan.
+// ---------------------------------------------------------------------------
+let kookTimer=null,kookWake=null;
+async function openKookmodus(id,porties=null){
+  try{
+    const basis=await receptDetail(id);
+    const gewenst=Number(porties)>0?Number(porties):portiesVoor(id,basis);
+    const recept=basis.servings&&gewenst&&gewenst!==basis.servings?await receptDetail(id,gewenst):basis;
+    state.kookmodus={id,recept,porties:gewenst||basis.servings||null,stap:0};
+    $('#kookmodus').hidden=false;
+    document.body.style.overflow='hidden';
+    renderKookmodus();
+    vraagWakker();
+  }catch(fout){$('#recipeNotice').textContent=fout.message}
+}
+function sluitKookmodus(){
+  $('#kookmodus').hidden=true;
+  document.body.style.overflow='';
+  stopKookTimer();laatWakker();
+  state.kookmodus=null;
+}
+function timerTekst(seconden){
+  if(seconden>=3600)return `${Math.round(seconden/360)/10} uur`;
+  if(seconden>=60)return `${Math.round(seconden/60)} min`;
+  return `${seconden} sec`;
+}
+function renderKookmodus(){
+  const k=state.kookmodus;if(!k)return;
+  const recept=k.recept;
+  $('#kookmodusNaam').textContent=recept.name;
+  $('#kookmodusPorties').textContent=[k.porties?`voor ${k.porties} personen`:null,recept.time?`${recept.time} min`:null,recept.cuisine].filter(Boolean).join(' · ');
+  $('#kookmodusIngredienten').innerHTML=`<strong>Ingrediënten</strong><ul>${recept.ingredients.map(i=>`<li>${esc(i.display||`${nlGetal(i.quantity)} ${i.unit} ${i.name}`)}</li>`).join('')}</ul>`;
+  const tijden=recept.stapTimers||[];
+  $('#kookmodusStappen').innerHTML=recept.steps.map((stap,index)=>{
+    const chips=(tijden[index]||[]).map(seconden=>`<button class="btn timerChip" type="button" data-timer="${seconden}">⏱ ${timerTekst(seconden)}</button>`).join('');
+    return `<li class="kookStap${index===k.stap?' actief':''}" data-kookstap="${index}"><span class="kookStapNr">Stap ${index+1}</span><div>${esc(stap)}</div>${chips?`<div class="timerChips">${chips}</div>`:''}</li>`;
+  }).join('');
+  $('#kookmodusTeller').textContent=`Stap ${k.stap+1} van ${recept.steps.length}`;
+  $('#kookmodusVorige').disabled=k.stap===0;
+  $('#kookmodusVolgende').textContent=k.stap===recept.steps.length-1?'Klaar ✓':'Volgende stap →';
+  const actief=$('#kookmodusStappen .kookStap.actief');
+  if(actief&&actief.scrollIntoView)actief.scrollIntoView({block:'nearest'});
+}
+function kookStap(delta){
+  const k=state.kookmodus;if(!k)return;
+  if(delta>0&&k.stap===k.recept.steps.length-1)return sluitKookmodus();
+  k.stap=Math.min(k.recept.steps.length-1,Math.max(0,k.stap+delta));
+  renderKookmodus();
+}
+function stopKookTimer(){
+  if(kookTimer){clearInterval(kookTimer);kookTimer=null}
+  const box=$('#kookmodusTimer');
+  if(box){box.hidden=true;box.textContent=''}
+}
+function startKookTimer(seconden){
+  stopKookTimer();
+  const box=$('#kookmodusTimer');
+  let rest=Math.max(1,Number(seconden)||0);
+  const teken=()=>{
+    box.hidden=false;
+    box.innerHTML=`<strong>⏱ ${Math.floor(rest/60)}:${String(rest%60).padStart(2,'0')}</strong><button class="btn" type="button" id="kookTimerStop">Timer stoppen</button><span class="hint">Timer voor deze stap</span>`;
+    const stop=$('#kookTimerStop');
+    if(stop)stop.onclick=stopKookTimer;
+  };
+  teken();
+  kookTimer=setInterval(()=>{
+    rest--;
+    if(rest<=0){stopKookTimer();kookMelding();return}
+    teken();
+  },1000);
+}
+function kookMelding(){
+  kookPiep();
+  try{if(window.Notification&&Notification.permission==='granted')new Notification('Timer klaar',{body:'Je timer in de kookmodus is afgelopen.'})}catch{/* melding is een extraatje */}
+  const box=$('#kookmodusTimer');
+  if(box){box.hidden=false;box.innerHTML='<strong>⏱ Timer klaar</strong><span class="hint">Tijd om verder te gaan met de volgende stap.</span>'}
+}
+function kookPiep(){
+  try{
+    const ctx=new (window.AudioContext||window.webkitAudioContext)();
+    const toon=ctx.createOscillator(),volume=ctx.createGain();
+    toon.connect(volume);volume.connect(ctx.destination);
+    toon.frequency.value=880;volume.gain.value=0.18;
+    toon.start();
+    setTimeout(()=>{try{toon.stop();ctx.close()}catch{/* al gestopt */}},900);
+  }catch{/* zonder geluid gaat de timer gewoon door */}
+}
+async function vraagWakker(){
+  try{if(navigator.wakeLock&&!kookWake)kookWake=await navigator.wakeLock.request('screen')}catch{/* niet ondersteund */}
+}
+function laatWakker(){
+  try{if(kookWake&&kookWake.release)kookWake.release();kookWake=null}catch{/* al vrijgegeven */}
+}
+// ---------------------------------------------------------------------------
+// Het weer bij het kledingadvies (Open-Meteo).
+// ---------------------------------------------------------------------------
+async function loadWeer(metAdvies=false){
+  try{
+    const gegevens=await api('/api/weer');
+    state.weer=gegevens;
+    const plaats=gegevens.instellingen.plaats||'';
+    $('#weerPlaats').value=plaats;
+    $('#weerAan').checked=Boolean(gegevens.instellingen.aan);
+    $('#weerAan').disabled=!plaats;
+    const vandaag=gegevens.vandaag;
+    const bron=gegevens.bron?.naam||'Open-Meteo';
+    if(!plaats)$('#weerRegel').textContent=`Vul een plaats in om het weer mee te laten wegen (bron: ${bron}, zonder sleutel). Zonder plaats gebruikt het advies alleen seizoen en gelegenheid.`;
+    else if(vandaag)$('#weerRegel').textContent=`${plaats}: vandaag ${nlGetal(vandaag.tempMax)} °C (min ${nlGetal(vandaag.tempMin)}), ${vandaag.regenkans}% kans op regen, wind ${nlGetal(vandaag.wind)} km/u — ${vandaag.omschrijving}. Bron: ${bron}.${gegevens.instellingen.aan?'':' Het weer staat uit, dus het advies gebruikt het niet.'}`;
+    else $('#weerRegel').textContent=`${plaats} is ingesteld, maar er is nu geen verwachting${gegevens.instellingen.aan?'':' (het weer staat uit)'}. Bron: ${bron}.`;
+    if(metAdvies&&window.Kledingkast&&window.Kledingkast.adviesVerversen)await window.Kledingkast.adviesVerversen();
+  }catch(fout){$('#weerRegel').textContent=fout.message}
+}
+async function bewaarWeerPlaats(){
+  const plaats=$('#weerPlaats').value.trim();
+  $('#adviceNotice').textContent='Bezig met zoeken…';
+  try{
+    const uitkomst=await api('/api/weer/instellingen',payload('PUT',{plaats,aan:true}));
+    $('#adviceNotice').textContent=uitkomst.instellingen.plaats?`Het weer komt nu uit ${uitkomst.instellingen.plaats}.`:'De plaats is gewist; het advies gebruikt het weer niet meer.';
+    await loadWeer(true);
+  }catch(fout){$('#adviceNotice').textContent=fout.message;await loadWeer()}
+}
+async function zetWeerAan(aan){
+  try{await api('/api/weer/instellingen',payload('PUT',{aan:Boolean(aan)}));await loadWeer(true)}catch(fout){$('#adviceNotice').textContent=fout.message}
+}
+// ---------------------------------------------------------------------------
+// Knoppen van de nieuwe onderdelen.
+// ---------------------------------------------------------------------------
+$$('#receptModus [data-modus]').forEach(knop=>knop.addEventListener('click',()=>zetReceptModus(knop.dataset.modus)));
+$('#kookpotMarge').addEventListener('change',async()=>{state.kookpotMarge=Number($('#kookpotMarge').value);await laadRecepten(true)});
+$('#recipeGrid').addEventListener('click',async event=>{
+  const portiesKnop=event.target.closest('[data-porties-plus],[data-porties-min]');
+  if(portiesKnop){
+    const id=Number(portiesKnop.dataset.portiesPlus||portiesKnop.dataset.portiesMin);
+    await veranderPorties(id,portiesKnop.dataset.portiesPlus?1:-1);
+    return;
+  }
+  const kookKnop=event.target.closest('[data-kookmodus]');
+  if(kookKnop){await openKookmodus(Number(kookKnop.dataset.kookmodus),portiesVoor(Number(kookKnop.dataset.kookmodus),await receptDetail(Number(kookKnop.dataset.kookmodus))));return}
+  const ontbreektKnop=event.target.closest('[data-ontbrekende]');
+  if(ontbreektKnop){
+    const id=Number(ontbreektKnop.dataset.ontbrekende);
+    try{
+      const x=await api(`/api/shopping/recipes/${id}`,payload('POST',{alleenOntbrekend:true,porties:state.porties[id]||null}));
+      $('#recipeNotice').textContent=x.added?`${x.added} ontbrekende ingrediënten toegevoegd aan je boodschappenlijst.`:'Er ontbrak niets meer; alles staat al in huis.';
+      await refresh();
+    }catch(fout){$('#recipeNotice').textContent=fout.message}
+  }
+});
+$('#shoppingList').addEventListener('change',async event=>{
+  const vak=event.target.closest('[data-afvinken]');
+  if(!vak)return;
+  vak.disabled=true;
+  await afvinken(vak.dataset.afvinken);
+});
+$('#weekBoodschappen').addEventListener('click',openWeekBoodschappen);
+$('#weekCancel').addEventListener('click',()=>$('#weekDialog').close());
+$('#weekForm').addEventListener('submit',zetWeekOpLijst);
+$('#weekVan').addEventListener('change',updateWeekUitleg);
+$('#weekTot').addEventListener('change',updateWeekUitleg);
+$('#kookmodusSluiten').addEventListener('click',sluitKookmodus);
+$('#kookmodusVorige').addEventListener('click',()=>kookStap(-1));
+$('#kookmodusVolgende').addEventListener('click',()=>kookStap(1));
+$('#kookmodusStappen').addEventListener('click',event=>{const tik=event.target.closest('[data-timer]');if(tik)startKookTimer(tik.dataset.timer)});
+document.addEventListener('keydown',event=>{
+  if($('#kookmodus').hidden)return;
+  if(event.key==='Escape')sluitKookmodus();
+  if(event.key==='ArrowRight')kookStap(1);
+  if(event.key==='ArrowLeft')kookStap(-1);
+});
+$('#planKookmodus').addEventListener('click',()=>{const knop=$('#planKookmodus');if(knop.dataset.kookid)openKookmodus(Number(knop.dataset.kookid),Number(knop.dataset.kookporties)||null)});
+$('#weerZoek').addEventListener('click',bewaarWeerPlaats);
+$('#weerPlaats').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();bewaarWeerPlaats()}});
+$('#weerAan').addEventListener('change',()=>zetWeerAan($('#weerAan').checked));
 refresh().then(()=>showPage('stock')).catch(e=>$('#stockNotice').textContent=e.message);
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}))}
 
@@ -889,12 +1262,14 @@ async function openKast() {
     resetForm();
     if (window.innerWidth <= 760) $('#formPanel').open = false;
     await loadAll();
+    await loadWeer();
     await loadAdvice();
     await loadHistory();
   } catch (error) {
     $('#kastNotice').textContent = error.message;
   }
 }
-window.Kledingkast = { open: openKast };
+
+window.Kledingkast = { open: openKast, adviesVerversen: loadAdvice };
 })();
 </script><script src="platen.js?v=3"></script></body></html>

@@ -10,6 +10,11 @@ const { createWardrobe } = require('./wardrobe');
 const { createBarcodes } = require('./barcodes');
 const { createProfiles } = require('./profiles');
 const { createPlaten } = require('./platen');
+// Rekenkern van de keuken: voorraad vergelijken met recepten, hoeveelheden
+// omrekenen naar een ander aantal porties en de boodschappen van een week
+// samenvoegen tot één regel per product.
+const { createWeer } = require('./weer');
+const { bouwVoorraadIndex, ingredientInHuis, normaliseerEenheid, ontbrekendVoorRecept, schaalIngredienten, voegBoodschappenSamen, parseStapTimers } = require('./keuken');
 const { URL } = require('node:url');
 
 const TLS_CERT = () => process.env.TLS_CERT || '/etc/voorraadthuis/tls/cert.pem';
@@ -24,6 +29,8 @@ try{db.exec('ALTER TABLE products ADD COLUMN aantal INTEGER NOT NULL DEFAULT 1')
 // Elke dienst kan een eigen kleur krijgen; bestaande databases krijgen de kolom erbij.
 try{db.exec("ALTER TABLE work_shifts ADD COLUMN color TEXT NOT NULL DEFAULT ''")}catch(e){}
 try{db.exec("ALTER TABLE shift_templates ADD COLUMN color TEXT NOT NULL DEFAULT ''")}catch(e){}
+// Hoeveel porties er die dag gekookt worden; leeg betekent: het aantal van het recept zelf.
+try{db.exec('ALTER TABLE planner ADD COLUMN porties INTEGER')}catch(e){}
 // Migrate saved legacy single-shift plans once; subsequent saves replace both forms.
 db.exec(`INSERT INTO work_shifts(plan_date,name,start_time,end_time,notes) SELECT plan_date,CASE WHEN trim(work_notes)='' THEN 'Dienst' ELSE trim(work_notes) END,work_start,work_end,'' FROM planner WHERE work_start<>'' AND work_end<>'' AND NOT EXISTS(SELECT 1 FROM work_shifts WHERE work_shifts.plan_date=planner.plan_date)`);
 
@@ -73,7 +80,14 @@ function normaliseerTijd(waarde){const tekst=String(waarde??'').trim();if(!tekst
 function shiftsForDate(date){return db.prepare('SELECT name,start_time AS startTime,end_time AS endTime,notes,color FROM work_shifts WHERE plan_date=? ORDER BY id').all(date);}
 // Kledingkast hoort bij dezelfde app: de garderoberoutes staan onder /api/kast/ en de
 // foto's onder /media/. De module krijgt de bestaande database en fotomap mee.
-const wardrobe = createWardrobe({ db, mediaDir: MEDIA_DIR });
+// Het weer voor het kledingadvies: Open-Meteo, zonder sleutel. De verwachting
+// wordt in de eigen database bewaard, zodat herhaald advies niet blijft
+// ophalen. WEER_AUTO=0 zet het ophalen uit (gebruikt in de tests).
+const weer = createWeer({ db, auto:process.env.WEER_AUTO !== '0' });
+const WEER_BRON = {naam:'Open-Meteo', url:'https://open-meteo.com/'};
+// Datum van vandaag op de eigen klok, in hetzelfde formaat als de app gebruikt.
+function lokaleDatum(){const nu=new Date();return `${nu.getFullYear()}-${String(nu.getMonth()+1).padStart(2,'0')}-${String(nu.getDate()).padStart(2,'0')}`;}
+const wardrobe = createWardrobe({ db, mediaDir: MEDIA_DIR, weer });
 // Barcodeherkenning: gescande codes worden opgezocht en lokaal bewaard.
 const barcodes = createBarcodes({ db });
 // Profielen en sms: huisgenoten met telefoonnummer plus het sms-kanaal waarmee
@@ -93,6 +107,25 @@ function shiftTemplates(){return db.prepare('SELECT id,name,start_time AS startT
 const MAX_SHOPPING_NAME=600; // geïmporteerde bronregels uit het Wikibooks-kookboek lopen op tot 504 tekens; 400 weigerde die regels
 function addShoppingItem(item){const name=String(item.name||'').trim(),unit=String(item.unit||'stuks').trim(),quantity=Number(item.quantity??1);if(!name||name.length>MAX_SHOPPING_NAME||!Number.isFinite(quantity)||quantity<=0||quantity>100000||unit.length>24)throw Error('Ongeldig boodschappenproduct.');const old=db.prepare('SELECT id FROM shopping WHERE lower(name)=lower(?) AND lower(unit)=lower(?) ORDER BY id LIMIT 1').get(name,unit);if(old)db.prepare('UPDATE shopping SET quantity=quantity+? WHERE id=?').run(quantity,old.id);else db.prepare('INSERT INTO shopping(name,quantity,unit) VALUES(?,?,?)').run(name,quantity,unit);}
 
+// De kookpot: welke recepten kun je maken met wat er in huis is. Het rekenwerk
+// hangt alleen van de voorraad af en wordt daarom onthouden tot de voorraad
+// verandert; daarna is het per verzoek alleen nog filteren en bladeren.
+let kookpotOnthouden={signatuur:null,recepten:null,klaar:0,bijna:0};
+function bouwKookpot(){
+  const producten=products();
+  const signatuur=producten.map(p=>`${p.name}|${p.aantal}|${p.quantity}${p.unit}`).join('~');
+  if(kookpotOnthouden.signatuur===signatuur)return kookpotOnthouden;
+  const index=bouwVoorraadIndex(producten);
+  const recepten=[];let klaar=0,bijna=0;
+  for(const recept of RECIPES){
+    const uitkomst=ontbrekendVoorRecept(recept,index);
+    if(uitkomst.klaar)klaar++;else if(uitkomst.ontbreekt.length<=2)bijna++;
+    recepten.push({recept,ontbreekt:uitkomst.ontbreekt,aanwezig:uitkomst.aanwezig,basis:uitkomst.basis,klaar:uitkomst.klaar});
+  }
+  recepten.sort((a,b)=>a.ontbreekt.length-b.ontbreekt.length||b.aanwezig-a.aanwezig||a.recept.name.localeCompare(b.recept.name,'nl'));
+  kookpotOnthouden={signatuur,recepten,klaar,bijna};
+  return kookpotOnthouden;
+}
 const server=http.createServer(async(req,res)=>{let url;try{url=new URL((req.url||'/').replace(/^\/{2,}/,'/'),'http://localhost');}catch{res.writeHead(400,{'content-type':'text/plain; charset=utf-8'});return res.end('Ongeldig verzoek\n');}try{
  if(url.pathname.startsWith('/api/kast/')||url.pathname.startsWith('/media/'))return wardrobe.handle(req,res,wardrobePath(url));
  if(url.pathname==='/api/platen'||url.pathname.startsWith('/api/platen/'))return platen.handle(req,res,url);
@@ -114,7 +147,35 @@ const server=http.createServer(async(req,res)=>{let url;try{url=new URL((req.url
   if(q)lijst=lijst.filter(r=>zoekTekst(r).includes(q));
   return json(res,200,{totaal:lijst.length,vanaf,aantal,items:lijst.slice(vanaf,vanaf+aantal).map(compactRecept)});
  }
- const receptMatch=url.pathname.match(/^\/api\/recipes\/(\d+)$/);if(receptMatch&&req.method==='GET'){const recept=recipeById(receptMatch[1]);if(!recept)return json(res,404,{error:'Recept niet gevonden.'});return json(res,200,recept);}
+ const receptMatch=url.pathname.match(/^\/api\/recipes\/(\d+)$/);if(receptMatch&&req.method==='GET'){
+  const recept=recipeById(receptMatch[1]);if(!recept)return json(res,404,{error:'Recept niet gevonden.'});
+  // ?porties=2 rekent de hoeveelheden om naar het aantal personen dat je kiest.
+  const portiesTekst=url.searchParams.get('porties');
+  let porties=null;
+  if(portiesTekst!=null&&portiesTekst!==''){
+    const gevraagd=Number(portiesTekst);
+    if(!Number.isInteger(gevraagd)||gevraagd<1||gevraagd>24)return json(res,400,{error:'Kies een aantal porties tussen 1 en 24.'});
+    porties=gevraagd;
+  }
+  const ingredienten=porties?schaalIngredienten(recept.ingredients,porties,recept.servings):recept.ingredients;
+  return json(res,200,{...recept,ingredients:ingredienten,porties,stapTimers:recept.steps.map(parseStapTimers)});
+}
+ // Wat kun je koken met wat er in huis is? max = hoeveel ingrediënten je nog
+ // mag missen, country/q filteren, vanaf/aantal bladeren.
+ if(url.pathname==='/api/kookpot'&&req.method==='GET'){
+  const margeTekst=url.searchParams.get('max');
+  const marge=margeTekst==null||margeTekst===''?2:Number(margeTekst);
+  if(!Number.isInteger(marge)||marge<0||marge>3)return json(res,400,{error:'Kies een marge tussen 0 en 3 ingrediënten.'});
+  const country=(url.searchParams.get('country')||url.searchParams.get('land')||'').trim();
+  const q=(url.searchParams.get('q')||'').trim().toLowerCase();
+  const vanaf=Math.max(0,Math.trunc(Number(url.searchParams.get('vanaf')||0))||0);
+  const aantal=Math.min(96,Math.max(1,Math.trunc(Number(url.searchParams.get('aantal')||48))||48));
+  const kookpot=bouwKookpot();
+  let lijst=kookpot.recepten.filter(x=>x.ontbreekt.length<=marge);
+  if(country)lijst=lijst.filter(x=>x.recept.cuisine===country);
+  if(q)lijst=lijst.filter(x=>zoekTekst(x.recept).includes(q));
+  return json(res,200,{totaal:lijst.length,vanaf,aantal,max:marge,samenvatting:{klaar:kookpot.klaar,bijna:kookpot.bijna,totaal:RECIPES.length},items:lijst.slice(vanaf,vanaf+aantal).map(x=>({...compactRecept(x.recept),ontbreekt:x.ontbreekt,aanwezig:x.aanwezig,basis:x.basis,klaar:x.klaar}))});
+ }
  if(url.pathname==='/api/shift-templates'&&req.method==='GET')return json(res,200,shiftTemplates());
  if(url.pathname==='/api/shift-templates'&&req.method==='POST'){const x=await body(req),name=String(x.name||'').trim(),startTime=String(x.startTime||''),endTime=String(x.endTime||''),notes=String(x.notes||'').trim(),color=String(x.color||'').trim();if(!name||name.length>80||!validTime(startTime)||!validTime(endTime)||notes.length>200||!geldigeDienstkleur(color))return json(res,400,{error:'Vul een naam, een kleur en geldige tijden in 24-uursnotatie (00:00–23:59) in.'});const result=db.prepare('INSERT INTO shift_templates(name,start_time,end_time,notes,color) VALUES(?,?,?,?,?)').run(name,startTime,endTime,notes,color);return json(res,201,db.prepare('SELECT id,name,start_time AS startTime,end_time AS endTime,notes,color FROM shift_templates WHERE id=?').get(Number(result.lastInsertRowid)));}
  const templateMatch=url.pathname.match(/^\/api\/shift-templates\/(\d+)$/);if(templateMatch&&req.method==='DELETE'){const result=db.prepare('DELETE FROM shift_templates WHERE id=?').run(Number(templateMatch[1]));if(!result.changes)return json(res,404,{error:'Opgeslagen dienst niet gevonden.'});return json(res,200,{ok:true});}
@@ -126,11 +187,81 @@ const server=http.createServer(async(req,res)=>{let url;try{url=new URL((req.url
  let m=url.pathname.match(/^\/api\/products\/(\d+)$/);if(m&&req.method==='PATCH'){const id=Number(m[1]),x=await body(req);if(x.action==='consume'){const p=db.prepare('SELECT * FROM products WHERE id=?').get(id);if(!p)return json(res,404,{error:'Product niet gevonden.'});db.prepare('DELETE FROM products WHERE id=?').run(id);addShoppingItem(p);return json(res,200,{ok:true});}if(x.action==='restore'){const p=db.prepare('SELECT * FROM shopping WHERE id=?').get(id);if(!p)return json(res,404,{error:'Product niet gevonden.'});db.prepare('INSERT INTO products(name,quantity,unit) VALUES(?,?,?)').run(p.name,p.quantity,p.unit);db.prepare('DELETE FROM shopping WHERE id=?').run(id);return json(res,200,{ok:true});}
 // Hoeveel stuks je van een product in huis hebt.
 if(x.aantal!=null||x.action==='min'||x.action==='plus'){const p=db.prepare('SELECT * FROM products WHERE id=?').get(id);if(!p)return json(res,404,{error:'Product niet gevonden.'});const expliciet=x.aantal!=null;const gevraagd=expliciet?Math.round(Number(x.aantal)):p.aantal+(x.action==='plus'?1:-1);if(!Number.isFinite(gevraagd)||gevraagd>9999||(expliciet?gevraagd<1:gevraagd<0))return json(res,400,{error:'Geef een aantal tussen 1 en 9999 op.'});if(gevraagd===0){db.prepare('DELETE FROM products WHERE id=?').run(id);addShoppingItem(p);return json(res,200,{ok:true,op:true,aantal:0});}db.prepare('UPDATE products SET aantal=?, updated_at=CURRENT_TIMESTAMP WHERE id=?').run(gevraagd,id);return json(res,200,{ok:true,aantal:gevraagd});}}
- m=url.pathname.match(/^\/api\/shopping\/recipes\/(\d+)$/);if(m&&req.method==='POST'){const recipe=recipeById(m[1]);if(!recipe)return json(res,404,{error:'Recept niet gevonden.'});for(const ingredient of recipe.ingredients)addShoppingItem(ingredient);return json(res,201,{ok:true,added:recipe.ingredients.length});}
+ m=url.pathname.match(/^\/api\/shopping\/recipes\/(\d+)$/);if(m&&req.method==='POST'){
+  const recipe=recipeById(m[1]);if(!recipe)return json(res,404,{error:'Recept niet gevonden.'});
+  const x=await body(req);
+  let porties=null;
+  if(x.porties!=null&&x.porties!==''){porties=Math.round(Number(x.porties));if(!Number.isFinite(porties)||porties<1||porties>24)return json(res,400,{error:'Kies een aantal porties tussen 1 en 24.'});}
+  const alleenOntbrekend=x.alleenOntbrekend===true||x.alleenOntbrekend==='1';
+  const index=alleenOntbrekend?bouwVoorraadIndex(products()):null;
+  const ingredienten=schaalIngredienten(recipe.ingredients,porties,recipe.servings);
+  let added=0;
+  for(const ingredient of ingredienten){
+    if(alleenOntbrekend&&ingredientInHuis(ingredient.name,index))continue;
+    addShoppingItem(ingredient);added++;
+  }
+  return json(res,201,{ok:true,added,porties,alleenOntbrekend,overgeslagen:ingredienten.length-added});
+ }
  m=url.pathname.match(/^\/api\/shopping\/(\d+)$/);if(m&&req.method==='DELETE'){db.prepare('DELETE FROM shopping WHERE id=?').run(Number(m[1]));return json(res,200,{ok:true});}
  if(url.pathname==='/api/shopping'&&req.method==='POST'){const x=await body(req);try{addShoppingItem(x);return json(res,201,{ok:true});}catch(e){return json(res,400,{error:e.message});}}
- m=url.pathname.match(/^\/api\/planner\/(\d{4}-\d{2}-\d{2})$/);if(m&&req.method==='PUT'){const date=m[1],x=await body(req);if(!validDate(date))return json(res,400,{error:'Ongeldige datum.'});const recipeId=x.recipeId===''||x.recipeId==null?null:Number(x.recipeId);if(recipeId!==null&&!recipeById(recipeId))return json(res,400,{error:'Kies een bestaand recept.'});const cuisine=String(x.cuisine||'').trim(),hasShifts=Object.hasOwn(x,'shifts');let shifts;if(hasShifts){if(!Array.isArray(x.shifts)||x.shifts.length>8)return json(res,400,{error:'Voeg maximaal 8 diensten per dag toe.'});shifts=x.shifts.map(s=>({name:String(s?.name||'').trim(),startTime:normaliseerTijd(s?.startTime),endTime:normaliseerTijd(s?.endTime),notes:String(s?.notes||'').trim(),color:String(s?.color||'').trim()}));}else{const startTime=normaliseerTijd(x.workStart),endTime=normaliseerTijd(x.workEnd),workNotes=String(x.workNotes||'').trim();shifts=startTime||endTime||workNotes?[{name:workNotes||'Dienst',startTime,endTime,notes:'',color:''}]:[];}if(cuisine.length>80||shifts.some(s=>!s.name||s.name.length>80||!s.startTime||!s.endTime||!validTime(s.startTime)||!validTime(s.endTime)||s.notes.length>200||!geldigeDienstkleur(s.color)))return json(res,400,{error:'Controleer de dienstnaam, kleur, notitie en 24-uurs tijden (00:00–23:59).'});const first=shifts[0]||{startTime:'',endTime:'',notes:'',name:''};try{db.exec('BEGIN IMMEDIATE');db.prepare('INSERT INTO planner(plan_date,recipe_id,cuisine,work_start,work_end,work_notes) VALUES(?,?,?,?,?,?) ON CONFLICT(plan_date) DO UPDATE SET recipe_id=excluded.recipe_id,cuisine=excluded.cuisine,work_start=excluded.work_start,work_end=excluded.work_end,work_notes=excluded.work_notes').run(date,recipeId,cuisine,first.startTime,first.endTime,hasShifts?first.notes:(String(x.workNotes||'').trim()));db.prepare('DELETE FROM work_shifts WHERE plan_date=?').run(date);const insertShift=db.prepare('INSERT INTO work_shifts(plan_date,name,start_time,end_time,notes,color) VALUES(?,?,?,?,?,?)');for(const s of shifts)insertShift.run(date,s.name,s.startTime,s.endTime,s.notes,s.color);db.exec('COMMIT');}catch(error){db.exec('ROLLBACK');throw error;}return json(res,200,planWithShifts(db.prepare('SELECT * FROM planner WHERE plan_date=?').get(date)));}
+ // De ingrediënten van alle geplande recepten in een periode bij elkaar, met
+ // dezelfde producten op één regel en de hoeveelheden bij elkaar opgeteld.
+ if(url.pathname==='/api/shopping/week'&&req.method==='POST'){
+  const x=await body(req);
+  const van=String(x.van||''),tot=String(x.tot||'');
+  if(!validDate(van)||!validDate(tot))return json(res,400,{error:'Geef een geldige begin- en einddatum op.'});
+  const begin=new Date(`${van}T12:00:00`),eind=new Date(`${tot}T12:00:00`);
+  const dagen=Math.round((eind-begin)/86400000)+1;
+  if(dagen<1)return json(res,400,{error:'De einddatum ligt voor de begindatum.'});
+  if(dagen>31)return json(res,400,{error:'Kies een periode van maximaal 31 dagen.'});
+  const regels=[],dagenMetRecept=[],recepten=new Map(),zonderRecept=[];
+  const planVoor=db.prepare('SELECT * FROM planner WHERE plan_date=?');
+  for(let i=0;i<dagen;i++){
+    const datum=new Date(begin.getTime()+i*86400000).toISOString().slice(0,10);
+    const plan=planVoor.get(datum);
+    if(!plan||!plan.recipe_id)continue;
+    const recept=recipeById(plan.recipe_id);
+    if(!recept){zonderRecept.push(datum);continue;}
+    const porties=Number.isFinite(Number(plan.porties))&&Number(plan.porties)>0?Number(plan.porties):null;
+    const ingredienten=schaalIngredienten(recept.ingredients,porties,recept.servings);
+    dagenMetRecept.push({datum,recepten:[{id:recept.id,name:recept.name,cuisine:recept.cuisine,porties}]});
+    recepten.set(recept.id,recept.name);
+    for(const ingredient of ingredienten)regels.push({...ingredient,uit:{datum,name:recept.name}});
+  }
+  const samengevoegd=voegBoodschappenSamen(regels);
+  for(const regel of samengevoegd)addShoppingItem({name:regel.name,quantity:regel.quantity,unit:regel.unit});
+  return json(res,200,{ok:true,van,tot,aantalDagen:dagenMetRecept.length,aantalRecepten:recepten.size,aantalRegels:samengevoegd.length,regels:samengevoegd,dagen:dagenMetRecept,zonderRecept});
+ }
+ // Afvinken in de winkel: het product gaat de voorraad in en van de lijst af.
+ const afvinkMatch=url.pathname.match(/^\/api\/shopping\/(\d+)\/afvinken$/);
+ if(afvinkMatch&&req.method==='POST'){
+  const item=db.prepare('SELECT * FROM shopping WHERE id=?').get(Number(afvinkMatch[1]));
+  if(!item)return json(res,404,{error:'Dit staat niet meer op de boodschappenlijst.'});
+  const {eenheid}=normaliseerEenheid(item.unit);
+  const stuks=eenheid==='stuks'?Math.max(1,Math.round(Number(item.quantity)||1)):1;
+  let product=item.product_id?db.prepare('SELECT * FROM products WHERE id=?').get(item.product_id):null;
+  if(!product)product=db.prepare('SELECT * FROM products WHERE lower(name)=lower(?)').get(item.name);
+  if(product){const aantal=Math.min(9999,(Number(product.aantal)||1)+stuks);db.prepare('UPDATE products SET aantal=?, updated_at=CURRENT_TIMESTAMP WHERE id=?').run(aantal,product.id);product={...product,aantal};}
+  else{const ingevoegd=db.prepare('INSERT INTO products(name,quantity,unit,aantal) VALUES(?,?,?,?)').run(item.name,item.quantity,item.unit,stuks);product=db.prepare('SELECT * FROM products WHERE id=?').get(Number(ingevoegd.lastInsertRowid));}
+  db.prepare('DELETE FROM shopping WHERE id=?').run(item.id);
+  return json(res,200,{ok:true,naam:product.name,aantal:product.aantal,stuks,product});
+ }
+ m=url.pathname.match(/^\/api\/planner\/(\d{4}-\d{2}-\d{2})$/);if(m&&req.method==='PUT'){const date=m[1],x=await body(req);if(!validDate(date))return json(res,400,{error:'Ongeldige datum.'});const recipeId=x.recipeId===''||x.recipeId==null?null:Number(x.recipeId);if(recipeId!==null&&!recipeById(recipeId))return json(res,400,{error:'Kies een bestaand recept.'});let porties=null;if(x.porties!=null&&x.porties!==''){porties=Math.round(Number(x.porties));if(!Number.isFinite(porties)||porties<1||porties>24)return json(res,400,{error:'Kies een aantal porties tussen 1 en 24.'});}const cuisine=String(x.cuisine||'').trim(),hasShifts=Object.hasOwn(x,'shifts');let shifts;if(hasShifts){if(!Array.isArray(x.shifts)||x.shifts.length>8)return json(res,400,{error:'Voeg maximaal 8 diensten per dag toe.'});shifts=x.shifts.map(s=>({name:String(s?.name||'').trim(),startTime:normaliseerTijd(s?.startTime),endTime:normaliseerTijd(s?.endTime),notes:String(s?.notes||'').trim(),color:String(s?.color||'').trim()}));}else{const startTime=normaliseerTijd(x.workStart),endTime=normaliseerTijd(x.workEnd),workNotes=String(x.workNotes||'').trim();shifts=startTime||endTime||workNotes?[{name:workNotes||'Dienst',startTime,endTime,notes:'',color:''}]:[];}if(cuisine.length>80||shifts.some(s=>!s.name||s.name.length>80||!s.startTime||!s.endTime||!validTime(s.startTime)||!validTime(s.endTime)||s.notes.length>200||!geldigeDienstkleur(s.color)))return json(res,400,{error:'Controleer de dienstnaam, kleur, notitie en 24-uurs tijden (00:00–23:59).'});const first=shifts[0]||{startTime:'',endTime:'',notes:'',name:''};try{db.exec('BEGIN IMMEDIATE');db.prepare('INSERT INTO planner(plan_date,recipe_id,cuisine,work_start,work_end,work_notes,porties) VALUES(?,?,?,?,?,?,?) ON CONFLICT(plan_date) DO UPDATE SET recipe_id=excluded.recipe_id,cuisine=excluded.cuisine,work_start=excluded.work_start,work_end=excluded.work_end,work_notes=excluded.work_notes,porties=excluded.porties').run(date,recipeId,cuisine,first.startTime,first.endTime,hasShifts?first.notes:(String(x.workNotes||'').trim()),porties);db.prepare('DELETE FROM work_shifts WHERE plan_date=?').run(date);const insertShift=db.prepare('INSERT INTO work_shifts(plan_date,name,start_time,end_time,notes,color) VALUES(?,?,?,?,?,?)');for(const s of shifts)insertShift.run(date,s.name,s.startTime,s.endTime,s.notes,s.color);db.exec('COMMIT');}catch(error){db.exec('ROLLBACK');throw error;}return json(res,200,planWithShifts(db.prepare('SELECT * FROM planner WHERE plan_date=?').get(date)));}
  if(m&&req.method==='DELETE'){db.prepare('DELETE FROM work_shifts WHERE plan_date=?').run(m[1]);db.prepare('DELETE FROM planner WHERE plan_date=?').run(m[1]);return json(res,200,{ok:true});}
+ // Weer: de plaats en of het weer meedoet in het kledingadvies.
+ if(url.pathname==='/api/weer'&&req.method==='GET'){
+  return json(res,200,{instellingen:weer.instellingen(),vandaag:await weer.voorDatum(lokaleDatum()),bron:WEER_BRON});
+ }
+ if(url.pathname==='/api/weer/instellingen'&&req.method==='PUT'){
+  const x=await body(req);
+  if(Object.hasOwn(x,'aan')&&typeof x.aan!=='boolean')return json(res,400,{error:'Geef met ja of nee aan of het weer meedoet.'});
+  try{
+    if(Object.hasOwn(x,'plaats')&&!String(x.plaats??'').trim())weer.wissen();
+    else if(String(x.plaats??'').trim()||Number.isFinite(Number(x.lat)))await weer.bewaar({plaats:x.plaats,lat:x.lat,lon:x.lon,land:x.land});
+    if(Object.hasOwn(x,'aan'))weer.zetAan(x.aan);
+    return json(res,200,{ok:true,instellingen:weer.instellingen(),vandaag:await weer.voorDatum(lokaleDatum()),bron:WEER_BRON});
+  }catch(e){return json(res,400,{error:e.message});}
+ }
  // Profielen: huisgenoten met contactgegevens. Het telefoonnummer wordt in
  // internationale notatie opgeslagen (06 12345678 wordt +31612345678).
  if(url.pathname==='/api/profielen'&&req.method==='GET')return json(res,200,profiles.listProfiles());

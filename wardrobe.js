@@ -2,10 +2,13 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
+// Het weer is een eigen onderdeel van de app; de garderobe gebruikt alleen de
+// adviesregels eruit, zodat een advies ook zonder internet blijft werken.
+const { advies:weerAdvies } = require('./weer');
 
 /* Bouw het garderobe-onderdeel op de bestaande service. De database en de fotomap
    komen van buitenaf, zodat VoorraadThuis en Kledingkast echt één app zijn. */
-function createWardrobe({ db, mediaDir }) {
+function createWardrobe({ db, mediaDir, weer = null }) {
   const MEDIA_DIR = mediaDir;
   const AI = {
     base: (process.env.AI_BASE_URL || '').replace(/\/+$/, ''),
@@ -187,10 +190,12 @@ function harmony(bundle) {
   return {score:0.5, reason:`Felle kleuren bij elkaar: ${accents.map(x => x.color || x.name).join(' + ')}`};
 }
 
-function suggest({occasion, date, seed = 0}) {
+function suggest({occasion, date, seed = 0, weer = null}) {
   if (!OCCASIONS.includes(occasion)) throw Error('Kies een gelegenheid: werk, casual, feest, sport of buiten.');
   const rule = OUTFIT_RULES[occasion];
   const season = seasonOf(date);
+  // Wat het weer betekent voor deze dag: regen, kou of warmte.
+  const w = weerAdvies(weer);
   const since = new Date(`${date}T12:00:00`); since.setDate(since.getDate() - 3);
   const recent = db.prepare('SELECT item_id FROM wear_items WHERE wear_id IN (SELECT id FROM wear_log WHERE worn_on >= ?)').all(since.toISOString().slice(0, 10)).map(x => x.item_id);
   const clean = items("WHERE status='schoon'");
@@ -203,8 +208,15 @@ function suggest({occasion, date, seed = 0}) {
   const basis = pick(rule.basis, 8);
   const jurk = clean.filter(item => item.category === 'jurk').map(item => ({item, ...scoreItem(item, {occasion, season, recent, rule})})).sort((a, b) => b.score - a.score)[0];
   const onder = pick(rule.onder, 6);
-  const schoenen = pick(['schoenen'], 4);
-  const jas = rule.jas ? pick(['jas'], 3) : [];
+  let schoenenLijst = pick(['schoenen'], 4);
+  // Bij regen blijven leren en suède schoenen in de kast, als er iets anders is.
+  if (w.schoenenWaterdicht) {
+    const droog = schoenenLijst.filter(x => !/leer|suède|suede|lak/i.test(`${x.item.material} ${x.item.name}`));
+    if (droog.length) schoenenLijst = droog;
+  }
+  let jasLijst = rule.jas ? pick(['jas'], 3) : [];
+  if (w.warm) jasLijst = [];
+  else if ((w.koud || w.fris) && !jasLijst.length) jasLijst = pick(['jas'], 1);
   const accessoire = rule.accessoire ? pick(['accessoire'], 4) : [];
   const bundles = [];
   for (const top of basis) {
@@ -212,22 +224,22 @@ function suggest({occasion, date, seed = 0}) {
   }
   if (jurk && !onder.length) bundles.push([jurk]);
   if (jurk) bundles.push([jurk]);
-  if (!bundles.length) return {occasion, season, date, items:[], reasons:['Je hebt nog geen schone bovenkleding en broek of rok. Vul je kast aan of was een wasje.'], score:0};
+  if (!bundles.length) return {occasion, season, date, items:[], weer:weer || null, reasons:[...w.redenen, 'Je hebt nog geen schone bovenkleding en broek of rok. Vul je kast aan of was een wasje.'], score:0};
   const scored = bundles.map(bundle => {
     let combo = bundle.map(x => [x, scoreItem(x.item, {occasion, season, recent, rule})]).map(([x, s]) => ({...x, ...s}));
     let total = combo.reduce((n, x) => n + x.score, 0);
-    const shoe = schoenen[0] ? {...schoenen[0]} : null;
+    const shoe = schoenenLijst[0] ? {...schoenenLijst[0]} : null;
     if (shoe) { total += shoe.score * 0.6; combo = [...combo, shoe]; }
-    if (jas.length) { total += jas[0].score * 0.4; combo = [...combo, {...jas[0]}]; }
+    if (jasLijst.length) { total += jasLijst[0].score * 0.4; combo = [...combo, {...jasLijst[0]}]; }
     if (accessoire.length) { total += accessoire[0].score * 0.3; combo = [...combo, {...accessoire[0]}]; }
     const h = harmony(combo.map(x => x.item));
     total += h.score;
     return {combo, total, harmonyReason:h.reason};
   }).sort((a, b) => b.total - a.total || a.combo[0].item.id - b.combo[0].item.id);
   const chosen = scored[Math.abs(seed) % Math.min(scored.length, 3)];
-  const reasons = [`Seizoen: ${season}`, chosen.harmonyReason];
+  const reasons = [...w.redenen, `Seizoen: ${season}`, chosen.harmonyReason];
   for (const entry of chosen.combo) for (const reason of entry.reasons) if (!reasons.includes(reason)) reasons.push(reason);
-  return {occasion, season, date, score:Number(chosen.total.toFixed(1)), items:chosen.combo.map(x => x.item), reasons:reasons.slice(0, 10)};
+  return {occasion, season, date, score:Number(chosen.total.toFixed(1)), items:chosen.combo.map(x => x.item), reasons:reasons.slice(0, 12), weer:weer || null};
 }
 
 function analytics() {
@@ -296,7 +308,7 @@ const MIME = {'.html':'text/html; charset=utf-8','.svg':'image/svg+xml','.png':'
 
   async function handle(req, res, url) {
       try {
-      if (req.method === 'GET' && url.pathname === '/api/config') return json(res, 200, {ai:{enabled:Boolean(AI.base && AI.vision), visionModel:AI.base ? AI.vision : '', textModel:AI.base ? AI.text : ''}, categories:CATEGORIES, statuses:STATUSES, seasons:SEASONS, occasions:OCCASIONS, wardrobes:wardrobes(), today:today()});
+      if (req.method === 'GET' && url.pathname === '/api/config') return json(res, 200, {ai:{enabled:Boolean(AI.base && AI.vision), visionModel:AI.base ? AI.vision : '', textModel:AI.base ? AI.text : ''}, categories:CATEGORIES, statuses:STATUSES, seasons:SEASONS, occasions:OCCASIONS, wardrobes:wardrobes(), today:today(), weer:weer ? {...weer.instellingen(), vandaag:await weer.voorDatum(today())} : null});
 
       if (url.pathname === '/api/items' && req.method === 'GET') {
         const category = text(url.searchParams.get('category'), 24).toLowerCase();
@@ -404,7 +416,10 @@ const MIME = {'.html':'text/html; charset=utf-8','.svg':'image/svg+xml','.png':'
 
       if (url.pathname === '/api/suggest' && req.method === 'GET') {
         const date = validDate(url.searchParams.get('date')) ? url.searchParams.get('date') : today();
-        return json(res, 200, suggest({occasion:text(url.searchParams.get('occasion'), 16).toLowerCase() || 'casual', date, seed:Number(url.searchParams.get('seed') || 0)}));
+        // Heeft de app een plaats voor het weer, dan gaat de verwachting van die
+        // dag mee het advies in. Lukt dat niet, dan blijft het advies werken.
+        const verwachting = weer ? await weer.voorDatum(date) : null;
+        return json(res, 200, suggest({occasion:text(url.searchParams.get('occasion'), 16).toLowerCase() || 'casual', date, seed:Number(url.searchParams.get('seed') || 0), weer:verwachting}));
       }
 
       if (url.pathname === '/api/wear' && req.method === 'GET') {

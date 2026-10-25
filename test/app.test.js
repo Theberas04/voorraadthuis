@@ -5,10 +5,16 @@ const os=require('node:os');
 const path=require('node:path');
 const dir=fs.mkdtempSync(path.join(os.tmpdir(),'voorraadthuis-'));
 process.env.DB_PATH=path.join(dir,'test.db');
+// De tests halen geen weerbericht op: het ophalen zelf wordt apart getest.
+process.env.WEER_AUTO='0';
 const {server,db}=require('../server');
 let base;
 test.before(async()=>{await new Promise(r=>server.listen(0,'127.0.0.1',r));base=`http://127.0.0.1:${server.address().port}`;});
 test.after(async()=>{await new Promise(r=>server.close(r));db.close();fs.rmSync(dir,{recursive:true,force:true});});
+// Maakt de boodschappenlijst leeg, zodat een test met een schone lijst begint.
+async function legeBoodschappenlijst(){for(const regel of await(await call('/api/shopping')).json())await call(`/api/shopping/${regel.id}`,'DELETE');}
+// Vergelijkt de boodschappenlijst voor en na een actie.
+function nieuweRegels(voor,na){const oud=new Set(voor.map(x=>x.id));const nieuw=na.filter(x=>!oud.has(x.id)).map(x=>x.name);const verschil=na.filter(x=>{const eerder=voor.find(v=>v.id===x.id);return eerder&&eerder.quantity!==x.quantity;}).map(x=>x.name);return [...new Set([...nieuw,...verschil])];}
 const call=(url,method='GET',data)=>fetch(base+url,{method,headers:{'content-type':'application/json'},...(data?{body:JSON.stringify(data)}:{})});
 test('producten toevoegen, opraken en boodschappen herstellen',async()=>{let r=await call('/api/products','POST',{name:'Havermelk',barcode:'871234',quantity:2,unit:'pakken'});assert.equal(r.status,201);assert.equal((await call('/api/products')).status,200);const products=await(await call('/api/products')).json();assert.equal(products.length,1);r=await call(`/api/products/${products[0].id}`,'PATCH',{action:'consume'});assert.equal(r.status,200);let list=await(await call('/api/shopping')).json();assert.equal(list.length,1);assert.equal(list[0].name,'Havermelk');r=await call(`/api/products/${list[0].id}`,'PATCH',{action:'restore'});assert.equal(r.status,200);list=await(await call('/api/shopping')).json();assert.equal(list.length,0);assert.equal((await(await call('/api/products')).json()).length,1);});
 test('ongeldig product wordt geweigerd',async()=>{const r=await call('/api/products','POST',{name:'',quantity:0});assert.equal(r.status,400);});
@@ -87,7 +93,7 @@ test('het webapp-manifest maakt installatie op de telefoon mogelijk',async()=>{c
 test('de pagina is ingericht voor mobiel gebruik',async()=>{const html=await(await call('/')).text();assert.match(html,/name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/);assert.match(html,/rel="manifest" href="\/manifest\.webmanifest"/);assert.match(html,/rel="apple-touch-icon" href="\/apple-touch-icon\.png"/);assert.match(html,/@media\(max-width:760px\)/);assert.match(html,/grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
 assert.match(html,/<button data-page="profielen">Profielen<\/button>/);
 assert.match(html,/id="smsRecipient"/);assert.match(html,/font-size:16px/);assert.match(html,/env\(safe-area-inset-bottom\)/);assert.match(html,/recipeLimit:24/);assert.match(html,/recipeMore/);assert.match(html,/serviceWorker/)});
-test('de platenbundel en offline-cache krijgen een nieuwe versie bij updates',async()=>{const html=await(await call('/')).text();assert.match(html,/platen\.js\?v=3/,'een nieuwe URL voorkomt dat de oude platen.js uit de cache komt');const worker=await(await call('/sw.js')).text();assert.match(worker,/voorraadthuis-v7/,'de activatie moet de oude PWA-cache opruimen');});
+test('de platenbundel en offline-cache krijgen een nieuwe versie bij updates',async()=>{const html=await(await call('/')).text();assert.match(html,/platen\.js\?v=3/,'een nieuwe URL voorkomt dat de oude platen.js uit de cache komt');const worker=await(await call('/sw.js')).text();assert.match(worker,/voorraadthuis-v8/,'de activatie moet de oude PWA-cache opruimen');});
 
 test('de kledingkast-tab hoort bij dezelfde app',async()=>{const html=await(await call('/')).text();assert.match(html,/<button data-page="kast">Kleding<\/button>/);assert.match(html,/<section class="view" id="page-kast" hidden>/);});
 test('de garderobe-config biedt categorieën aan met AI uit',async()=>{const r=await call('/api/kast/config');assert.equal(r.status,200);const config=await r.json();assert.ok(config.categories.includes('schoenen'));assert.equal(config.ai.enabled,false);});
@@ -264,4 +270,235 @@ test('de locatie van een plaat is helemaal vrij: geen standaardplekken in de pag
   const veld=(pagina.match(/<input id="plaatLocatie"[^>]*>/)||[''])[0];
   assert.ok(veld.includes('list="plaatLocaties"'),'het veld stelt je eigen plekken voor');
   assert.ok(!/value="[^"]+"/.test(veld),'het veld begint leeg');
+});
+
+
+test('de kookpot laat zien wat je met je voorraad kunt maken',async()=>{
+  for(const product of [{name:'Pasta',quantity:500,unit:'gram'},{name:'Cherrytomaten',quantity:250,unit:'gram'},{name:'Groene pesto',quantity:1,unit:'potje'},{name:'Parmezaanse kaas',quantity:100,unit:'gram'}]){
+    assert.equal((await call('/api/products','POST',product)).status,201);
+  }
+  const begin=Date.now();
+  const antwoord=await(await call('/api/kookpot?max=2')).json();
+  assert.ok(Date.now()-begin<15000,'de kookpot hoort ook met bijna tienduizend recepten snel te antwoorden');
+  const pasta=antwoord.items.find(r=>r.id===1);
+  assert.ok(pasta,'Pasta pesto hoort erbij te staan nu alles in huis is');
+  assert.deepEqual(pasta.ontbreekt,[]);
+  assert.equal(pasta.klaar,true);
+  assert.equal(pasta.aanwezig,4);
+  assert.ok(antwoord.items.every(r=>r.ontbreekt.length<=2),'recepten met meer ontbrekende ingrediënten horen er niet in te staan');
+  assert.ok(antwoord.items[0].ontbreekt.length<=antwoord.items[antwoord.items.length-1].ontbreekt.length,'wie het minst mist staat bovenaan');
+  assert.ok(antwoord.samenvatting.klaar>=1,'minstens één recept is nu te maken');
+  assert.ok(antwoord.samenvatting.bijna>=0);
+  assert.equal(antwoord.max,2);
+  const streng=await(await call('/api/kookpot?max=0')).json();
+  assert.ok(streng.items.every(r=>r.ontbreekt.length===0),'met marge 0 blijven alleen recepten over die je nu kunt maken');
+  const gezocht=await(await call('/api/kookpot?max=3&q=lasagne&aantal=5')).json();
+  assert.ok(gezocht.items.length<=5);
+  assert.ok(gezocht.totaal>=1&&gezocht.totaal<antwoord.totaal,'de zoekterm hoort de kookpot te verkleinen');
+  assert.ok(gezocht.items.some(r=>r.name.toLowerCase().includes('lasagne')),'lasagne hoort erbij te zitten');
+});
+
+test('de kookpot weigert een marge die niet bestaat',async()=>{
+  for(const marge of ['99','-1','twee'])assert.equal((await call(`/api/kookpot?max=${marge}`)).status,400);
+});
+
+test('ingrediënten van een recept gaan met het gekozen aantal porties op de lijst',async()=>{
+  await legeBoodschappenlijst();
+  const voor=await(await call('/api/shopping')).json();
+  let r=await call('/api/shopping/recipes/2','POST',{porties:2});
+  assert.equal(r.status,201);
+  const uitkomst=await r.json();
+  assert.equal(uitkomst.added,5);
+  assert.equal(uitkomst.porties,2);
+  const na=await(await call('/api/shopping')).json();
+  const ei=na.find(x=>x.name.toLowerCase()==='eieren');
+  assert.ok(ei,'de eieren van de shakshuka horen op de lijst te staan');
+  assert.equal(ei.quantity,3,'vier eieren voor drie personen wordt er voor twee personen drie, geen 2,7');
+  assert.deepEqual(nieuweRegels(voor,na).sort(),['Eieren','Pitabrood','Rode paprika','Tomatenblokjes','Ui']);
+});
+
+test('met alleenOntbrekend komt er niets op de lijst dat al in huis is',async()=>{
+  const voor=await(await call('/api/shopping')).json();
+  const r=await call('/api/shopping/recipes/1','POST',{alleenOntbrekend:true});
+  assert.equal(r.status,201);
+  const uitkomst=await r.json();
+  assert.equal(uitkomst.added,0,'alles van dit recept staat al in de voorraad');
+  assert.equal(uitkomst.alleenOntbrekend,true);
+  const na=await(await call('/api/shopping')).json();
+  assert.equal(na.length,voor.length);
+  const ontbrekend=await call('/api/shopping/recipes/2','POST',{alleenOntbrekend:true});
+  assert.equal((await ontbrekend.json()).added,5,'van de shakshuka staat niets in huis');
+});
+
+test('de boodschappen van een hele week komen samengevoegd op één lijst',async()=>{
+  await legeBoodschappenlijst();
+  assert.equal((await call('/api/planner/2027-03-01','PUT',{recipeId:1,cuisine:'Italië',porties:2,shifts:[]})).status,200);
+  assert.equal((await call('/api/planner/2027-03-02','PUT',{recipeId:1,cuisine:'Italië',porties:4,shifts:[]})).status,200);
+  assert.equal((await call('/api/planner/2027-03-03','PUT',{recipeId:2,cuisine:'Tunesië',porties:3,shifts:[]})).status,200);
+  const r=await call('/api/shopping/week','POST',{van:'2027-03-01',tot:'2027-03-07'});
+  assert.equal(r.status,200);
+  const uitkomst=await r.json();
+  assert.equal(uitkomst.aantalDagen,3);
+  assert.equal(uitkomst.aantalRecepten,2);
+  const pasta=uitkomst.regels.find(x=>x.name.toLowerCase()==='pasta');
+  assert.ok(pasta,'pasta van twee dagen hoort samengevoegd te zijn');
+  assert.equal(pasta.quantity,525,'175 gram voor twee personen plus 350 gram voor vier personen');
+  assert.equal(pasta.unit,'gram');
+  assert.equal(pasta.uit.length,2,'de app hoort te kunnen vertellen uit welke dagen een regel komt');
+  assert.deepEqual(uitkomst.dagen.map(d=>d.datum),['2027-03-01','2027-03-02','2027-03-03']);
+  const list2=await(await call('/api/shopping')).json();
+  assert.equal(list2.filter(x=>x.name.toLowerCase()==='pasta').length,1,'een samengevoegde regel komt één keer op de lijst');
+  assert.equal(list2.find(x=>x.name.toLowerCase()==='pasta').quantity,525);
+  assert.ok(list2.some(x=>x.name==='Eieren'),'de shakshuka doet ook mee');
+  const leeg=await(await call('/api/shopping/week','POST',{van:'2030-01-01',tot:'2030-01-07'})).json();
+  assert.equal(leeg.aantalRecepten,0);
+  assert.deepEqual(leeg.regels,[]);
+});
+
+test('het samenvoegen van een week weigert onbruikbare periodes',async()=>{
+  for(const periode of [{van:'2027-03-07',tot:'2027-03-01'},{van:'2027-13-01',tot:'2027-13-07'},{van:'2027-01-01',tot:'2027-03-01'},{}]){
+    assert.equal((await call('/api/shopping/week','POST',periode)).status,400,JSON.stringify(periode));
+  }
+});
+
+test('afvinken in de winkel zet het product in je voorraad',async()=>{
+  assert.equal((await call('/api/products','POST',{name:'Havermout',quantity:500,unit:'gram'})).status,201);
+  const producten=await(await call('/api/products')).json();
+  const havermout=producten.find(p=>p.name==='Havermout');
+  assert.equal((await call(`/api/products/${havermout.id}`,'PATCH',{action:'consume'})).status,200);
+  let list=await(await call('/api/shopping')).json();
+  const regel=list.find(x=>x.name==='Havermout');
+  assert.ok(regel);
+  let r=await call(`/api/shopping/${regel.id}/afvinken`,'POST');
+  assert.equal(r.status,200);
+  const afgevinkt=await r.json();
+  assert.equal(afgevinkt.naam,'Havermout');
+  assert.equal(afgevinkt.aantal,1);
+  list=await(await call('/api/shopping')).json();
+  assert.equal(list.some(x=>x.id===regel.id),false,'een afgevinkt product hoort van de lijst te gaan');
+  const terug=(await(await call('/api/products')).json()).find(p=>p.name==='Havermout');
+  assert.ok(terug,'het product hoort weer in de voorraad te staan');
+  assert.equal(terug.aantal,1);
+  assert.equal(terug.quantity,500);
+  assert.equal(terug.unit,'gram');
+  assert.equal((await call('/api/shopping/9999/afvinken','POST')).status,404);
+});
+
+test('afvinken telt de stuks die je koopt bij de voorraad op',async()=>{
+  const list=await(await call('/api/shopping')).json();
+  const regel=list.find(x=>x.name.toLowerCase()==='eieren');
+  assert.ok(regel,'de eieren van de shakshuka staan op de lijst');
+  const gevraagd=Math.max(1,Math.round(regel.quantity));
+  assert.equal((await call(`/api/shopping/${regel.id}/afvinken`,'POST')).status,200);
+  const ei=(await(await call('/api/products')).json()).find(p=>p.name==='Eieren');
+  assert.equal(ei.aantal,gevraagd,'zoveel eieren als je koopt komen er in de voorraad bij');
+});
+
+test('een dagplanning onthoudt het aantal porties van die dag',async()=>{
+  let r=await call('/api/planner/2027-04-06','PUT',{recipeId:3,cuisine:'India',porties:6,shifts:[]});
+  assert.equal(r.status,200);
+  assert.equal((await r.json()).porties,6);
+  const plans=await(await call('/api/planner?month=2027-04')).json();
+  assert.equal(plans.find(p=>p.plan_date==='2027-04-06').porties,6);
+  r=await call('/api/planner/2027-04-06','PUT',{recipeId:3,cuisine:'India',porties:0});
+  assert.equal(r.status,400,'nul porties kan niet');
+  r=await call('/api/planner/2027-04-06','PUT',{recipeId:3,cuisine:'India',porties:99});
+  assert.equal(r.status,400);
+  r=await call('/api/planner/2027-04-07','PUT',{recipeId:3,cuisine:'India'});
+  assert.equal(r.status,200);
+  assert.equal((await r.json()).porties,null,'zonder keuze blijft het aantal porties leeg');
+});
+
+test('de bereiding krijgt per stap de tijden mee voor de kookmodus',async()=>{
+  const recept=await(await call('/api/recipes/2')).json();
+  assert.equal(recept.stapTimers.length,recept.steps.length);
+  assert.deepEqual(recept.stapTimers[0],[]);
+  assert.deepEqual(recept.stapTimers[1],[720],'laat 12 minuten pruttelen');
+  assert.deepEqual(recept.stapTimers[2],[]);
+  assert.ok(recept.steps.some(s=>typeof s==='string'));
+});
+
+test('de weerinstellingen worden bewaard en teruggegeven',async()=>{
+  let antwoord=await(await call('/api/weer')).json();
+  assert.equal(antwoord.instellingen.plaats,'');
+  assert.equal(antwoord.instellingen.aan,true);
+  assert.equal(antwoord.vandaag,null);
+  assert.equal(antwoord.bron.naam,'Open-Meteo','de app hoort te vertellen waar het weer vandaan komt');
+  assert.equal((await call('/api/weer/instellingen','PUT',{plaats:'Delft',lat:52,lon:4.35,land:'Nederland'})).status,200);
+  antwoord=await(await call('/api/weer')).json();
+  assert.equal(antwoord.instellingen.plaats,'Delft');
+  assert.equal(antwoord.instellingen.lat,52);
+  assert.equal(antwoord.instellingen.lon,4.35);
+  const uit=await(await call('/api/weer/instellingen','PUT',{aan:false})).json();
+  assert.equal(uit.instellingen.aan,false);
+  assert.equal(uit.instellingen.plaats,'Delft','het uitzetten van het weer laat de plaats staan');
+  const leeg=await(await call('/api/weer/instellingen','PUT',{plaats:''})).json();
+  assert.equal(leeg.instellingen.plaats,'','een lege plaats haalt de verwachting weg');
+  assert.equal((await call('/api/weer/instellingen','PUT',{plaats:'x'.repeat(80)})).status,400);
+  const config=await(await call('/api/kast/config')).json();
+  assert.ok(config.weer,'de garderobe-instellingen vertellen ook waar het weer vandaan komt');
+  assert.equal(config.weer.plaats,'');
+});
+
+test('de kookpot staat in het receptenboek met marge en uitleg',async()=>{
+  const pagina=await(await call('/')).text();
+  for(const stuk of ['id="receptModus"','data-modus="kookpot"','id="kookpotMarge"','id="kookpotUitleg"','id="kookpotMargeLabel"','function laadKookpot','function kookpotBadge','function zetReceptModus','data-ontbrekende'])assert.ok(pagina.includes(stuk),`de pagina hoort ${stuk} te bevatten`);
+  assert.match(pagina,/\/api\/kookpot\?/,'de pagina hoort de kookpot van de server te halen');
+});
+
+test('de boodschappenlijst kan een hele week samenvoegen',async()=>{
+  const pagina=await(await call('/')).text();
+  for(const stuk of ['id="weekBoodschappen"','id="weekDialog"','id="weekForm"','id="weekVan"','id="weekTot"','id="weekUitleg"','function openWeekBoodschappen','function updateWeekUitleg','function zetWeekOpLijst'])assert.ok(pagina.includes(stuk),`de pagina hoort ${stuk} te bevatten`);
+  assert.match(pagina,/\/api\/shopping\/week/);
+});
+
+test('porties zijn om te rekenen in het recept en in de dagplanning',async()=>{
+  const pagina=await(await call('/')).text();
+  for(const stuk of ['data-porties-plus','data-porties-min','data-porties-waarde','id="planPorties"','id="recipePlanPorties"','function vulReceptDetail'])assert.ok(pagina.includes(stuk),`de pagina hoort ${stuk} te bevatten`);
+  assert.match(pagina,/\/api\/recipes\/\$\{id\}\$\{porties/,'het receptdetail hoort de gekozen porties aan de server te vragen');
+});
+
+test('de kookmodus staat in de pagina met stappen, timer en scherm-aan',async()=>{
+  const pagina=await(await call('/')).text();
+  for(const stuk of ['id="kookmodus"','id="kookmodusStappen"','id="kookmodusVorige"','id="kookmodusVolgende"','id="kookmodusTimer"','id="planKookmodus"','function openKookmodus','function startKookTimer','function renderKookmodus','data-timer','navigator.wakeLock','new Notification('])assert.ok(pagina.includes(stuk),`de pagina hoort ${stuk} te bevatten`);
+});
+
+test('de boodschappenlijst kan worden afgevinkt naar de voorraad',async()=>{
+  const pagina=await(await call('/')).text();
+  for(const stuk of ['data-afvinken','function afvinken','/api/shopping/${id}/afvinken','staat nu'])assert.ok(pagina.includes(stuk),`de pagina hoort ${stuk} te bevatten`);
+});
+
+test('het weer is in te stellen bij het kledingadvies',async()=>{
+  const pagina=await(await call('/')).text();
+  for(const stuk of ['id="weerPlaats"','id="weerZoek"','id="weerAan"','id="weerRegel"','function loadWeer','function bewaarWeerPlaats','/api/weer/instellingen','Open-Meteo'])assert.ok(pagina.includes(stuk),`de pagina hoort ${stuk} te bevatten`);
+});
+
+test('het receptdetail rekent de hoeveelheden om naar het gekozen aantal porties',async()=>{
+  const heel=await(await call('/api/recipes/2')).json();
+  assert.equal(heel.servings,3);
+  assert.equal(heel.porties,null);
+  const voor2=await(await call('/api/recipes/2?porties=2')).json();
+  assert.equal(voor2.porties,2);
+  assert.equal(voor2.ingredients.find(i=>i.name==='Eieren').quantity,3,'vier eieren voor drie personen wordt er voor twee personen drie');
+  assert.equal(voor2.ingredients.find(i=>i.name==='Eieren').unit,'stuks');
+  assert.equal(voor2.steps.length,heel.steps.length);
+  assert.deepEqual(voor2.stapTimers,heel.stapTimers);
+  assert.equal((await call('/api/recipes/2?porties=0')).status,400);
+  assert.equal((await call('/api/recipes/2?porties=30')).status,400);
+  assert.equal((await call('/api/recipes/2?porties=abc')).status,400);
+});
+
+test('elk bestand dat de server nodig heeft komt mee met installeren en bijwerken',()=>{
+  // Zo voorkom je dat een nieuwe module wel in git staat maar nooit in de
+  // container belandt: dan start de app na een update niet meer.
+  const bron=fs.readFileSync(path.join(__dirname,'..','server.js'),'utf8');
+  const modules=[...bron.matchAll(/require\('\.\/([a-z0-9-]+)'\)/g)].map(m=>`${m[1]}.js`);
+  assert.ok(modules.length>=5,`verwacht meerdere eigen modules, gevonden ${modules.length}`);
+  for(const bestand of modules){
+    assert.ok(fs.existsSync(path.join(__dirname,'..',bestand)),`${bestand} bestaat niet`);
+    for(const script of ['install.sh','provision-voorraadthuis.sh','update-from-github.sh']){
+      const inhoud=fs.readFileSync(path.join(__dirname,'..','deploy','proxmox',script),'utf8');
+      assert.ok(inhoud.includes(bestand),`${script} kent ${bestand} niet, terwijl de server het nodig heeft`);
+    }
+  }
 });
