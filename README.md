@@ -119,7 +119,7 @@ Open de app via `https://<LXC-IP>/`, accepteer eenmalig de waarschuwing van het 
 
 ### Receptenboek
 
-- **9.807 recepten**: 115 Nederlandstalige eigen thuisrecepten en **9.692 geïmporteerde recepten uit zestien open bronnen** met CC BY-SA 4.0. Daaronder vallen 257 cocktail- en borrelhapjesrecepten in de categorieën **Cocktails** en **Borrelhapjes**. Je kunt zoeken op gerecht of ingrediënt en filteren op land/categorie; ingrediënten gaan rechtstreeks naar de boodschappenlijst.
+- **9.807 recepten**: 115 Nederlandstalige eigen thuisrecepten en **9.692 geïmporteerde recepten uit zestien open bronnen** met CC BY-SA 4.0. Daaronder vallen 257 cocktail- en borrelhapjesrecepten in de categorieën **Cocktails** en **Borrelhapjes**. Je kunt zoeken op gerecht of ingrediënt en filteren op land/categorie; ingrediënten gaan rechtstreeks naar de boodschappenlijst of je plant het gerecht met één knop in de kalender.
 - **9.241 geïmporteerde recepten zijn volledig naar het Nederlands vertaald**: naam, omschrijving, ingrediënten en bereidingsstappen. De 451 geïmporteerde recepten die al Nederlands waren (450 uit het Nederlandse Kookboek en één borrelhapje) behouden hun oorspronkelijke tekst. Hoeveelheden, eenheden, tijden, porties, bron-URL en licentie blijven exact zoals de bron ze geeft. De app weigert te starten als een vertaling ontbreekt.
 - **Snel, ook met 9.807 recepten**: de lijst komt in delen van 48 van de server (gecomprimeerd), zoeken en filteren gebeurt op de server, en ingrediënten en bereiding worden pas opgehaald als je een recept openklapt.
 - Alle 9.692 geïmporteerde recepten tonen hun bron en CC BY-SA 4.0-licentie. Dit is een groeiende, niet-uitputtende selectie; zie [`recipe-data/README.md`](recipe-data/README.md) voor bronvermelding, licenties, opdrachten om de data opnieuw op te bouwen en de vertaalvalidatie.
@@ -138,6 +138,32 @@ Open de app via `https://<LXC-IP>/`, accepteer eenmalig de waarschuwing van het 
 - In de dagcellen staan **alle** diensten met hun tijden (tot drie; daarna `+N`), en de tooltip toont de namen en notities.
 - Tijden zonder dubbele punt worden goed gezet: `830` wordt `08:30`, `8` wordt `08:00`. Echt onmogelijke tijden zoals `24:00` blijven een foutmelding.
 - Sla diensten op als herbruikbare sjablonen en zet ze met één druk op een gekozen dag. Dagplanning, diensten en sjablonen blijven bewaard in SQLite.
+
+#### Recepten plannen vanuit het receptenboek
+
+Op elke receptkaart staat naast **Ingrediënten op boodschappenlijst** ook **Plan in kalender**. Je hoeft dus geen recept te onthouden of over te typen:
+
+1. Kies in het receptenboek een gerecht en druk op **Plan in kalender**.
+2. Kies de dag in het venster; de app zet de gekozen dag eronder voluit bij (*woensdag 28 oktober 2026*) en vertelt of je diensten van die dag blijven staan.
+3. Druk op **Plan recept**. De app springt naar de kalender met die dag open.
+
+- Staat er al een ander gerecht op die dag, dan vraagt de app eerst of je het wilt vervangen. Je werkdiensten van die dag blijven altijd staan.
+- De landkeuken van het recept wordt meteen meegezet, zodat de dagcel compleet is.
+- **Recept plannen** bovenaan de kalender brengt je terug naar het receptenboek.
+- Plan je liever vanuit de kalender, dan blijft het oude formulier werken: *Recept van de dag*, *Landkeuken* en **Bewaar dag**. Een gepland recept dat buiten de eerste vijftig zoekresultaten valt, blijft daar netjes geselecteerd staan — **Bewaar dag** wist het dus niet per ongeluk.
+
+| Recepten plannen op desktop | Het venster met de gekozen dag |
+| --- | --- |
+| ![Plan in kalender op een receptkaart](docs/img/recepten-plannen-knop.jpg) | ![Venster om een recept te plannen](docs/img/recepten-plannen-dialoog.jpg) |
+| Elke receptkaart heeft naast de boodschappenlijst ook **Plan in kalender**. | De gekozen dag staat er voluit bij, met wat er die dag al staat. |
+
+| Resultaat in de kalender | Op de telefoon |
+| --- | --- |
+| ![Gepland recept en werkdienst in de kalender](docs/img/recepten-plannen-kalender.jpg) | ![Recept plannen op de telefoon](docs/img/recepten-plannen-mobiel.jpg) |
+| Recept, landkeuken en werkdienst staan samen in de dagcel en in de dagplanning. | Dezelfde route op een smal scherm. |
+
+🎬 **[Stille rondleiding: een recept plannen (15 sec · 1280×720 · zonder audio)](docs/img/recepten-plannen-rondleiding.mp4)** — van receptkaart tot kalender, met echte schermen uit een geïsoleerde demodatabase.
+
 
 ### Kleding (Kledingkast)
 
