@@ -98,7 +98,7 @@
     const notitie = plaat.notitie ? `<div class="plaatMeta">${esc(plaat.notitie)}</div>` : '';
     const voet = plaat.gewenst
       ? `<button class="btn primary" type="button" data-wens-hebben="${plaat.id}">Heb ik nu</button><button class="btn danger" type="button" data-weg="${plaat.id}" aria-label="Van verlanglijst halen">×</button>`
-      : `<select data-verplaats="${plaat.id}" aria-label="Locatie van deze plaat">${locatieOpties(plaat.locatie)}</select><button class="btn danger" type="button" data-weg="${plaat.id}" aria-label="Uit de verzameling halen">×</button>`;
+      : `<select data-verplaats="${plaat.id}" aria-label="Locatie van deze plaat">${locatieOpties(plaat.locatie)}</select><label class="btn hoesUploadKnop">${plaat.hoes ? 'Hoes wijzigen' : 'Hoes toevoegen'}<input type="file" accept="image/*" data-hoes-upload="${plaat.id}" hidden></label><button class="btn danger" type="button" data-weg="${plaat.id}" aria-label="Uit de verzameling halen">×</button>`;
     return `<article class="plaatKaart${plaat.gewenst ? ' plaatGewenst' : ''}" data-plaat="${plaat.id}">
       <div class="hoes">${hoesBlok(plaat)}</div>
       <div class="plaatInfo">
@@ -439,6 +439,23 @@
       }
       const grid = $('#plaatGrid');
       if (grid) {
+        grid.addEventListener('change', async (gebeurtenis) => {
+          const bestand = gebeurtenis.target.closest('[data-hoes-upload]');
+          if (!bestand || !bestand.files || !bestand.files[0]) return;
+          try {
+            const foto = await createImageBitmap(bestand.files[0]);
+            const schaal = Math.min(1, 1400 / Math.max(foto.width, foto.height));
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.round(foto.width * schaal);
+            canvas.height = Math.round(foto.height * schaal);
+            canvas.getContext('2d').drawImage(foto, 0, 0, canvas.width, canvas.height);
+            const jpeg = canvas.toDataURL('image/jpeg', 0.88).split(',')[1];
+            await stuurJson(`/api/platen/${bestand.dataset.hoesUpload}/hoes`, 'POST', { afbeelding: jpeg });
+            meld('Eigen hoes opgeslagen.');
+            await laad();
+          } catch (fout) { meld(fout.message || 'Deze afbeelding kan niet worden gebruikt.', true); }
+          finally { bestand.value = ''; }
+        });
         grid.addEventListener('change', async (gebeurtenis) => {
           const prijsveld = gebeurtenis.target.closest('[data-prijs]');
           if (prijsveld) {

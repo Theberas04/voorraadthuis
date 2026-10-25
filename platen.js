@@ -448,7 +448,7 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
     if (!plaat) { res.writeHead(404); return res.end('Geen hoes'); }
     const bestand = path.join(hoesMap(), `${Number(id)}.jpg`);
     if (!fs.existsSync(bestand)) { res.writeHead(404); return res.end('Geen hoes'); }
-    res.writeHead(200, { 'content-type': 'image/jpeg', 'cache-control': 'public, max-age=604800' });
+    res.writeHead(200, { 'content-type': 'image/jpeg', 'cache-control': 'no-cache' });
     fs.createReadStream(bestand).pipe(res);
   }
 
@@ -840,7 +840,7 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       let s = '';
       req.on('data', c => {
         s += c;
-        if (s.length > 100000) reject(Error('Te veel gegevens.'));
+        if (s.length > 6_000_000) reject(Error('Bestand is te groot; maximaal 4 MB.'));
       });
       req.on('end', () => {
         try { resolve(JSON.parse(s || '{}')); } catch { reject(Error('Ongeldige gegevens.')); }
@@ -906,6 +906,24 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
     if (pad === '/api/platen/locaties' && req.method === 'GET') return stuur(res, 200, locaties());
     const hoesPad = pad.match(/^\/api\/platen\/hoes\/(\d+)$/);
     if (hoesPad && req.method === 'GET') return serveerHoes(res, hoesPad[1]);
+    const uploadHoes = pad.match(/^\/api\/platen\/(\d+)\/hoes$/);
+    if (uploadHoes && req.method === 'POST') {
+      try {
+        const plaat = db.prepare('SELECT id FROM platen WHERE id=?').get(Number(uploadHoes[1]));
+        if (!plaat) return stuur(res, 404, { error: 'Deze plaat staat niet in je verzameling.' });
+        const data = (await lichaam(req)).afbeelding;
+        if (typeof data !== 'string' || data.length > 5_600_000) return stuur(res, 400, { error: 'Kies een afbeelding van maximaal 4 MB.' });
+        const beeld = Buffer.from(data, 'base64');
+        if (beeld.length < 500 || beeld.length > 4_000_000 || beeld[0] !== 0xff || beeld[1] !== 0xd8 || beeld[2] !== 0xff) {
+          return stuur(res, 400, { error: 'De foto moet een geldige JPEG-afbeelding zijn (maximaal 4 MB).' });
+        }
+        fs.mkdirSync(hoesMap(), { recursive: true });
+        fs.writeFileSync(path.join(hoesMap(), `${plaat.id}.jpg`), beeld);
+        const urlHoes = `/api/platen/hoes/${plaat.id}`;
+        db.prepare("UPDATE platen SET hoes=?,hoes_bron='Eigen hoes',hoes_probeerd_op=CURRENT_TIMESTAMP WHERE id=?").run(urlHoes, plaat.id);
+        return stuur(res, 200, { hoes: urlHoes, bron: 'Eigen hoes' });
+      } catch (e) { return stuur(res, 400, { error: e.message }); }
+    }
     if (pad === '/api/platen/zoek' && req.method === 'GET') {
       const code = url.searchParams.get('code') || '';
       return stuur(res, 200, await zoek(code, { force: url.searchParams.get('force') === '1' }));

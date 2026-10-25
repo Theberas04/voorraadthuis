@@ -954,7 +954,29 @@ test('een storing bij de databank stelt de hoes niet een week uit', async () => 
   });
 });
 
- test('de app vertelt hoeveel lp-barcodes er in de eigen lijst staan', async () => {
+ test('een eigen JPEG-hoes kan handmatig worden opgeslagen en getoond', async () => {
+  const toegevoegd = await stuur('/api/platen', 'POST', {
+    barcode: '', titel: 'Eigen hoes', artiest: 'Proefartiest', locatie: 'Kelder', aantal: 1,
+  });
+  const id = toegevoegd.body.plaat.id;
+  const jpeg = Buffer.concat([Buffer.from([0xff, 0xd8, 0xff, 0xe0]), Buffer.alloc(1200, 0x41)]).toString('base64');
+  const upload = await stuur(`/api/platen/${id}/hoes`, 'POST', { afbeelding: jpeg });
+  assert.equal(upload.status, 200);
+  assert.equal(upload.body.hoes, `/api/platen/hoes/${id}`);
+  const beeld = await fetch(`${base}/api/platen/hoes/${id}`);
+  assert.equal(beeld.status, 200);
+  assert.match(beeld.headers.get('content-type'), /image\/jpeg/);
+});
+
+test('een handmatige hoes accepteert geen niet-afbeelding', async () => {
+  const toegevoegd = await stuur('/api/platen', 'POST', {
+    barcode: '', titel: 'Geen nepbestand', artiest: 'Proefartiest', locatie: 'Kelder', aantal: 1,
+  });
+  const upload = await stuur(`/api/platen/${toegevoegd.body.plaat.id}/hoes`, 'POST', { afbeelding: Buffer.from('dit is geen foto').toString('base64') });
+  assert.equal(upload.status, 400);
+});
+
+test('de app vertelt hoeveel lp-barcodes er in de eigen lijst staan', async () => {
    schrijfTabel({
      [CODE_IN_LIJST]: {t: 'Rumours', a: 'Fleetwood Mac', j: '1977', m: 'mbid-lokaal-1'},
      [CODE_SCHONE_TWEEDE]: {t: 'Tango in the Night', a: 'Fleetwood Mac', j: '1987', m: 'mbid-lokaal-2'},
