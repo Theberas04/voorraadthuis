@@ -29,6 +29,7 @@ FILES=(
   "recipe-data/translations-nl.json"
   "product-data/nl-huismerken.json" "product-data/winkelprefixen.json" "product-data/lp-barcodes.json"
   "public/index.html"
+  "public/barcode-scan.js"
   "public/platen.js"
   "public/favicon.svg"
   "public/manifest.webmanifest"
