@@ -67,15 +67,14 @@ function buildShoppingMessage(items, options = {}) {
   const rows = (items || []).map(item => {
     const naam = cleanString(item.name, 400);
     if (!naam) return null;
-    if (item.unit === 'niet vermeld') return `- ${naam}`;
-    if (item.unit === 'bronregel') return `- ${naam}`;
+    if (item.unit === 'niet vermeld') return naam;
+    if (item.unit === 'bronregel') return naam;
     const aantal = Number(item.quantity);
     const hoeveelheid = Number.isFinite(aantal) ? `${aantal % 1 === 0 ? aantal : String(aantal).replace('.', ',')} ${item.unit || 'stuks'}` : String(item.unit || '');
-    return `- ${naam} (${hoeveelheid})`;
+    return `${naam} (${hoeveelheid})`;
   }).filter(Boolean);
-  const kop = cleanString(options.sender, 40) || 'Boodschappenlijst';
   const profiel = cleanString(options.profileName, 40);
-  const regels = [profiel ? `${kop} voor ${profiel}:` : `${kop}:`, ...rows];
+  const regels = [profiel ? `Boodschappenlijst voor ${profiel}:` : 'Boodschappenlijst:', ...rows];
   const extra = cleanString(options.notes, 200);
   if (extra) regels.push('', extra);
   return regels.join('\n');

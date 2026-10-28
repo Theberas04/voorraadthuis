@@ -93,7 +93,7 @@ test('het webapp-manifest maakt installatie op de telefoon mogelijk',async()=>{c
 test('de pagina is ingericht voor mobiel gebruik',async()=>{const html=await(await call('/')).text();assert.match(html,/name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/);assert.match(html,/rel="manifest" href="\/manifest\.webmanifest"/);assert.match(html,/rel="apple-touch-icon" href="\/apple-touch-icon\.png"/);assert.match(html,/@media\(max-width:760px\)/);assert.match(html,/grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
 assert.match(html,/<button data-page="profielen">Profielen<\/button>/);
 assert.match(html,/id="smsRecipient"/);assert.match(html,/font-size:16px/);assert.match(html,/env\(safe-area-inset-bottom\)/);assert.match(html,/recipeLimit:24/);assert.match(html,/recipeMore/);assert.match(html,/serviceWorker/)});
-test('de platenbundel en offline-cache krijgen een nieuwe versie bij updates',async()=>{const html=await(await call('/')).text();assert.match(html,/platen\.js\?v=3/,'een nieuwe URL voorkomt dat de oude platen.js uit de cache komt');const worker=await(await call('/sw.js')).text();assert.match(worker,/voorraadthuis-v8/,'de activatie moet de oude PWA-cache opruimen');});
+test('de platenbundel en offline-cache krijgen een nieuwe versie bij updates',async()=>{const html=await(await call('/')).text();assert.match(html,/platen\.js\?v=3/,'een nieuwe URL voorkomt dat de oude platen.js uit de cache komt');const worker=await(await call('/sw.js')).text();assert.match(worker,/voorraadthuis-v9/,'de activatie moet de oude PWA-cache opruimen');});
 
 test('de kledingkast-tab hoort bij dezelfde app',async()=>{const html=await(await call('/')).text();assert.match(html,/<button data-page="kast">Kleding<\/button>/);assert.match(html,/<section class="view" id="page-kast" hidden>/);});
 test('de garderobe-config biedt categorieën aan met AI uit',async()=>{const r=await call('/api/kast/config');assert.equal(r.status,200);const config=await r.json();assert.ok(config.categories.includes('schoenen'));assert.equal(config.ai.enabled,false);});
@@ -186,7 +186,7 @@ test('de sms-knop verstuurt de lijst naar het nummer van het profiel',async()=>{
   assert.equal(uitkomst.sent,false);
   assert.equal(uitkomst.to,'+31612345678','de lijst gaat naar het nummer van het profiel');
   assert.match(uitkomst.link,/^sms:\+31612345678\?&body=/);
-  assert.match(uitkomst.body,/- Melk \(2 pakken\)/);
+  assert.match(uitkomst.body,/Melk \(2 pakken\)/);
   assert.equal(decodeURIComponent(uitkomst.link.split('body=')[1]),uitkomst.body);
   r=await call('/api/sms/boodschappen','POST',{});
   assert.equal(r.status,400,'zonder ontvanger geen bericht');
