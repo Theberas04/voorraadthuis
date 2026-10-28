@@ -151,6 +151,9 @@ test('de pagina kan scannen en het product meteen herkennen',async()=>{
   assert.match(html,/\/api\/barcode\//);
   assert.match(html,/id="barcodeResult"/);
   assert.match(html,/BarcodeDetector/);
+  assert.ok(html.includes('<script src="/barcode-scan.js?v=1"></script>'));
+  assert.match(html,/BarcodeScan\.volgendeLezing/);
+  assert.match(html,/width:\{ideal:1920\}/);
   assert.match(html,/Open Food Facts/);
   assert.match(html,/barcodeAgain/);
   assert.match(html,/scanresult/);

@@ -23,7 +23,7 @@ if pct exec "$CTID" -- bash -c 'command -v nginx >/dev/null 2>&1' 2>/dev/null; t
   exit 1
 fi
 TMP=$(mktemp -d); trap 'rm -rf "$TMP"' EXIT
-ASSETS=(public/platen.js public/favicon.svg public/manifest.webmanifest public/sw.js public/icon-192.png public/icon-512.png public/icon-512-maskable.png public/apple-touch-icon.png public/social-card.png)
+ASSETS=(public/barcode-scan.js public/platen.js public/favicon.svg public/manifest.webmanifest public/sw.js public/icon-192.png public/icon-512.png public/icon-512-maskable.png public/apple-touch-icon.png public/social-card.png)
 FILES=(server.js wardrobe.js keuken.js weer.js barcodes.js profiles.js platen.js package.json "deploy/proxmox/fetch-discogs-catalog.sh" recipes-international.js recipes-open.js recipe-data/unitools-recipes.json "recipe-data/wikibooks-en-recipes.json" "recipe-data/wikibooks-es-recipes.json" "recipe-data/wikibooks-de-recipes.json" "recipe-data/wikibooks-nl-recipes.json" "recipe-data/wikibooks-fr-recipes.json" "recipe-data/wikibooks-it-recipes.json" "recipe-data/wikibooks-ca-recipes.json" "recipe-data/wikibooks-pt-recipes.json" "recipe-data/wikibooks-ja-recipes.json" "recipe-data/wikibooks-pl-recipes.json" "recipe-data/wikibooks-sv-recipes.json" "recipe-data/wikibooks-nb-recipes.json" "recipe-data/wikibooks-fi-recipes.json" "recipe-data/wikibooks-cocktails-recipes.json" "recipe-data/wikibooks-borrelhapjes-recipes.json" "recipe-data/translations-nl.json" product-data/nl-huismerken.json product-data/winkelprefixen.json product-data/lp-barcodes.json public/index.html "${ASSETS[@]}")
 for f in "${FILES[@]}"; do
   case "$f" in *" "*) echo "Interne fout: bestandsnaam met een spatie ($f). Meld dit; er is niets gewijzigd." >&2; exit 1;; esac
