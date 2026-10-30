@@ -145,6 +145,17 @@ Alles in één app: **voorraad en boodschappen**, **receptenboek met kookpot**, 
 | --- | --- |
 | Het receptenboek met 9.807 recepten, filters en bronvermelding per recept. | Dezelfde tab op de telefoon; recepten komen per land binnen. |
 
+| Eigen recept in het boek | Formulier voor een eigen recept |
+| --- | --- |
+| ![Eigen recept met foto, badge, dieetkeuze en voedingswaarde](docs/img/eigen-recept-kaart.jpg) | ![Formulier met naam, porties, foto, ingrediënten, dieetkeuzes en voedingswaarde](docs/img/eigen-recept-formulier.jpg) |
+| Je eigen recept staat tussen de andere, met badge **Eigen recept**, je foto, de dieetkeuze en de voedingswaarde per portie. | Alles invullen wat je wilt: foto, ingrediënten per regel, bereiding per stap, dieetkeuzes en de voedingswaarde. |
+
+![Dieetfilter op het receptenboek](docs/img/eigen-recept-dieetfilter.jpg)
+
+*Het dieetfilter laat alleen recepten zien waarvan de dieetkeuze bekend is.*
+
+**Rondleiding in beeld (23 seconden):** [`docs/img/voorraadthuis-eigen-recepten.mp4`](docs/img/voorraadthuis-eigen-recepten.mp4) — het receptenboek, een eigen recept met foto en dieetkeuze, het invulformulier en het dieetfilter op een rij.
+
 ### Kalender en werkrooster
 
 - Maandkalender om per dag een recept en landkeuken te plannen.
@@ -297,6 +308,11 @@ Ontbreekt de hoes van een plaat die al in je verzameling staat, dan haalt de app
 
 - **Wat is de verzameling waard?** Boven de verzameling staat de totale waarde op basis van de prijzen die je zelf invult (prijs × aantal exemplaren). De verlanglijst telt niet mee, en wat nog geen prijs heeft wordt apart gemeld in plaats van als nul geteld; per plek zie je wat daar staat en wat het waard is.
 - **Inventaris voor de verzekering.** Met **🖨 Inventaris (print of PDF)** opent een overzichtelijke pagina met alle platen op één regel: titel, artiest, jaar, label, formaat, locatie, aantal, prijs per stuk, totaal en notitie, met het totaal eronder. Afdrukken of bewaren als PDF gaat met de knop of Ctrl/Cmd + P. **CSV voor de verzekering** geeft dezelfde lijst als bestand met puntkomma's als scheiding en bedragen met een komma, bijvoorbeeld om in Excel te openen of aan de verzekeraar te sturen.
+
+| Platen met de waarde en de inventaris uit |
+| --- |
+| ![Platenpagina zonder waardepil en zonder de knoppen voor de inventaris](docs/img/platen-zonder-waarde.jpg) |
+| De verzameling werkt gewoon; de waarde, de printbare inventaris en de CSV staan standaard uit. |
 
 *Barcodeherkenning voor platen*: `GET /api/platen/zoek?code=<barcode>` (met `?force=1` om opnieuw te zoeken). De opzoeking wordt lokaal bewaard, dus de tweede keer is het antwoord direct en werkt het ook zonder internet.
 
