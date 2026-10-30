@@ -9,6 +9,7 @@ Voorraad · boodschappen · 9.807 Nederlandstalige recepten · planning · garde
   <a href="recipe-data/README.md"><img alt="9.807 Nederlandse recepten" src="https://img.shields.io/badge/recepten-9.807-1f6848"></a>
   <a href="keuken.js"><img alt="Kookpot: wat kan ik maken met wat ik in huis heb" src="https://img.shields.io/badge/kookpot-wat%20kan%20ik%20maken-3a7d5c"></a>
   <a href="weer.js"><img alt="Weer in het kledingadvies via Open-Meteo" src="https://img.shields.io/badge/weer-Open--Meteo-2a6f7f"></a>
+  <a href="eigen-recepten.js"><img alt="Eigen recepten met foto, voedingswaarde en dieetfilters" src="https://img.shields.io/badge/eigen%20recepten-foto%20%2B%20dieetfilters-3a7d5c"></a>
   <a href="recipe-data/README.md"><img alt="Nederlandstalig" src="https://img.shields.io/badge/taal-Nederlands-1f6848"></a>
   <a href="https://creativecommons.org/licenses/by-sa/4.0/"><img alt="Recepten CC BY-SA 4.0" src="https://img.shields.io/badge/receptenbron-CC%20BY--SA%204.0-ef9421"></a>
   <a href="wardrobe.js"><img alt="Garderobe" src="https://img.shields.io/badge/kledingkast-garderobe-2a6f7f"></a>
@@ -265,6 +266,8 @@ Met een OpenAI-compatibele dienst (OpenAI, Ollama, LocalAI) kan de app een kledi
 > Productgegevens komen van [Open Food Facts](https://world.openfoodfacts.org/), beschikbaar onder de [Open Database License (ODbL) 1.0](https://opendatacommons.org/licenses/odbl/1-0/). Camera-scannen werkt in browsers die `BarcodeDetector` ondersteunen (Chrome op Android, Edge) en doorgaans alleen via HTTPS; op iOS typ je de code — die wordt ook meteen herkend.
 
 ### Platen (lp-verzameling)
+
+> **Deze functie staat standaard verborgen in de app.** De tab **Platen** is er wel, maar wordt niet getoond; de gegevens, de routes en de inventaris blijven gewoon werken. Zo haal je hem terug: zet `Environment=PLATEN_ZICHTBAAR=1` in `/etc/systemd/system/voorraadthuis.service`, daarna `systemctl daemon-reload && systemctl restart voorraadthuis`. Weer verbergen: die regel weghalen en opnieuw laden.
 
 Onder **Platen** houd je je eigen lp-verzameling bij. De barcode-opzoeking controleert eerst de lokale MusicBrainz-lijst; daarna kan hij de aparte, alleen-lezen Discogs-catalogus raadplegen. MusicBrainz-hoezen worden bij het [Cover Art Archive](https://coverartarchive.org/) opgehaald en één keer lokaal bewaard. Discogs-hoesafbeeldingen worden niet gebruikt.
 

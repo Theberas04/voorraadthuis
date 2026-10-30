@@ -151,6 +151,10 @@ const server=http.createServer(async(req,res)=>{let url;try{url=new URL((req.url
  if(url.pathname==='/api/barcode'&&req.method==='GET'){const code=url.searchParams.get('code')||'';return json(res,200,await barcodes.lookup(code,{force:url.searchParams.get('force')==='1'}));}
  if(url.pathname==='/api/shopping'&&req.method==='GET')return json(res,200,shopping());
  if(url.pathname==='/api/recipes/landen'&&req.method==='GET'){const telling=new Map();for(const r of RECIPES)telling.set(r.cuisine,(telling.get(r.cuisine)||0)+1);return json(res,200,[...telling].map(([cuisine,aantal])=>({cuisine,aantal})).sort((a,b)=>a.cuisine.localeCompare(b.cuisine,'nl')));}
+ // Welke onderdelen van de app zichtbaar zijn. De platenfunctie staat standaard
+ // verborgen; met PLATEN_ZICHTBAAR=1 in de service-instellingen komt hij terug. De
+ // routes en de gegevens blijven er intussen gewoon staan.
+ if(url.pathname==='/api/instellingen/weergave'&&req.method==='GET')return json(res,200,{platen:process.env.PLATEN_ZICHTBAAR==='1'});
  if(url.pathname==='/api/recipes/dieetfilters'&&req.method==='GET')return json(res,200,dieetFilters());
  if(url.pathname==='/api/recipes'&&req.method==='GET'){
   const country=(url.searchParams.get('country')||url.searchParams.get('land')||'').trim();

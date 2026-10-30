@@ -82,3 +82,21 @@ test('de platenpagina toont de waarde en de knoppen voor de inventaris',async()=
   assert.ok(bundel.includes("api('/api/platen/waarde')"),'de pagina hoort de waarde bij de server op te halen');
   assert.ok(bundel.includes('function toonWaarde'),'de waarde hoort ook echt in de kop te komen');
 });
+
+test('de platenfunctie staat standaard verborgen en is met PLATEN_ZICHTBAAR=1 weer zichtbaar',async()=>{
+  const uit=await(await call('/api/instellingen/weergave')).json();
+  assert.equal(uit.platen,false,'de platenfunctie hoort standaard verborgen te zijn');
+  const html=await(await call('/')).text();
+  assert.ok(html.includes('id="navPlaten"'),'de platenknop hoort een eigen id te hebben');
+  assert.match(html,/<button[^>]*data-page="platen"[^>]*hidden/,'de platenknop hoort verborgen te staan');
+  assert.ok(html.includes("api('/api/instellingen/weergave')"),'de pagina hoort de instelling bij de server op te halen');
+  assert.ok(html.includes('function toonPlatenNav'),'de pagina hoort de knop pas te tonen als de functie aanstaat');
+  const vorige=process.env.PLATEN_ZICHTBAAR;
+  process.env.PLATEN_ZICHTBAAR='1';
+  try{
+    const aan=await(await call('/api/instellingen/weergave')).json();
+    assert.equal(aan.platen,true,'met PLATEN_ZICHTBAAR=1 is de platenfunctie zichtbaar');
+  }finally{
+    if(vorige===undefined)delete process.env.PLATEN_ZICHTBAAR;else process.env.PLATEN_ZICHTBAAR=vorige;
+  }
+});
