@@ -559,6 +559,113 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
 
   const alles = () => antwoord(lijst(), {});
 
+  // --- Waarde en inventaris -------------------------------------------------
+  // Wat is de verzameling waard? Alleen platen in bezit met een ingevulde prijs
+  // tellen mee; de verlanglijst hoort er niet bij. Wat nog geen prijs heeft wordt
+  // eerlijk gemeld in plaats van als nul meegeteld.
+  const bedrag = (waarde) => Number(waarde || 0).toFixed(2).replace('.', ',');
+  const rond = (waarde) => Math.round(Number(waarde || 0) * 100) / 100;
+  const veilig = (tekst) => String(tekst ?? '').replace(/[&<>"]/g, (teken) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[teken]));
+  const vandaag = () => { const d = nu(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+
+  function waarde() {
+    const rijen = lijst();
+    const metPrijs = rijen.filter((p) => p.prijs != null);
+    const totaal = rond(metPrijs.reduce((som, p) => som + p.prijs * (Number(p.aantal) || 0), 0));
+    const duurste = metPrijs
+      .map((p) => ({ id: p.id, titel: p.titel, artiest: p.artiest, jaar: p.jaar, aantal: p.aantal, prijs: p.prijs, waarde: rond(p.prijs * (Number(p.aantal) || 0)) }))
+      .sort((a, b) => b.waarde - a.waarde || a.titel.localeCompare(b.titel, 'nl'))
+      .slice(0, 5);
+    const perLocatie = new Map();
+    for (const p of rijen) {
+      const sleutel = p.locatie || '';
+      const vak = perLocatie.get(sleutel) || { locatie: p.locatie || 'Zonder locatie', titels: 0, stuks: 0, metPrijs: 0, zonderPrijs: 0, totaal: 0 };
+      vak.titels += 1;
+      vak.stuks += Number(p.aantal) || 0;
+      if (p.prijs != null) { vak.metPrijs += 1; vak.totaal = rond(vak.totaal + p.prijs * (Number(p.aantal) || 0)); } else vak.zonderPrijs += 1;
+      perLocatie.set(sleutel, vak);
+    }
+    return {
+      titels: rijen.length,
+      stuks: rijen.reduce((som, p) => som + (Number(p.aantal) || 0), 0),
+      metPrijs: metPrijs.length,
+      zonderPrijs: rijen.length - metPrijs.length,
+      totaal,
+      gemiddelde: metPrijs.length ? rond(totaal / metPrijs.reduce((som, p) => som + (Number(p.aantal) || 0), 0)) : null,
+      duurste,
+      perLocatie: [...perLocatie.values()].sort((a, b) => b.totaal - a.totaal || a.locatie.localeCompare(b.locatie, 'nl')),
+    };
+  }
+
+  // Een printbare inventaris voor de verzekering: één regel per plaat, met het
+  // totaal eronder. Via de knop (of Ctrl/Cmd + P) is dit als PDF te bewaren.
+  function inventarisHtml() {
+    const rijen = lijst();
+    const w = waarde();
+    const regel = (p) => `<tr>
+      <td>${veilig(p.titel)}</td>
+      <td>${veilig(p.artiest)}</td>
+      <td>${veilig(p.jaar)}</td>
+      <td>${veilig(p.label)}</td>
+      <td>${veilig(p.formaat)}</td>
+      <td>${veilig(p.locatie)}</td>
+      <td class="num">${p.aantal}</td>
+      <td class="num">${p.prijs == null ? '<em>geen prijs opgegeven</em>' : '€ ' + bedrag(p.prijs)}</td>
+      <td class="num">${p.prijs == null ? '—' : '€ ' + bedrag(p.prijs * (Number(p.aantal) || 0))}</td>
+      <td>${veilig(p.notitie)}</td>
+    </tr>`;
+    const locatieRegel = (l) => `<tr><td colspan="6">${veilig(l.locatie)}</td><td class="num">${l.stuks}</td><td class="num">${l.zonderPrijs ? l.zonderPrijs + ' zonder prijs' : ''}</td><td class="num">€ ${bedrag(l.totaal)}</td><td></td></tr>`;
+    return `<!doctype html>
+<html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Inventaris van mijn platenverzameling</title>
+<style>
+  :root{color-scheme:light}
+  body{font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;color:#1c2822;background:#fff;margin:24px auto;max-width:1100px;padding:0 18px}
+  h1{font-size:22px;margin:0 0 6px}
+  p.meta{margin:0 0 4px;color:#43574b}
+  p.uitleg{margin:0 0 14px;color:#5d6b62;font-size:13px}
+  button{font:inherit;background:#173c32;color:#fff;border:0;border-radius:9px;padding:9px 14px;cursor:pointer}
+  table{border-collapse:collapse;width:100%;margin-top:14px;font-size:13px}
+  th,td{border:1px solid #dbe7d7;padding:6px 8px;text-align:left;vertical-align:top}
+  thead th{background:#f3f7f1;white-space:nowrap}
+  tfoot th,tfoot td{background:#f3f7f1;font-weight:600}
+  td.num,th.num{text-align:right;white-space:nowrap}
+  @media print{button{display:none} body{margin:0} thead th{background:#eee}}
+</style></head>
+<body>
+<h1>Inventaris van mijn platenverzameling</h1>
+<p class="meta">Opgesteld op ${veilig(vandaag())} · ${w.titels} titels · ${w.stuks} stuks · totaal <strong>€ ${bedrag(w.totaal)}</strong>${w.zonderPrijs ? ` · ${w.zonderPrijs} titel(s) zonder prijs` : ''}</p>
+<p class="uitleg">Afdrukken of bewaar als PDF: gebruik de knop hieronder of Ctrl/Cmd + P. Wat nog geen prijs heeft staat er als <em>geen prijs opgegeven</em>; dat is niet als nul meegeteld in het totaal.</p>
+<button type="button" onclick="window.print()">🖨 Afdrukken of bewaar als PDF</button>
+<table>
+<thead><tr><th>Titel</th><th>Artiest</th><th>Jaar</th><th>Label</th><th>Formaat</th><th>Locatie</th><th class="num">Aantal</th><th class="num">Prijs per stuk</th><th class="num">Totaal</th><th>Notitie</th></tr></thead>
+<tbody>${rijen.map(regel).join('')}</tbody>
+<tfoot>
+<tr><th colspan="6">Totaal</th><th class="num">${w.stuks} stuks</th><th class="num"></th><th class="num">€ ${bedrag(w.totaal)}</th><th></th></tr>
+${w.perLocatie.length > 1 ? w.perLocatie.map(locatieRegel).join('') : ''}
+</tfoot>
+</table>
+</body></html>`;
+  }
+
+  // Dezelfde lijst als CSV, met een puntkomma als scheiding (zoals Excel in
+  // Nederland verwacht).
+  function inventarisCsv() {
+    const veld = (waarde) => {
+      const tekst = String(waarde ?? '');
+      return /[";\n]/.test(tekst) ? `"${tekst.replace(/"/g, '""')}"` : tekst;
+    };
+    const kop = ['titel', 'artiest', 'jaar', 'label', 'formaat', 'locatie', 'aantal', 'prijs', 'totaal', 'notitie'];
+    const w = waarde();
+    const regels = [kop.join(';')];
+    for (const p of lijst()) {
+      regels.push([veld(p.titel), veld(p.artiest), veld(p.jaar), veld(p.label), veld(p.formaat), veld(p.locatie),
+        p.aantal, p.prijs == null ? '' : bedrag(p.prijs), p.prijs == null ? '' : bedrag(p.prijs * (Number(p.aantal) || 0)), veld(p.notitie)].join(';'));
+    }
+    regels.push(['Totaal', '', '', '', '', '', w.stuks, '', bedrag(w.totaal), ''].join(';'));
+    return regels.join('\n') + '\n';
+  }
+
   function bewaarCache(code, gegevens) {
     db.prepare(`INSERT INTO plaat_cache(barcode,titel,artiest,jaar,label,formaat,genre,hoes,mbid,gevonden,fetched_at)
         VALUES(?,?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP)
@@ -904,6 +1011,19 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
       return stuur(res, 200, { resultaten });
     }
     if (pad === '/api/platen/locaties' && req.method === 'GET') return stuur(res, 200, locaties());
+    if (pad === '/api/platen/waarde' && req.method === 'GET') return stuur(res, 200, waarde());
+    if (pad === '/api/platen/inventaris' && req.method === 'GET') {
+      res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
+      return res.end(inventarisHtml());
+    }
+    if (pad === '/api/platen/inventaris.csv' && req.method === 'GET') {
+      res.writeHead(200, {
+        'content-type': 'text/csv; charset=utf-8',
+        'cache-control': 'no-store',
+        'content-disposition': `attachment; filename="platen-inventaris-${vandaag()}.csv"`,
+      });
+      return res.end(inventarisCsv());
+    }
     const hoesPad = pad.match(/^\/api\/platen\/hoes\/(\d+)$/);
     if (hoesPad && req.method === 'GET') return serveerHoes(res, hoesPad[1]);
     const uploadHoes = pad.match(/^\/api\/platen\/(\d+)\/hoes$/);
@@ -948,7 +1068,7 @@ function createPlaten({ db, mediaDir, fetchImpl = fetch, nu = () => new Date() }
     return stuur(res, 404, { error: 'Onbekende platenroute.' });
   }
 
-  return { handle, alles, lijst, locaties, keuzelijsten, zeef, zoek, voegToe, wijzig, verwijder, bewaarHoes, aantalInTabel };
+  return { handle, alles, lijst, locaties, keuzelijsten, zeef, zoek, voegToe, wijzig, verwijder, bewaarHoes, aantalInTabel, waarde, inventarisHtml, inventarisCsv };
 }
 
 module.exports = { createPlaten, barcodeVarianten, kiesUitgave };

@@ -295,6 +295,7 @@
     const gegevens = await api(`/api/platen${vraag.toString() ? '?' + vraag.toString() : ''}`);
     gegevens.alleTotaal = (gegevens.keuzelijsten && gegevens.keuzelijsten.locaties || []).reduce((som, l) => som + l.aantal, 0) || gegevens.totaal;
     teken(gegevens);
+    await toonWaarde();
     return gegevens;
   }
 
@@ -551,6 +552,23 @@
       kijk();
     } catch {
       meld('Camera niet beschikbaar. Controleer de toestemming of typ de barcode in het veld.', true);
+    }
+  }
+
+  // Wat de verzameling waard is: één getal in de kop, met eerlijke vermelding van
+  // wat nog geen prijs heeft. De inventaris zelf is een printbare pagina.
+  async function toonWaarde() {
+    const pil = $('#platenWaarde');
+    if (!pil) return;
+    try {
+      const uitkomst = await api('/api/platen/waarde');
+      if (!uitkomst.titels) { pil.hidden = true; return; }
+      const euro = (bedrag) => `€ ${Number(bedrag || 0).toFixed(2).replace('.', ',')}`;
+      pil.hidden = false;
+      pil.textContent = `Waarde: ${euro(uitkomst.totaal)}${uitkomst.zonderPrijs ? ` · ${uitkomst.zonderPrijs} zonder prijs` : ''}`;
+      pil.title = `${uitkomst.titels} titels · ${uitkomst.stuks} stuks · ${uitkomst.metPrijs} met een prijs, ${uitkomst.zonderPrijs} zonder`;
+    } catch {
+      pil.hidden = true;
     }
   }
 
