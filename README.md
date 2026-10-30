@@ -133,6 +133,9 @@ Alles in één app: **voorraad en boodschappen**, **receptenboek met kookpot**, 
 
 - **9.807 recepten**: 115 Nederlandstalige eigen thuisrecepten en **9.692 geïmporteerde recepten uit zestien open bronnen** met CC BY-SA 4.0. Daaronder vallen 257 cocktail- en borrelhapjesrecepten in de categorieën **Cocktails** en **Borrelhapjes**. Je kunt zoeken op gerecht of ingrediënt en filteren op land/categorie; ingrediënten gaan rechtstreeks naar de boodschappenlijst of je plant het gerecht met één knop in de kalender.
 - **9.241 geïmporteerde recepten zijn volledig naar het Nederlands vertaald**: naam, omschrijving, ingrediënten en bereidingsstappen. De 451 geïmporteerde recepten die al Nederlands waren (450 uit het Nederlandse Kookboek en één borrelhapje) behouden hun oorspronkelijke tekst. Hoeveelheden, eenheden, tijden, porties, bron-URL en licentie blijven exact zoals de bron ze geeft. De app weigert te starten als een vertaling ontbreekt.
+- **Eigen recepten toevoegen.** Met **+ Eigen recept** zet je je eigen gerecht in het boek: naam, landkeuken, aantal porties, bereidingstijd, omschrijving, ingrediënten (één per regel, met de hoeveelheid vooraan: `500 gram spliterwten`), de bereiding per stap, dieetkeuzes, de voedingswaarde per portie en je eigen foto (JPEG, PNG of WebP, maximaal 4 MB). Je eigen recepten staan tussen de andere recepten in, met een badge **Eigen recept**, en doen overal aan mee: zoeken, filteren, de kookpot, porties omrekenen, de kookmodus en de kalender. Later wijzig of verwijder je ze met de knoppen op de kaart.
+- **Voedingswaarde per portie.** Vul kcal, eiwit, koolhydraten en vet in en de app toont ze bij het recept. Wat je leeg laat blijft leeg — er wordt niets verzonnen of als nul meegeteld.
+- **Dieetfilters.** Filter het receptenboek op **vegetarisch, veganistisch, glutenvrij, lactosevrij of notenvrij**. Eerlijk over de grens: alleen recepten waarvan de dieetkeuze bekend is komen in dat filter voor — dus je eigen recepten. De 9.692 geïmporteerde recepten hebben die gegevens niet en vallen er bewust buiten, in plaats van dat de app er iets van gokt.
 - **Snel, ook met 9.807 recepten**: de lijst komt in delen van 48 van de server (gecomprimeerd), zoeken en filteren gebeurt op de server, en ingrediënten en bereiding worden pas opgehaald als je een recept openklapt.
 - Alle 9.692 geïmporteerde recepten tonen hun bron en CC BY-SA 4.0-licentie. Dit is een groeiende, niet-uitputtende selectie; zie [`recipe-data/README.md`](recipe-data/README.md) voor bronvermelding, licenties, opdrachten om de data opnieuw op te bouwen en de vertaalvalidatie.
 - De 115 eigen thuisvarianten zijn geen volledige inventaris van alle gerechten uit de genoemde landen; traditionele bereidingswijzen kunnen per regio en huishouden verschillen.
@@ -289,6 +292,9 @@ Ontbreekt de hoes van een plaat die al in je verzameling staat, dan haalt de app
 | ![Lokale vinylcatalogus op desktop](docs/img/platen-catalogus-desktop.jpg) | ![Lokale vinylcatalogus op mobiel](docs/img/platen-catalogus-mobiel.jpg) |
 | Voorbeeldzoekresultaat met bronvermelding; toevoegen aan je lijst blijft een aparte keuze. | Hetzelfde zoekresultaat in de mobiele weergave. |
 
+- **Wat is de verzameling waard?** Boven de verzameling staat de totale waarde op basis van de prijzen die je zelf invult (prijs × aantal exemplaren). De verlanglijst telt niet mee, en wat nog geen prijs heeft wordt apart gemeld in plaats van als nul geteld; per plek zie je wat daar staat en wat het waard is.
+- **Inventaris voor de verzekering.** Met **🖨 Inventaris (print of PDF)** opent een overzichtelijke pagina met alle platen op één regel: titel, artiest, jaar, label, formaat, locatie, aantal, prijs per stuk, totaal en notitie, met het totaal eronder. Afdrukken of bewaren als PDF gaat met de knop of Ctrl/Cmd + P. **CSV voor de verzekering** geeft dezelfde lijst als bestand met puntkomma's als scheiding en bedragen met een komma, bijvoorbeeld om in Excel te openen of aan de verzekeraar te sturen.
+
 *Barcodeherkenning voor platen*: `GET /api/platen/zoek?code=<barcode>` (met `?force=1` om opnieuw te zoeken). De opzoeking wordt lokaal bewaard, dus de tweede keer is het antwoord direct en werkt het ook zonder internet.
 
 ## Proxmox LXC installeren (zoals BeatSync)
@@ -401,6 +407,11 @@ npm start    # http://localhost:3000
 | `GET /api/platen/keuzelijsten` | Alleen de keuzelijsten om op te filteren. |
 | `GET /api/platen/zoek?code=<barcode>`, `GET /api/platen/locaties` | Een plaat opzoeken bij MusicBrainz (met hoes) en de locaties met aantallen. |
 | `GET /api/platen/hoes/<id>` | De lokaal bewaarde hoesafbeelding. |
+| `GET /api/platen/waarde` | Totale waarde van de verzameling, wat nog geen prijs heeft en de verdeling per plek. |
+| `GET /api/platen/inventaris`, `GET /api/platen/inventaris.csv` | Dezelfde verzameling als printbare pagina of als CSV-bestand voor de verzekering. |
+| `POST /api/recepten`, `PATCH`/`DELETE /api/recepten/<id>` | Eigen recepten toevoegen, wijzigen en verwijderen (id's vanaf 900000). |
+| `POST /api/recepten/<id>/foto` | Foto bij een eigen recept zetten (base64, JPEG/PNG/WebP, maximaal 4 MB). |
+| `GET /api/recipes?dieet=vegetarisch`, `GET /api/recipes/dieetfilters` | Het receptenboek op dieetkeuze filteren en de lijst met keuzes. |
 | `GET /api/kast/config` | Categorieën, statussen, seizoenen, gelegenheden en of AI-tagging aanstaat. |
 | `GET/POST /api/kast/items`, `GET/PATCH/DELETE /api/kast/items/<id>` | Kledingstukken; `PATCH` met `action: analyze`, `wear` of een status. `GET ?wardrobe=<id>` of `?wardrobe=alle` filtert op kast. |
 | `GET/POST /api/kast/wardrobes`, `PATCH/DELETE /api/kast/wardrobes/<id>` | Kledingkasten: aanmaken, hernoemen en verwijderen; `DELETE ?moveTo=<id>` verplaatst de kledingstukken eerst. |

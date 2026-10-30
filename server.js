@@ -10,6 +10,7 @@ const { createWardrobe } = require('./wardrobe');
 const { createBarcodes } = require('./barcodes');
 const { createProfiles } = require('./profiles');
 const { createPlaten } = require('./platen');
+const { createEigenRecepten, DIETEN, isEigenId } = require('./eigen-recepten');
 // Rekenkern van de keuken: voorraad vergelijken met recepten, hoeveelheden
 // omrekenen naar een ander aantal porties en de boodschappen van een week
 // samenvoegen tot één regel per product.
@@ -57,7 +58,9 @@ function zoekTekst(recept){
   }
   return tekst;
 }
-const compactRecept = r => ({id:r.id,name:r.name,cuisine:r.cuisine,description:r.description||'',time:r.time??null,servings:r.servings??null,translatedFrom:r.translatedFrom||null,sourceName:r.source?r.source.name:null,sourceUrl:r.source?r.source.url:null,sourceLicense:r.source?r.source.license:null,sourceLicenseUrl:r.source?r.source.licenseUrl:null});
+const compactRecept = r => ({id:r.id,name:r.name,cuisine:r.cuisine,description:r.description||'',time:r.time??null,servings:r.servings??null,translatedFrom:r.translatedFrom||null,sourceName:r.source?r.source.name:null,sourceUrl:r.source?r.source.url:null,sourceLicense:r.source?r.source.license:null,sourceLicenseUrl:r.source?r.source.licenseUrl:null,eigen:Boolean(r.eigen),dieet:r.dieet||[],voedingswaarde:r.voedingswaarde||null,foto:r.foto||''});
+// Welke dieetkeuzes er zijn; de app haalt ze hier op zodat er één lijst is.
+const dieetFilters = () => DIETEN.map(d=>({id:d.id,naam:d.naam}));
 // Antwoorden worden gecomprimeerd zodra de browser dat aankan: de receptenlijst is
 // groot en zonder compressie gaat er tien keer zoveel over de lijn.
 function json(res,status,data){
@@ -67,7 +70,7 @@ function json(res,status,data){
   if(accepteert&&tekst.length>1024){koppen['content-encoding']='gzip';koppen['vary']='accept-encoding';res.writeHead(status,koppen);return res.end(zlib.gzipSync(tekst));}
   res.writeHead(status,koppen);res.end(tekst);
 }
-function body(req){return new Promise((resolve,reject)=>{let s='';req.on('data',c=>{s+=c;if(s.length>100000)reject(Error('payload too large'));});req.on('end',()=>{try{resolve(JSON.parse(s||'{}'));}catch{reject(Error('invalid JSON'));}});});}
+function body(req,max=100000){return new Promise((resolve,reject)=>{let s='';req.on('data',c=>{s+=c;if(s.length>max)reject(Error('payload too large'));});req.on('end',()=>{try{resolve(JSON.parse(s||'{}'));}catch{reject(Error('invalid JSON'));}});});}
 function products(){return db.prepare('SELECT * FROM products ORDER BY name COLLATE NOCASE').all();}
 function shopping(){return db.prepare('SELECT * FROM shopping ORDER BY name COLLATE NOCASE').all();}
 function validDate(s){if(!/^\d{4}-\d{2}-\d{2}$/.test(s))return false;const d=new Date(`${s}T00:00:00.000Z`);return Number.isFinite(d.getTime())&&d.toISOString().slice(0,10)===s;}
@@ -95,6 +98,19 @@ const barcodes = createBarcodes({ db });
 const profiles = createProfiles({ db });
 // Platen: de lp-collectie, met barcodeherkenning via MusicBrainz en het Cover Art Archive.
 const platen = createPlaten({ db, mediaDir: MEDIA_DIR });
+// Eigen recepten: wat de gebruiker zelf toevoegt, met foto, voedingswaarde per
+// portie en dieetkeuzes. Ze staan tussen de meegeleverde recepten in het boek.
+const eigenRecepten = createEigenRecepten({ db, mediaDir: MEDIA_DIR });
+// Het boek opnieuw samenstellen na elke wijziging: de eigen recepten eruit, de
+// actuele erin, en de zoektekst-cache leeg zodat het zoeken niet op een oude
+// naam blijft hangen.
+function laadEigenRecepten(){
+  for(let i=RECIPES.length-1;i>=0;i-=1) if(isEigenId(RECIPES[i].id)) RECIPES.splice(i,1);
+  RECIPES.push(...eigenRecepten.lijst());
+  RECIPES.sort((a,b)=>a.cuisine.localeCompare(b.cuisine,'nl')||a.name.localeCompare(b.name,'nl'));
+  zoekTekstCache.clear();
+}
+laadEigenRecepten();
 function wardrobePath(url) {
   if (url.pathname.startsWith('/api/kast/')) return new URL(`/api/${url.pathname.slice('/api/kast/'.length)}${url.search}`, 'http://localhost');
   return url;
@@ -135,17 +151,45 @@ const server=http.createServer(async(req,res)=>{let url;try{url=new URL((req.url
  if(url.pathname==='/api/barcode'&&req.method==='GET'){const code=url.searchParams.get('code')||'';return json(res,200,await barcodes.lookup(code,{force:url.searchParams.get('force')==='1'}));}
  if(url.pathname==='/api/shopping'&&req.method==='GET')return json(res,200,shopping());
  if(url.pathname==='/api/recipes/landen'&&req.method==='GET'){const telling=new Map();for(const r of RECIPES)telling.set(r.cuisine,(telling.get(r.cuisine)||0)+1);return json(res,200,[...telling].map(([cuisine,aantal])=>({cuisine,aantal})).sort((a,b)=>a.cuisine.localeCompare(b.cuisine,'nl')));}
+ if(url.pathname==='/api/recipes/dieetfilters'&&req.method==='GET')return json(res,200,dieetFilters());
  if(url.pathname==='/api/recipes'&&req.method==='GET'){
   const country=(url.searchParams.get('country')||url.searchParams.get('land')||'').trim();
+  // Het dieetfilter laat alleen recepten zien waarvan de dieetkeuze bekend is; de
+  // meegeleverde recepten hebben die gegevens niet en vallen er dus buiten.
+  const dieet=(url.searchParams.get('dieet')||'').trim().toLowerCase();
+  if(dieet&&!DIETEN.some(d=>d.id===dieet))return json(res,400,{error:`Kies een bekend dieetfilter (${DIETEN.map(d=>d.id).join(', ')}).`});
+  const pastBijDieet=r=>!dieet||(r.dieet||[]).includes(dieet);
   // compact=1 geeft alleen wat de lijst nodig heeft (naam, land, tijd, porties, bron);
   // de ingrediënten en bereiding komen per recept apart opgehaald.
-  if(url.searchParams.get('compact')!=='1')return json(res,200,country?RECIPES.filter(r=>r.cuisine===country):RECIPES);
+  if(url.searchParams.get('compact')!=='1')return json(res,200,RECIPES.filter(r=>(!country||r.cuisine===country)&&pastBijDieet(r)));
   const q=(url.searchParams.get('q')||'').trim().toLowerCase();
   const vanaf=Math.max(0,Math.trunc(Number(url.searchParams.get('vanaf')||0))||0);
   const aantal=Math.min(200,Math.max(1,Math.trunc(Number(url.searchParams.get('aantal')||48))||48));
-  let lijst=country?RECIPES.filter(r=>r.cuisine===country):RECIPES;
+  let lijst=RECIPES.filter(r=>(!country||r.cuisine===country)&&pastBijDieet(r));
   if(q)lijst=lijst.filter(r=>zoekTekst(r).includes(q));
   return json(res,200,{totaal:lijst.length,vanaf,aantal,items:lijst.slice(vanaf,vanaf+aantal).map(compactRecept)});
+ }
+ // Eigen recepten: toevoegen, wijzigen, verwijderen en de foto erbij zetten.
+ if(url.pathname==='/api/recepten'&&req.method==='POST'){
+  try{const recept=eigenRecepten.maak(await body(req));laadEigenRecepten();return json(res,201,recept);}
+  catch(e){return json(res,400,{error:e.message});}
+ }
+ const eigenReceptMatch=url.pathname.match(/^\/api\/recepten\/(\d+)$/);
+ if(eigenReceptMatch&&req.method==='PATCH'){
+  try{const recept=eigenRecepten.wijzig(eigenReceptMatch[1],await body(req));if(!recept)return json(res,404,{error:'Dit eigen recept bestaat niet (meer).'});laadEigenRecepten();return json(res,200,recept);}
+  catch(e){return json(res,400,{error:e.message});}
+ }
+ if(eigenReceptMatch&&req.method==='DELETE'){
+  const weg=eigenRecepten.verwijder(eigenReceptMatch[1]);
+  if(!weg)return json(res,404,{error:'Dit eigen recept bestaat niet (meer).'});
+  laadEigenRecepten();
+  return json(res,200,{ok:true});
+ }
+ const eigenFotoMatch=url.pathname.match(/^\/api\/recepten\/(\d+)\/foto$/);
+ if(eigenFotoMatch&&req.method==='POST'){
+  if(!eigenRecepten.heeft(eigenFotoMatch[1]))return json(res,404,{error:'Dit eigen recept bestaat niet (meer).'});
+  try{const url=await eigenRecepten.bewaarFoto(eigenFotoMatch[1],(await body(req,6_000_000)).afbeelding);laadEigenRecepten();return json(res,200,{foto:url});}
+  catch(e){return json(res,400,{error:e.message});}
  }
  const receptMatch=url.pathname.match(/^\/api\/recipes\/(\d+)$/);if(receptMatch&&req.method==='GET'){
   const recept=recipeById(receptMatch[1]);if(!recept)return json(res,404,{error:'Recept niet gevonden.'});
