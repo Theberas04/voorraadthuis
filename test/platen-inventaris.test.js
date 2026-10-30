@@ -83,20 +83,26 @@ test('de platenpagina toont de waarde en de knoppen voor de inventaris',async()=
   assert.ok(bundel.includes('function toonWaarde'),'de waarde hoort ook echt in de kop te komen');
 });
 
-test('de platenfunctie staat standaard verborgen en is met PLATEN_ZICHTBAAR=1 weer zichtbaar',async()=>{
+test('de platenfunctie is zichtbaar, maar de waarde en de inventaris staan standaard verborgen',async()=>{
   const uit=await(await call('/api/instellingen/weergave')).json();
-  assert.equal(uit.platen,false,'de platenfunctie hoort standaard verborgen te zijn');
+  assert.equal(uit.platen,true,'de platenfunctie hoort gewoon zichtbaar te zijn');
+  assert.equal(uit.platenWaarde,false,'de waarde en de inventaris horen standaard verborgen te zijn');
   const html=await(await call('/')).text();
   assert.ok(html.includes('id="navPlaten"'),'de platenknop hoort een eigen id te hebben');
-  assert.match(html,/<button[^>]*data-page="platen"[^>]*hidden/,'de platenknop hoort verborgen te staan');
+  assert.equal(/<button[^>]*data-page="platen"[^>]*hidden/.test(html),false,'de platenknop hoort niet verborgen te staan');
+  assert.match(html,/<span class="pill" id="platenWaarde" hidden>/,'de waardepil hoort verborgen te beginnen');
+  assert.match(html,/<a class="btn" id="platenInventaris"[^>]*hidden/,'de inventarisknop hoort verborgen te beginnen');
+  assert.match(html,/<a class="btn" id="platenCsv"[^>]*hidden/,'de CSV-knop hoort verborgen te beginnen');
   assert.ok(html.includes("api('/api/instellingen/weergave')"),'de pagina hoort de instelling bij de server op te halen');
-  assert.ok(html.includes('function toonPlatenNav'),'de pagina hoort de knop pas te tonen als de functie aanstaat');
-  const vorige=process.env.PLATEN_ZICHTBAAR;
-  process.env.PLATEN_ZICHTBAAR='1';
+  assert.ok(html.includes('function toonWeergave'),'de pagina hoort de knoppen pas te tonen als de functie aanstaat');
+  const bundel=await(await call('/platen.js')).text();
+  assert.ok(bundel.includes('PLATEN_WAARDE_AAN'),'de platenpagina hoort niets op te halen als de functie uitstaat');
+  const vorige=process.env.PLATEN_WAARDE_ZICHTBAAR;
+  process.env.PLATEN_WAARDE_ZICHTBAAR='1';
   try{
     const aan=await(await call('/api/instellingen/weergave')).json();
-    assert.equal(aan.platen,true,'met PLATEN_ZICHTBAAR=1 is de platenfunctie zichtbaar');
+    assert.equal(aan.platenWaarde,true,'met PLATEN_WAARDE_ZICHTBAAR=1 zijn de waarde en de inventaris zichtbaar');
   }finally{
-    if(vorige===undefined)delete process.env.PLATEN_ZICHTBAAR;else process.env.PLATEN_ZICHTBAAR=vorige;
+    if(vorige===undefined)delete process.env.PLATEN_WAARDE_ZICHTBAAR;else process.env.PLATEN_WAARDE_ZICHTBAAR=vorige;
   }
 });

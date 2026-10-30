@@ -1,5 +1,5 @@
 /* VoorraadThuis service worker: houdt de app installeerbaar en offline bruikbaar op de telefoon. */
-const CACHE = 'voorraadthuis-v12';
+const CACHE = 'voorraadthuis-v13';
 const SHELL = ['/', '/index.html', '/barcode-scan.js?v=1', '/favicon.svg', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', event => {
