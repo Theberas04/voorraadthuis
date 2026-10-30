@@ -267,8 +267,6 @@ Met een OpenAI-compatibele dienst (OpenAI, Ollama, LocalAI) kan de app een kledi
 
 ### Platen (lp-verzameling)
 
-> **Deze functie staat standaard verborgen in de app.** De tab **Platen** is er wel, maar wordt niet getoond; de gegevens, de routes en de inventaris blijven gewoon werken. Zo haal je hem terug: zet `Environment=PLATEN_ZICHTBAAR=1` in `/etc/systemd/system/voorraadthuis.service`, daarna `systemctl daemon-reload && systemctl restart voorraadthuis`. Weer verbergen: die regel weghalen en opnieuw laden.
-
 Onder **Platen** houd je je eigen lp-verzameling bij. De barcode-opzoeking controleert eerst de lokale MusicBrainz-lijst; daarna kan hij de aparte, alleen-lezen Discogs-catalogus raadplegen. MusicBrainz-hoezen worden bij het [Cover Art Archive](https://coverartarchive.org/) opgehaald en één keer lokaal bewaard. Discogs-hoesafbeeldingen worden niet gebruikt.
 
 Ontbreekt de hoes van een plaat die al in je verzameling staat, dan haalt de app die op de achtergrond alsnog op. Eerst via de eigen lp-lijst (één verzoek aan het Cover Art Archive), daarna door de barcode online op te zoeken, en pas als dat niets oplevert via **titel en artiest**. Dat werkt ook voor platen zonder barcode. De app kijkt daarbij alle persingen van die plaat na — het archief heeft er vaak maar bij één een hoes — en probeert het bij een verkeerd gespelde of afgekorte artiestennaam nog eens met de titel alleen. Alleen een uitgave met dezelfde titel (een ondertitel vóór of na een dubbele punt mag verschillen; "Deel 2" niet) én dezelfde artiest telt, zodat er nooit een hoes van een andere plaat op je verzameling komt. Dit gebeurt rustig, één plaat per keer; een plaat waar niets te vinden was krijgt na een dag opnieuw een kans, en een storing bij de databank telt niet mee, zodat een mislukte poging gewoon opnieuw gebeurt.
@@ -294,6 +292,8 @@ Ontbreekt de hoes van een plaat die al in je verzameling staat, dan haalt de app
 | --- | --- |
 | ![Lokale vinylcatalogus op desktop](docs/img/platen-catalogus-desktop.jpg) | ![Lokale vinylcatalogus op mobiel](docs/img/platen-catalogus-mobiel.jpg) |
 | Voorbeeldzoekresultaat met bronvermelding; toevoegen aan je lijst blijft een aparte keuze. | Hetzelfde zoekresultaat in de mobiele weergave. |
+
+> **Deze twee onderdelen staan standaard verborgen:** de waarde in de kop, de printbare inventaris en de CSV staan niet in de app. De verzameling zelf, de gegevens en de routes blijven gewoon werken. Zo zet je ze aan: `Environment=PLATEN_WAARDE_ZICHTBAAR=1` in `/etc/systemd/system/voorraadthuis.service`, daarna `systemctl daemon-reload && systemctl restart voorraadthuis`. Weer verbergen: die regel weghalen en opnieuw laden.
 
 - **Wat is de verzameling waard?** Boven de verzameling staat de totale waarde op basis van de prijzen die je zelf invult (prijs × aantal exemplaren). De verlanglijst telt niet mee, en wat nog geen prijs heeft wordt apart gemeld in plaats van als nul geteld; per plek zie je wat daar staat en wat het waard is.
 - **Inventaris voor de verzekering.** Met **🖨 Inventaris (print of PDF)** opent een overzichtelijke pagina met alle platen op één regel: titel, artiest, jaar, label, formaat, locatie, aantal, prijs per stuk, totaal en notitie, met het totaal eronder. Afdrukken of bewaren als PDF gaat met de knop of Ctrl/Cmd + P. **CSV voor de verzekering** geeft dezelfde lijst als bestand met puntkomma's als scheiding en bedragen met een komma, bijvoorbeeld om in Excel te openen of aan de verzekeraar te sturen.

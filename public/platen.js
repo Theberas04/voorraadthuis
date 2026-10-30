@@ -560,6 +560,8 @@
   async function toonWaarde() {
     const pil = $('#platenWaarde');
     if (!pil) return;
+    // Staat de waarde/inventaris uit (de standaard), dan halen we ook niets op.
+    if (window.PLATEN_WAARDE_AAN !== true) { pil.hidden = true; return; }
     try {
       const uitkomst = await api('/api/platen/waarde');
       if (!uitkomst.titels) { pil.hidden = true; return; }
