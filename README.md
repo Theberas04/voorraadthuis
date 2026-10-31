@@ -226,7 +226,7 @@ Boven de kalender staan twee knoppen: **📅 Deze maand (.ics)** en **📅 Hele 
 - **Wat je agenda-app ophaalt, is altijd de actuele stand**: het adres leest de planning op het moment van opvragen. Een agenda-app die niets gewijzigd ziet, krijgt van de app een kort `304`-antwoord met een etiket (ETag) in plaats van het hele bestand.
 - Rechtstreeks op te halen: `/api/agenda.ics` voor alles en `/api/agenda.ics?maand=2026-10` voor één maand. Het bestand is een gewone iCalendar-agenda (RFC 5545) met de tijdzone van Nederland erin.
 
-![De twee agenda-knoppen boven de kalender](docs/img/agenda-ics-knoppen.jpg)
+![De twee agenda-knoppen boven de kalender, met de uitleg over abonneren en het adres van de app](docs/img/agenda-ics-knoppen.jpg)
 
 ![Kalenderpagina met de knoppen Deze maand (.ics) en Hele agenda (.ics), diensten met hun kleur en recepten als hele-dag-item](docs/img/agenda-ics-kalender.jpg)
 
