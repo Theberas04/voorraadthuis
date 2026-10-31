@@ -213,6 +213,20 @@ De samenvatting boven de lijst zegt hoeveel recepten er nu te maken zijn en hoev
 - **Kookmodus**: het hele scherm wordt een kookboek op ooghoogte — grote stappen, de ingrediëntenlijst met de omgerekende hoeveelheden ernaast, en **Vorige**/**Volgende** (of de pijltjes op je toetsenbord). Het scherm blijft aan zolang de kookmodus openstaat.
 - **Timer per stap**: noemt een stap een tijd (*laat 15 minuten sudderen*), dan staat er een timer-knop bij. Tik erop en er loopt een aftellende timer met piepje en, als je dat toestaat, een melding op je telefoon.
 
+#### Je planning in je eigen agenda (.ics)
+
+Boven de kalender staan twee knoppen: **📅 Deze maand (.ics)** en **📅 Hele agenda (.ics)**.
+
+- **Diensten** komen er als afspraken met tijd in te staan: de naam, de notitie en de kleur van de dienst gaan mee. Een nachtdienst die over middernacht loopt (22:30–06:15) eindigt netjes de volgende dag.
+- **Het geplande recept** staat er als hele-dag-item, met de landkeuken en het aantal porties erbij.
+- **Importeren**: open het bestand op de telefoon of de computer en je agenda-app vraagt of hij het wil toevoegen. Op de iPhone zet je het als abonnement (Instellingen → Agenda → Accounts → Agenda-account toevoegen → Abonneer op agenda) met het adres hieronder; dan werkt je planning ook vanzelf bij.
+- **Opnieuw importeren geeft geen dubbele dagen**: elk item heeft een vast kenmerk per dag, dus je agenda werkt het bestaande item bij.
+- Rechtstreeks op te halen: `/api/agenda.ics` voor alles en `/api/agenda.ics?maand=2026-10` voor één maand. Het bestand is een gewone iCalendar-agenda (RFC 5545) met de tijdzone van Nederland erin.
+
+![De twee agenda-knoppen boven de kalender](docs/img/agenda-ics-knoppen.jpg)
+
+![Kalenderpagina met de knoppen Deze maand (.ics) en Hele agenda (.ics), diensten met hun kleur en recepten als hele-dag-item](docs/img/agenda-ics-kalender.jpg)
+
 | Kookmodus met timer |
 | --- |
 | ![Kookmodus met stappen en een lopende timer](docs/img/kookmodus-met-timer.jpg) |
@@ -390,6 +404,7 @@ npm start    # http://localhost:3000
 | Pad | Inhoud |
 | --- | --- |
 | `server.js` | HTTP-server, SQLite-schema, API en de gecombineerde receptenlijst; verwijst de garderoberoutes door. |
+| `agenda.js` | Het agenda-bestand (.ics) van de maaltijd- en werkplanning: diensten als afspraken met tijd, het recept als hele-dag-item, met tijdzone en regelvouwing volgens RFC 5545. |
 | `wardrobe.js` | Het garderobe-onderdeel (Kledingkast): kledingkasten, kleding, was, setjes, draaghistorie en de adviesregels. |
 | `platen.js` | De platenverzameling: lp's met barcodeherkenning via MusicBrainz, hoezen uit het Cover Art Archive en de verzameling per locatie. |
 | `public/index.html` | De hele webpagina: opmaak, mobiele indeling en app-logica van alle tabs. |
@@ -422,6 +437,7 @@ npm start    # http://localhost:3000
 | `GET /api/weer`, `PUT /api/weer/instellingen` | De plaats voor het weer lezen en zetten (`{plaats}`, `{lat,lon}` of `{aan}`), met de verwachting van vandaag en de bron. |
 | `GET/PUT/DELETE /api/planner/<datum>`, `GET /api/planner?month=` | Dagplanning met recept, landkeuken en diensten. |
 | `GET/POST/DELETE /api/shift-templates` | Herbruikbare diensten. |
+| `GET /api/agenda.ics?maand=` | De hele planning als agenda-bestand (.ics) voor je telefoon of computer: diensten met tijd en kleur, het recept als hele-dag-item. Zonder `maand` krijg je alles, met `maand=YYYY-MM` alleen die maand. |
 | `GET/POST /api/platen`, `PATCH/DELETE /api/platen/<id>` | De platenverzameling: lezen, toevoegen, verplaatsen of wijzigen en verwijderen. Lezen kan gefilterd met `?locatie=` (of `leeg`), `?genre=`, `?artiest=`, `?decennium=` (of `onbekend`), `?van=`/`?tot=` en `?q=`; het antwoord bevat ook `keuzelijsten` met de genres, artiesten, decennia en locaties met aantallen. |
 | `GET /api/platen/keuzelijsten` | Alleen de keuzelijsten om op te filteren. |
 | `GET /api/platen/zoek?code=<barcode>`, `GET /api/platen/locaties` | Een plaat opzoeken bij MusicBrainz (met hoes) en de locaties met aantallen. |
