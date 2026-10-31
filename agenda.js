@@ -97,6 +97,18 @@ function nuUtc(nu){
   return `${d.toISOString().replace(/[-:]/g, '').slice(0, 15)}Z`;
 }
 
+// SQLite bewaart 'YYYY-MM-DD HH:MM:SS' in UTC; het agenda-formaat wil
+// 'YYYYMMDDTHHMMSSZ'.
+function alsUtc(stempel){
+  const m = /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2}):(\d{2})/.exec(String(stempel || ''));
+  return m ? `${m[1]}${m[2]}${m[3]}T${m[4]}${m[5]}${m[6]}Z` : '';
+}
+
+// Hoe vaak een agenda-app dit adres opnieuw mag ophalen. Zonder deze regel
+// verversen veel apps een abonnement pas na dagen; met een uur zie je een
+// wijziging in de app binnen een uur terug in je agenda.
+const VERVERS_ELK_UUR = 'PT1H';
+
 function dienstenVanDag(plan){
   const diensten = Array.isArray(plan.shifts) && plan.shifts.length
     ? plan.shifts.map(s => ({name: s.name || '', startTime: s.startTime || '', endTime: s.endTime || '', notes: s.notes || '', color: s.color || ''}))
@@ -124,6 +136,8 @@ function maakAgenda(plannen, opties = {}){
     'METHOD:PUBLISH',
     `X-WR-CALNAME:${tekst(kalenderNaam)}`,
     `X-WR-TIMEZONE:${TIJDZONE}`,
+    `REFRESH-INTERVAL;VALUE=DURATION:${VERVERS_ELK_UUR}`,
+    `X-PUBLISHED-TTL:${VERVERS_ELK_UUR}`,
   ];
   regels.push(...DIENST_TIJDZONE.split(REGEL_EINDE));
 
@@ -134,6 +148,11 @@ function maakAgenda(plannen, opties = {}){
   for (const plan of dagen) {
     const datum = datumDelen(plan.plan_date);
     const naam = receptNaam(plan.recipe_id);
+    // Een hoger revisienummer betekent voor de agenda-app: dit is een nieuwe
+    // versie van hetzelfde item. Dat is wat een wijziging doorlaat.
+    const reeks = Math.max(1, Number(plan.rev) || 1);
+    const gewijzigd = alsUtc(plan.gewijzigd);
+    const versie = [`SEQUENCE:${reeks}`, ...(gewijzigd ? [`LAST-MODIFIED:${gewijzigd}`] : [])];
     if (naam || plan.cuisine) {
       const titel = naam ? `Avondeten: ${naam}` : `Maaltijd: ${plan.cuisine}`;
       const omschrijving = [plan.cuisine ? `Landkeuken: ${plan.cuisine}` : '', plan.porties ? `Porties: ${plan.porties}` : ''].filter(Boolean).join(' · ');
@@ -141,7 +160,7 @@ function maakAgenda(plannen, opties = {}){
         'BEGIN:VEVENT',
         `UID:voorraadthuis-${datum}-maaltijd@voorraadthuis`,
         `DTSTAMP:${stempel}`,
-        'SEQUENCE:0',
+        ...versie,
         `SUMMARY:${tekst(titel)}`,
         `DTSTART;VALUE=DATE:${datumKort(datum)}`,
         `DTEND;VALUE=DATE:${datumKort(volgendeDag(datum))}`,
@@ -168,7 +187,7 @@ function maakAgenda(plannen, opties = {}){
         'BEGIN:VEVENT',
         `UID:voorraadthuis-${datum}-dienst-${i}-${String(dienst.startTime).replace(/:/g, '')}-${String(dienst.endTime).replace(/:/g, '')}@voorraadthuis`,
         `DTSTAMP:${stempel}`,
-        'SEQUENCE:0',
+        ...versie,
         `SUMMARY:${tekst(titel)}`,
         ...(start
           ? [`DTSTART;TZID=${TIJDZONE}:${start.van}`, `DTEND;TZID=${TIJDZONE}:${start.tot}`]
