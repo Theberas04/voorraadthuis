@@ -10,6 +10,7 @@ const { createWardrobe } = require('./wardrobe');
 const { createBarcodes } = require('./barcodes');
 const { createProfiles } = require('./profiles');
 const { createPlaten } = require('./platen');
+const { maakAgenda, bestandsnaam } = require('./agenda');
 const { createEigenRecepten, DIETEN, isEigenId } = require('./eigen-recepten');
 // Rekenkern van de keuken: voorraad vergelijken met recepten, hoeveelheden
 // omrekenen naar een ander aantal porties en de boodschappen van een week
@@ -117,6 +118,8 @@ function wardrobePath(url) {
 }
 function planWithShifts(plan){return plan?{...plan,shifts:shiftsForDate(plan.plan_date)}:null;}
 function plansForMonth(month){return db.prepare('SELECT * FROM planner WHERE plan_date LIKE ? ORDER BY plan_date').all(`${month}-%`).map(planWithShifts);}
+// Alle geplande dagen, voor het complete agenda-bestand.
+function allePlannen(){return db.prepare('SELECT * FROM planner ORDER BY plan_date').all().map(planWithShifts);}
 function shiftTemplates(){return db.prepare('SELECT id,name,start_time AS startTime,end_time AS endTime,notes,color FROM shift_templates ORDER BY name COLLATE NOCASE,id').all();}
 // Ingrediëntregels uit de open bronnen kunnen lange beschrijvingen bevatten (de langste is
 // ruim 300 tekens); daarom is de naamlimiet hier ruimer dan bij zelf ingevoerde producten.
@@ -229,6 +232,17 @@ const server=http.createServer(async(req,res)=>{let url;try{url=new URL((req.url
  if(url.pathname==='/api/shift-templates'&&req.method==='POST'){const x=await body(req),name=String(x.name||'').trim(),startTime=String(x.startTime||''),endTime=String(x.endTime||''),notes=String(x.notes||'').trim(),color=String(x.color||'').trim();if(!name||name.length>80||!validTime(startTime)||!validTime(endTime)||notes.length>200||!geldigeDienstkleur(color))return json(res,400,{error:'Vul een naam, een kleur en geldige tijden in 24-uursnotatie (00:00–23:59) in.'});const result=db.prepare('INSERT INTO shift_templates(name,start_time,end_time,notes,color) VALUES(?,?,?,?,?)').run(name,startTime,endTime,notes,color);return json(res,201,db.prepare('SELECT id,name,start_time AS startTime,end_time AS endTime,notes,color FROM shift_templates WHERE id=?').get(Number(result.lastInsertRowid)));}
  const templateMatch=url.pathname.match(/^\/api\/shift-templates\/(\d+)$/);if(templateMatch&&req.method==='DELETE'){const result=db.prepare('DELETE FROM shift_templates WHERE id=?').run(Number(templateMatch[1]));if(!result.changes)return json(res,404,{error:'Opgeslagen dienst niet gevonden.'});return json(res,200,{ok:true});}
  if(url.pathname==='/api/planner'&&req.method==='GET'){const month=url.searchParams.get('month')||'';if(!/^\d{4}-(0[1-9]|1[0-2])$/.test(month))return json(res,400,{error:'Geef een geldige maand op (YYYY-MM).'});return json(res,200,plansForMonth(month));}
+ // De agenda als agenda-bestand (.ics) voor de telefoon of de computer. Zonder
+ // maand krijg je alles wat er gepland staat; met ?maand=YYYY-MM alleen die maand.
+ // De diensten worden afspraken met tijd, het geplande recept een hele-dag-item.
+ if(url.pathname==='/api/agenda.ics'&&req.method==='GET'){
+  const maand=String(url.searchParams.get('maand')||'').trim();
+  if(maand&&!/^\d{4}-(0[1-9]|1[0-2])$/.test(maand))return json(res,400,{error:'Geef een geldige maand op (YYYY-MM).'});
+  const plannen=maand?plansForMonth(maand):allePlannen();
+  const ics=maakAgenda(plannen,{receptNaam:id=>{const r=recipeById(id);return r?r.name:''},kalenderNaam:maand?`VoorraadThuis ${maand}`:'VoorraadThuis'});
+  res.writeHead(200,{'content-type':'text/calendar; charset=utf-8','content-disposition':`attachment; filename="${bestandsnaam(maand)}"`,'cache-control':'no-store'});
+  return res.end(ics);
+ }
  if(url.pathname==='/api/products'&&req.method==='POST'){const x=await body(req);const name=String(x.name||'').trim();const barcode=String(x.barcode||'').trim()||null;const quantity=Number(x.quantity??1);const unit=String(x.unit||'stuks').trim();const aantal=x.aantal===''||x.aantal==null?1:Math.round(Number(x.aantal));if(!name||name.length>120||!Number.isFinite(quantity)||quantity<=0||quantity>100000||unit.length>24||!Number.isFinite(aantal)||aantal<1||aantal>9999)return json(res,400,{error:'Controleer naam, hoeveelheid, eenheid en het aantal stuks (1–9999).'});try{const result=db.prepare('INSERT INTO products(name,barcode,quantity,unit,aantal) VALUES(?,?,?,?,?) ON CONFLICT(barcode) DO UPDATE SET name=excluded.name, quantity=products.quantity+excluded.quantity, aantal=products.aantal+excluded.aantal, updated_at=CURRENT_TIMESTAMP').run(name,barcode,quantity,unit,aantal);
  // Wat de gebruiker zelf invult onthoudt de app bij die barcode, zodat een volgende scan meteen goed gaat.
  if(barcode)barcodes.onthoud(barcode,{name,quantity:Number.isFinite(quantity)?quantity:null,unit});
