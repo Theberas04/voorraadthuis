@@ -27,6 +27,19 @@ VoorraadThuis is een Nederlandstalige thuisapp met zes onderdelen: voorraad, boo
 
 🎬 **[Stille rondleiding (21 sec · 1280×720 · zonder audio)](docs/img/voorraadthuis-rondleiding.mp4)** — voorraad, recepten, planning, garderobe, boodschappen en de lokale vinylcatalogus.
 
+## Android-app
+
+Wil je VoorraadThuis als echt appje op de telefoon, met camera voor de barcodescanner en
+bestanden die netjes worden opgeslagen? Dat is er:
+
+**[Theberas04/voorraadthuis-android](https://github.com/Theberas04/voorraadthuis-android)** — een dunne Android-app
+rond deze webapp. Hij opent standaard `https://thuis.werdensmedia.net/`, vraagt de camera
+pas op het moment dat je scant, bewaart downloads (de agenda als `.ics`, de CSV en de
+printbare inventaris) in Downloads en biedt een gedownload agenda-bestand meteen aan je
+agenda-app aan. Lukt het internetadres niet, dan biedt de app het adres in je eigen
+netwerk aan. De APK wordt in GitHub Actions gebouwd en ondertekend; je haalt hem op onder
+**Actions → Android build → Artifacts**.
+
 ## Op de telefoon
 
 | Voorraad | Recepten | Kleding | Kalender |
