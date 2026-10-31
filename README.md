@@ -219,8 +219,11 @@ Boven de kalender staan twee knoppen: **📅 Deze maand (.ics)** en **📅 Hele 
 
 - **Diensten** komen er als afspraken met tijd in te staan: de naam, de notitie en de kleur van de dienst gaan mee. Een nachtdienst die over middernacht loopt (22:30–06:15) eindigt netjes de volgende dag.
 - **Het geplande recept** staat er als hele-dag-item, met de landkeuken en het aantal porties erbij.
-- **Importeren**: open het bestand op de telefoon of de computer en je agenda-app vraagt of hij het wil toevoegen. Op de iPhone zet je het als abonnement (Instellingen → Agenda → Accounts → Agenda-account toevoegen → Abonneer op agenda) met het adres hieronder; dan werkt je planning ook vanzelf bij.
-- **Opnieuw importeren geeft geen dubbele dagen**: elk item heeft een vast kenmerk per dag, dus je agenda werkt het bestaande item bij.
+- **Automatisch bijwerken**: abonneer je agenda-app op `http://<adres-van-de-app>/api/agenda.ics` (iPhone: Instellingen → Agenda → Accounts → Agenda-account toevoegen → *Abonneer op agenda*; Android en de computer: agenda toevoegen via een internetadres). Het bestand zegt zelf dat het elk uur ververst mag worden (`REFRESH-INTERVAL` en `X-PUBLISHED-TTL`), dus een wijziging die je hier maakt zie je binnen het uur terug.
+- **Een wijziging komt door als nieuwe versie**: elke geplande dag heeft een revisienummer dat alleen maar omhoog gaat en dat als `SEQUENCE` meegaat, met `LAST-MODIFIED` erbij. Zo werkt je agenda hetzelfde item bij in plaats van de oude versie te laten staan of er een dubbele dag van te maken. Het wissen van een dag telt ook mee, dus opnieuw plannen komt altijd hoger uit.
+- **De twee knoppen downloaden een momentopname** van dit moment: handig om één keer te importeren, maar zo'n bestand werkt niet vanzelf bij — gebruik daarvoor het abonnement hierboven.
+- **Eén richting**: wijzigingen gaan van deze app naar je agenda. Wat je in je agenda-app zelf verzet, komt niet terug in de app; hier plan je.
+- **Wat je agenda-app ophaalt, is altijd de actuele stand**: het adres leest de planning op het moment van opvragen. Een agenda-app die niets gewijzigd ziet, krijgt van de app een kort `304`-antwoord met een etiket (ETag) in plaats van het hele bestand.
 - Rechtstreeks op te halen: `/api/agenda.ics` voor alles en `/api/agenda.ics?maand=2026-10` voor één maand. Het bestand is een gewone iCalendar-agenda (RFC 5545) met de tijdzone van Nederland erin.
 
 ![De twee agenda-knoppen boven de kalender](docs/img/agenda-ics-knoppen.jpg)
