@@ -11,7 +11,7 @@ const { createWardrobe } = require('./wardrobe');
 const { createBarcodes } = require('./barcodes');
 const { createProfiles } = require('./profiles');
 const { createPlaten } = require('./platen');
-const { maakAgenda, bestandsnaam } = require('./agenda');
+const { maakAgenda, maakItems, bestandsnaam } = require('./agenda');
 const { createEigenRecepten, DIETEN, isEigenId } = require('./eigen-recepten');
 // Rekenkern van de keuken: voorraad vergelijken met recepten, hoeveelheden
 // omrekenen naar een ander aantal porties en de boodschappen van een week
@@ -253,6 +253,16 @@ const server=http.createServer(async(req,res)=>{let url;try{url=new URL((req.url
   if(String(req.headers['if-none-match']||'')===etiket){res.writeHead(304,{'etag':etiket,'cache-control':'no-cache'});return res.end();}
   res.writeHead(200,{'content-type':'text/calendar; charset=utf-8','content-disposition':`attachment; filename="${bestandsnaam(maand)}"`,'content-length':Buffer.byteLength(ics),'etag':etiket,'cache-control':'no-cache'});
   return res.end(ics);
+ }
+ // Dezelfde planning als losse onderdelen (JSON), zodat de Android-app de afspraken in
+ // de agenda van het toestel kan zetten zonder het .ics-bestand te hoeven lezen.
+ if(url.pathname==='/api/agenda.json'&&req.method==='GET'){
+  const maand=String(url.searchParams.get('maand')||'').trim();
+  if(maand&&!/^\d{4}-(0[1-9]|1[0-2])$/.test(maand))return json(res,400,{error:'Geef een geldige maand op (YYYY-MM).'});
+  const plannen=maand?plansForMonth(maand):allePlannen();
+  const items=maakItems(plannen,{receptNaam:id=>{const r=recipeById(id);return r?r.name:''}});
+  const versie=items.reduce((hoogste,item)=>Math.max(hoogste,Number(item.rev)||0),0);
+  return json(res,200,{versie,items,kalender:`VoorraadThuis${maand?` ${maand}`:''}`});
  }
  if(url.pathname==='/api/products'&&req.method==='POST'){const x=await body(req);const name=String(x.name||'').trim();const barcode=String(x.barcode||'').trim()||null;const quantity=Number(x.quantity??1);const unit=String(x.unit||'stuks').trim();const aantal=x.aantal===''||x.aantal==null?1:Math.round(Number(x.aantal));if(!name||name.length>120||!Number.isFinite(quantity)||quantity<=0||quantity>100000||unit.length>24||!Number.isFinite(aantal)||aantal<1||aantal>9999)return json(res,400,{error:'Controleer naam, hoeveelheid, eenheid en het aantal stuks (1–9999).'});try{const result=db.prepare('INSERT INTO products(name,barcode,quantity,unit,aantal) VALUES(?,?,?,?,?) ON CONFLICT(barcode) DO UPDATE SET name=excluded.name, quantity=products.quantity+excluded.quantity, aantal=products.aantal+excluded.aantal, updated_at=CURRENT_TIMESTAMP').run(name,barcode,quantity,unit,aantal);
  // Wat de gebruiker zelf invult onthoudt de app bij die barcode, zodat een volgende scan meteen goed gaat.

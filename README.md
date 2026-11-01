@@ -228,7 +228,19 @@ De samenvatting boven de lijst zegt hoeveel recepten er nu te maken zijn en hoev
 
 #### Je planning in je eigen agenda (.ics)
 
-Boven de kalender staan twee knoppen: **📅 Deze maand (.ics)** en **📅 Hele agenda (.ics)**.
+Boven de kalender staan de knoppen **📅 Deze maand (.ics)**, **📅 Hele agenda (.ics)** en **🔗 Agenda koppelen**.
+
+![De knoppen boven de kalender, met Agenda koppelen ernaast](docs/img/agenda-koppelen-knop.jpg)
+
+**Agenda koppelen** opent een venster met het adres van jouw app, een **kopieerknop** en een **QR-code** van dat adres — scannen met de telefoon en je hoeft niets over te typen. Er staat ook een vinkje bij *Alleen de maand die ik in de kalender zie*, voor als je alleen die maand wilt koppelen. De stappen per toestel staan eronder, uitklapbaar: Android met Google Agenda, **Android met Samsung Agenda**, iPhone en computer.
+
+![Het koppelvenster met adres, kopieerknop, QR-code en de stappen per toestel](docs/img/agenda-koppelen.jpg)
+
+| Het koppelvenster op een telefoonscherm |
+| --- |
+| ![Koppelvenster op een smal scherm](docs/img/agenda-koppelen-mobiel.jpg) |
+
+**Samsung Agenda** heeft zelf meestal geen optie om een adres in te vullen. Daarom staan er twee routes die wel werken: het abonnement in Google Agenda zetten en je Google-account in Samsung Agenda aanzetten, of **ICSx⁵** gebruiken (die zet een agenda neer die Samsung Agenda ook laat zien). De QR-code wordt helemaal in de browser gemaakt (`public/qr.js`), zonder internet en zonder externe dienst, en wordt in de tests met een onafhankelijke lezer nagelezen.
 
 - **Diensten** komen er als afspraken met tijd in te staan: de naam, de notitie en de kleur van de dienst gaan mee. Een nachtdienst die over middernacht loopt (22:30–06:15) eindigt netjes de volgende dag.
 - **Het geplande recept** staat er als hele-dag-item, met de landkeuken en het aantal porties erbij.
@@ -420,6 +432,7 @@ npm start    # http://localhost:3000
 | Pad | Inhoud |
 | --- | --- |
 | `server.js` | HTTP-server, SQLite-schema, API en de gecombineerde receptenlijst; verwijst de garderoberoutes door. |
+| `public/qr.js` | Maakt de QR-code van het agenda-adres, helemaal in de browser (bytemodus, foutcorrectie M, versies 1–10); in de tests nagerekend tegen een andere uitvoering én teruggelezen met jsQR. |
 | `agenda.js` | Het agenda-bestand (.ics) van de maaltijd- en werkplanning: diensten als afspraken met tijd, het recept als hele-dag-item, met tijdzone en regelvouwing volgens RFC 5545. |
 | `wardrobe.js` | Het garderobe-onderdeel (Kledingkast): kledingkasten, kleding, was, setjes, draaghistorie en de adviesregels. |
 | `platen.js` | De platenverzameling: lp's met barcodeherkenning via MusicBrainz, hoezen uit het Cover Art Archive en de verzameling per locatie. |
@@ -453,6 +466,7 @@ npm start    # http://localhost:3000
 | `GET /api/weer`, `PUT /api/weer/instellingen` | De plaats voor het weer lezen en zetten (`{plaats}`, `{lat,lon}` of `{aan}`), met de verwachting van vandaag en de bron. |
 | `GET/PUT/DELETE /api/planner/<datum>`, `GET /api/planner?month=` | Dagplanning met recept, landkeuken en diensten. |
 | `GET/POST/DELETE /api/shift-templates` | Herbruikbare diensten. |
+| `GET /api/agenda.json?maand=` | Dezelfde planning als losse onderdelen (JSON) met een versienummer, voor de Android-app die de afspraken in de agenda van het toestel zet. |
 | `GET /api/agenda.ics?maand=` | De hele planning als agenda-bestand (.ics) voor je telefoon of computer: diensten met tijd en kleur, het recept als hele-dag-item. Zonder `maand` krijg je alles, met `maand=YYYY-MM` alleen die maand. |
 | `GET/POST /api/platen`, `PATCH/DELETE /api/platen/<id>` | De platenverzameling: lezen, toevoegen, verplaatsen of wijzigen en verwijderen. Lezen kan gefilterd met `?locatie=` (of `leeg`), `?genre=`, `?artiest=`, `?decennium=` (of `onbekend`), `?van=`/`?tot=` en `?q=`; het antwoord bevat ook `keuzelijsten` met de genres, artiesten, decennia en locaties met aantallen. |
 | `GET /api/platen/keuzelijsten` | Alleen de keuzelijsten om op te filteren. |

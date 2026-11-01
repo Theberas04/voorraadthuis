@@ -121,6 +121,67 @@ function dienstenVanDag(plan){
   return diensten.filter(d => d.startTime || d.endTime || d.name);
 }
 
+// De planning als losse onderdelen. Zowel het agenda-bestand (.ics) als de Android-app
+// (die de afspraken in de agenda van het toestel zet) gebruiken deze ene lijst, zodat ze
+// nooit uit elkaar kunnen lopen.
+function maakItems(plannen, opties = {}){
+  const receptNaam = typeof opties.receptNaam === 'function' ? opties.receptNaam : () => '';
+  const items = [];
+  const dagen = (Array.isArray(plannen) ? plannen : [])
+    .filter(p => isDatum(datumDelen(p && p.plan_date)))
+    .sort((a, b) => String(a.plan_date).localeCompare(String(b.plan_date)));
+
+  for (const plan of dagen) {
+    const datum = datumDelen(plan.plan_date);
+    // Een hoger revisienummer betekent voor de agenda-app: dit is een nieuwe versie
+    // van hetzelfde item. Dat is wat een wijziging doorlaat.
+    const reeks = Math.max(1, Number(plan.rev) || 1);
+    const gewijzigd = alsUtc(plan.gewijzigd);
+    const naam = receptNaam(plan.recipe_id);
+    if (naam || plan.cuisine) {
+      items.push({
+        uid: `voorraadthuis-${datum}-maaltijd@voorraadthuis`,
+        soort: 'maaltijd',
+        titel: naam ? `Avondeten: ${naam}` : `Maaltijd: ${plan.cuisine}`,
+        datum,
+        heleDag: true,
+        eindDatum: volgendeDag(datum),
+        eindDatumTijd: '',
+        start: '',
+        eind: '',
+        omschrijving: [plan.cuisine ? `Landkeuken: ${plan.cuisine}` : '', plan.porties ? `Porties: ${plan.porties}` : ''].filter(Boolean).join(' · '),
+        kleur: '',
+        rev: reeks,
+        gewijzigd,
+      });
+    }
+    dienstenVanDag(plan).forEach((dienst, i) => {
+      const beide = klokDelen(dienst.startTime) && klokDelen(dienst.endTime);
+      // Een nachtdienst (22:00–06:00) eindigt de volgende dag.
+      const eindDatum = dienst.endTime <= dienst.startTime ? volgendeDag(datum) : datum;
+      items.push({
+        uid: `voorraadthuis-${datum}-dienst-${i}-${String(dienst.startTime).replace(/:/g, '')}-${String(dienst.endTime).replace(/:/g, '')}@voorraadthuis`,
+        soort: 'dienst',
+        titel: dienst.name ? `Dienst: ${dienst.name}` : 'Werkdienst',
+        datum,
+        heleDag: !beide,
+        eindDatum: volgendeDag(datum),
+        start: beide ? dienst.startTime : '',
+        eind: beide ? dienst.endTime : '',
+        eindDatumTijd: beide ? alsLokaleTijd(eindDatum, dienst.endTime) : '',
+        omschrijving: [
+          dienst.notes || '',
+          dienst.startTime && dienst.endTime && !beide ? `Tijd: ${dienst.startTime}–${dienst.endTime}` : '',
+        ].filter(Boolean).join(' · '),
+        kleur: dienst.color || '',
+        rev: reeks,
+        gewijzigd,
+      });
+    });
+  }
+  return items;
+}
+
 // Bouwt het volledige agenda-bestand op. `plannen` zijn de rijen zoals de
 // plannertabel ze teruggeeft (met `shifts`), `receptNaam` vertaalt een recept-id
 // naar de titel, en `nu` maakt het bestand testbaar.
@@ -141,62 +202,29 @@ function maakAgenda(plannen, opties = {}){
   ];
   regels.push(...DIENST_TIJDZONE.split(REGEL_EINDE));
 
-  const dagen = (Array.isArray(plannen) ? plannen : [])
-    .filter(p => isDatum(datumDelen(p && p.plan_date)))
-    .sort((a, b) => String(a.plan_date).localeCompare(String(b.plan_date)));
-
-  for (const plan of dagen) {
-    const datum = datumDelen(plan.plan_date);
-    const naam = receptNaam(plan.recipe_id);
-    // Een hoger revisienummer betekent voor de agenda-app: dit is een nieuwe
-    // versie van hetzelfde item. Dat is wat een wijziging doorlaat.
-    const reeks = Math.max(1, Number(plan.rev) || 1);
-    const gewijzigd = alsUtc(plan.gewijzigd);
-    const versie = [`SEQUENCE:${reeks}`, ...(gewijzigd ? [`LAST-MODIFIED:${gewijzigd}`] : [])];
-    if (naam || plan.cuisine) {
-      const titel = naam ? `Avondeten: ${naam}` : `Maaltijd: ${plan.cuisine}`;
-      const omschrijving = [plan.cuisine ? `Landkeuken: ${plan.cuisine}` : '', plan.porties ? `Porties: ${plan.porties}` : ''].filter(Boolean).join(' · ');
-      regels.push(
-        'BEGIN:VEVENT',
-        `UID:voorraadthuis-${datum}-maaltijd@voorraadthuis`,
-        `DTSTAMP:${stempel}`,
-        ...versie,
-        `SUMMARY:${tekst(titel)}`,
-        `DTSTART;VALUE=DATE:${datumKort(datum)}`,
-        `DTEND;VALUE=DATE:${datumKort(volgendeDag(datum))}`,
-        ...(omschrijving ? [`DESCRIPTION:${tekst(omschrijving)}`] : []),
-        'TRANSP:TRANSPARENT',
-        'END:VEVENT',
-      );
-    }
-
-    dienstenVanDag(plan).forEach((dienst, i) => {
-      const start = klokDelen(dienst.startTime) && klokDelen(dienst.endTime)
-        ? {
-            van: alsLokaleTijd(datum, dienst.startTime),
-            // Een nachtdienst (22:00–06:00) eindigt de volgende dag.
-            tot: alsLokaleTijd(dienst.endTime <= dienst.startTime ? volgendeDag(datum) : datum, dienst.endTime),
-          }
-        : null;
-      const titel = dienst.name ? `Dienst: ${dienst.name}` : 'Werkdienst';
-      const omschrijving = [
-        dienst.notes || '',
-        dienst.startTime && dienst.endTime && !start ? `Tijd: ${dienst.startTime}–${dienst.endTime}` : '',
-      ].filter(Boolean).join(' · ');
-      regels.push(
-        'BEGIN:VEVENT',
-        `UID:voorraadthuis-${datum}-dienst-${i}-${String(dienst.startTime).replace(/:/g, '')}-${String(dienst.endTime).replace(/:/g, '')}@voorraadthuis`,
-        `DTSTAMP:${stempel}`,
-        ...versie,
-        `SUMMARY:${tekst(titel)}`,
-        ...(start
-          ? [`DTSTART;TZID=${TIJDZONE}:${start.van}`, `DTEND;TZID=${TIJDZONE}:${start.tot}`]
-          : [`DTSTART;VALUE=DATE:${datumKort(datum)}`, `DTEND;VALUE=DATE:${datumKort(volgendeDag(datum))}`]),
-        ...(omschrijving ? [`DESCRIPTION:${tekst(omschrijving)}`] : []),
-        ...(KLEUR_HEX[dienst.color] ? [`COLOR:${KLEUR_HEX[dienst.color]}`] : []),
-        'END:VEVENT',
-      );
-    });
+  // Dezelfde onderdelen als de Android-app gebruikt; hier alleen omgezet naar tekst.
+  for (const onderdeel of maakItems(plannen, opties)) {
+    const versie = [`SEQUENCE:${onderdeel.rev}`, ...(onderdeel.gewijzigd ? [`LAST-MODIFIED:${onderdeel.gewijzigd}`] : [])];
+    regels.push(
+      'BEGIN:VEVENT',
+      `UID:${onderdeel.uid}`,
+      `DTSTAMP:${stempel}`,
+      ...versie,
+      `SUMMARY:${tekst(onderdeel.titel)}`,
+      ...(onderdeel.heleDag
+        ? [
+            `DTSTART;VALUE=DATE:${datumKort(onderdeel.datum)}`,
+            `DTEND;VALUE=DATE:${datumKort(onderdeel.eindDatum)}`,
+          ]
+        : [
+            `DTSTART;TZID=${TIJDZONE}:${alsLokaleTijd(onderdeel.datum, onderdeel.start)}`,
+            `DTEND;TZID=${TIJDZONE}:${onderdeel.eindDatumTijd}`,
+          ]),
+      ...(onderdeel.omschrijving ? [`DESCRIPTION:${tekst(onderdeel.omschrijving)}`] : []),
+      ...(KLEUR_HEX[onderdeel.kleur] ? [`COLOR:${KLEUR_HEX[onderdeel.kleur]}`] : []),
+      ...(onderdeel.soort === 'maaltijd' ? ['TRANSP:TRANSPARENT'] : []),
+      'END:VEVENT',
+    );
   }
 
   regels.push('END:VCALENDAR');
@@ -207,4 +235,4 @@ function bestandsnaam(maand){
   return isDatum(`${maand}-01`) ? `voorraadthuis-agenda-${maand}.ics` : 'voorraadthuis-agenda.ics';
 }
 
-module.exports = {maakAgenda, bestandsnaam, tekst, vouw, TIJDZONE, KLEUR_HEX};
+module.exports = {maakAgenda, maakItems, bestandsnaam, tekst, vouw, alsUtc, datumKort, TIJDZONE, KLEUR_HEX};

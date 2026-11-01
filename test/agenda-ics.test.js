@@ -198,9 +198,10 @@ test('een agenda-app die niets nieuws ziet krijgt een kort antwoord in plaats va
 
 test('de pagina legt het abonnement uit en toont het adres van deze app',async()=>{
   const html=await (await call('/')).text();
-  assert.ok(html.includes('Abonneer je agenda-app op'),'de uitleg over het abonnement hoort erbij te staan');
-  assert.ok(html.includes('downloaden een momentopname'),'en dat de knoppen een momentopname geven');
-  assert.ok(html.includes('id="agendaIcsAdres"'),'het adres hoort in de uitleg te staan');
-  assert.ok(html.includes("icsAdres.textContent=location.origin+'/api/agenda.ics'"),'en gevuld te worden met het adres van deze app');
+  assert.ok(html.includes('Agenda koppelen'),'de uitleg en het venster horen erbij te staan');
+  assert.ok(html.includes('Een abonnement werkt vanzelf bij'),'en dat een abonnement blijft bijwerken');
+  assert.ok(html.includes('momentopname'),'terwijl downloaden een momentopname is');
   assert.ok(html.includes('komt niet terug in deze app'),'de richting van de koppeling hoort duidelijk te zijn');
+  assert.ok(html.includes('id="agendaKoppelAdres"'),'het adres hoort in het venster te staan');
+  assert.ok(html.includes("location.origin}/api/agenda.ics"),'en gevuld te worden met het adres van deze app');
 });
