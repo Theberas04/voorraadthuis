@@ -46,6 +46,7 @@ test('de stappen voor Samsung Agenda staan erbij, met de route die werkt', async
   assert.ok(html.includes('Samsung Agenda'), 'de Samsung-agenda hoort genoemd te worden');
   assert.ok(/Samsung-agenda heeft zelf meestal geen optie om een adres in te vullen/.test(html), 'en dat die zelf geen adres kan invullen');
   assert.ok(html.includes('ICSx⁵'), 'met ICSx⁵ als een van de routes');
+  assert.ok(!/die schrijft je planning rechtstreeks/.test(html), 'geen belofte over iets dat de app nog niet doet');
   assert.ok(html.includes('Agenda&#39;s beheren') || html.includes("Agenda's beheren"), 'en waar je hem in Samsung Agenda aanzet');
   assert.ok(html.includes('Via URL'), 'de Google-route hoort er ook te staan');
   assert.ok(html.includes('iPhone') && html.includes('Outlook'), 'en de andere toestellen');
