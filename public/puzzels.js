@@ -31,7 +31,17 @@
     };
   }
 
+  // De printbare lijst en de CSV nemen de filters mee die nu aanstaan: druk je af met
+  // 'alleen uitgeleend' gekozen, dan staat dat er ook zo op papier.
+  function werkLijstKoppen() {
+    const tekst = new URLSearchParams(Object.entries(filters()).filter(([, waarde]) => waarde)).toString();
+    const staart = tekst ? `?${tekst}` : '';
+    $('#puzzelLijst').href = `/api/puzzels/lijst${staart}`;
+    $('#puzzelLijstCsv').href = `/api/puzzels/lijst.csv${staart}`;
+  }
+
   async function laad() {
+    werkLijstKoppen();
     const vraag = new URLSearchParams(Object.entries(filters()).filter(([, waarde]) => waarde));
     const gegevens = await api(`/api/puzzels?${vraag.toString()}`);
     staat.puzzels = gegevens.puzzels;

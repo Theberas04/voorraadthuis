@@ -158,6 +158,6 @@ test('de beheerpagina zit in de app en de dienst kent de nieuwe bestanden', asyn
   assert.ok(script.includes("'x-voorraadthuis': 'beheer'"), 'elke aanvraag gaat met de eigen kop');
   assert.ok(script.includes('/api/beheer/status'), 'en de pagina leest de status');
   const sw = await (await call('/sw.js')).text();
-  assert.ok(sw.includes("'voorraadthuis-v18'"), 'de cachenaam is opgehoogd');
+  assert.ok(sw.includes("'voorraadthuis-v19'"), 'de cachenaam is opgehoogd');
   assert.ok(sw.includes("'/beheer.js?v=1'"), 'en de beheerpagina staat in de voorraadlijst');
 });

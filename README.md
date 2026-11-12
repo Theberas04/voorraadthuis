@@ -351,6 +351,11 @@ Dezelfde aanpak als bij de platen, maar voor legpuzzels:
 - **Je eigen foto van de doos** per puzzel (JPEG, PNG of WebP, maximaal 4 MB). Foto's uit de databank nemen we bewust **niet** over; de kaart linkt wel naar de bronpagina.
 - **Zoeken en filteren** op merk, aantal stukken, status en plek, met keuzelijsten die zich vullen met wat je zelf al hebt ingevoerd, en een teller met het aantal dozen.
 - De barcode kan ook uit een eerdere bestelling of van de bon komen; typ hem gewoon in en de app zoekt hem alsnog op.
+- **Printbare lijst** (en **CSV**): één regel per puzzel met merk, stukken, soort, jaar, formaat, plek, aantal, status (en aan wie uitgeleend), notitie — met de dozen geteld, de telling per status en per plek eronder, en de filters die je op dat moment hebt aanstaan. Afdrukken of bewaren als PDF kan met de knop of Ctrl/Cmd + P; het blad staat op A4 liggend. De CSV opent in Excel of Numbers (puntkomma als scheiding).
+
+![De printbare puzzellijst: één regel per puzzel met de tellingen eronder](docs/img/puzzels-printbare-lijst.jpg)
+
+![De knoppen Printbare lijst en CSV in de kop van de puzzelpagina](docs/img/puzzels-lijst-knoppen.jpg)
 
 ![De puzzelpagina met het invulformulier en de verzameling](docs/img/puzzels.jpg)
 
@@ -518,6 +523,8 @@ npm start    # http://localhost:3000
 | `POST /api/beheer/wachtwoord` | Wachtwoord instellen (eerste keer) of wijzigen (met het huidige wachtwoord erbij). |
 | `POST /api/beheer/inloggen`, `POST /api/beheer/uitloggen` | Inloggen (met adempauze na acht verkeerde pogingen) en uitloggen. |
 | `POST /api/beheer/update` | Vraagt een bijwerking aan door het vlagbestand te schrijven; het script van de dienst doet de rest. |
+| `GET /api/puzzels/lijst` | De printbare lijst (HTML, A4 liggend) met dezelfde filters als het overzicht; `?status=uitgeleend` werkt hier dus ook. |
+| `GET /api/puzzels/lijst.csv` | Dezelfde lijst als CSV-bestand (puntkomma als scheiding). |
 | `GET/POST /api/puzzels`, `GET/PATCH/PUT/DELETE /api/puzzels/<id>` | De puzzelverzameling: lezen (met `?q=`, `?merk=`, `?stukken=`, `?status=` en `?locatie=`), toevoegen, wijzigen en verwijderen. Het antwoord bevat ook de keuzelijsten en de dozen-teller. |
 | `GET /api/puzzels/zoek?code=<barcode>&ververs=1` | Een barcode opzoeken: eerst wat de app al weet (eigen verzameling of eerder opgezocht), anders Open Products Facts. `ververs=1` forceert een nieuwe opzoeking. |
 | `POST /api/puzzels/<id>/foto` | Je eigen foto van de doos (base64, JPEG/PNG/WebP, maximaal 4 MB). |

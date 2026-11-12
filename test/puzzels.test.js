@@ -192,23 +192,70 @@ test('een onbruikbare barcode of invoer geeft een nette melding', async () => {
 
 test('de puzzelpagina staat in de app, met de bronvermelding erbij', async () => {
   const html = await (await call('/')).text();
-  assert.ok(html.includes('<script src="puzzels.js?v=1">'), 'de puzzelpagina hoort geladen te worden');
+  assert.ok(html.includes('<script src="puzzels.js?v=2">'), 'de puzzelpagina hoort geladen te worden');
   assert.ok(/<button data-page="puzzels">Puzzels<\/button>/.test(html), 'en een eigen tab te hebben');
   assert.ok(html.includes('id="page-puzzels"'), 'met een eigen pagina');
   for (const id of ['puzzelCode', 'puzzelScan', 'puzzelTitel', 'puzzelStukken', 'puzzelStukkenKnoppen', 'puzzelStatus', 'puzzelUitgeleendVak', 'puzzelLocatie', 'puzzelGrid', 'puzzelBron', 'puzzelWisFilters']) {
     assert.ok(html.includes(`id="${id}"`), `het veld ${id} hoort er te zijn`);
   }
   assert.ok(html.includes("name==='puzzels'&&window.PuzzelsPagina"), 'de pagina hoort te laden als je de tab opent');
-  const script = await (await call('/puzzels.js?v=1')).text();
+  const script = await (await call('/puzzels.js?v=2')).text();
   assert.ok(script.includes('BarcodeScan'), 'de scanner wordt hergebruikt');
   assert.ok(script.includes('Open Products Facts'), 'de bron staat in de pagina zelf');
   assert.ok(script.includes('/api/puzzels/zoek?code='), 'en de pagina vraagt de barcode op');
   const sw = await (await call('/sw.js')).text();
-  assert.ok(sw.includes("'/puzzels.js?v=1'"), 'de service worker kent het bestand');
+  assert.ok(sw.includes("'/puzzels.js?v=2'"), 'de service worker kent het bestand');
 });
 
 test('de bronvermelding voor de puzzelgegevens staat in de README', async () => {
   const readme = fs.readFileSync(path.join(__dirname, '..', 'README.md'), 'utf8');
   assert.ok(/Open Products Facts/.test(readme), 'de bron hoort in de README te staan');
   assert.ok(/ODbL/.test(readme), 'met de licentie erbij');
+});
+
+test('de printbare lijst zet de verzameling op papier, met dozen en filters', async () => {
+  await call('/api/puzzels', 'POST', {titel: 'Molen aan de plas & co', merk: 'Jumbo', stukken: 1000, locatie: 'Kast zolder', aantal: 2});
+  await call('/api/puzzels', 'POST', {titel: 'Boerderij', merk: 'Jumbo', stukken: 100, locatie: 'Slaapkamer', status: 'uitgeleend', uitgeleendAan: 'Lars', uitgeleendOp: '2026-10-18'});
+
+  const pagina = await call('/api/puzzels/lijst');
+  assert.equal(pagina.status, 200);
+  assert.match(pagina.headers.get('content-type'), /text\/html/);
+  const html = await pagina.text();
+  assert.ok(html.includes('Mijn puzzelverzameling'), 'met een titel boven de lijst');
+  assert.ok(html.includes('window.print()'), 'en een afdrukknop');
+  assert.ok(html.includes('@page{size:A4 landscape'), 'die op A4 liggend past');
+  for (const kop of ['Titel', 'Merk', 'Stukken', 'Soort', 'Jaar', 'Formaat', 'Plek', 'Aantal', 'Status', 'Notitie']) {
+    assert.ok(html.includes(`>${kop}<`), `de kolom ${kop} hoort er te zijn`);
+  }
+  assert.ok(html.includes('Molen aan de plas &amp; co'), 'de titel wordt veilig weergegeven');
+  assert.ok(html.includes('bij Lars sinds 2026-10-18'), 'aan wie is uitgeleend staat erbij');
+  assert.ok(html.includes('>Uitgeleend<'), 'de status staat er voluit, niet als code');
+  assert.ok(/3 dozen/.test(html), 'de dozen worden geteld');
+  assert.ok(!html.includes('<script'), 'geen scripts uit de gegevens op de afdruk');
+
+  const alleenUitgeleend = await (await call('/api/puzzels/lijst?status=uitgeleend')).text();
+  assert.ok(alleenUitgeleend.includes('Boerderij'));
+  assert.ok(!alleenUitgeleend.includes('Molen aan de plas'), 'de filter werkt ook op de afdruk');
+  assert.ok(alleenUitgeleend.includes('Filter: status Uitgeleend'), 'en staat er eerlijk bij vermeld');
+  assert.ok(/1 doos/.test(alleenUitgeleend), 'de telling volgt de filter');
+
+  const csv = await call('/api/puzzels/lijst.csv');
+  const tekst = await csv.text();
+  assert.match(csv.headers.get('content-disposition'), /puzzels-lijst-\d{4}-\d{2}-\d{2}\.csv/);
+  assert.ok(tekst.startsWith('titel;code;merk;stukken;soort;jaar;formaat;plek;aantal;status;uitgeleend_aan;uitgeleend_op;notitie'), 'met een kopregel');
+  assert.ok(tekst.includes('Molen aan de plas & co;'), 'met puntkomma als scheiding, zoals Excel in Nederland verwacht');
+  assert.ok(tekst.includes('Uitgeleend;Lars;2026-10-18'), 'en de uitleeninformatie');
+
+  for (const p of (await (await call('/api/puzzels')).json()).puzzels) await call(`/api/puzzels/${p.id}`, 'DELETE');
+  assert.equal((await (await call('/api/puzzels')).json()).puzzels.length, 0);
+});
+
+test('de knoppen voor de printbare lijst zitten op de puzzelpagina en nemen de filters mee', async () => {
+  const html = await (await call('/')).text();
+  assert.ok(html.includes('id="puzzelLijst"'), 'de knop hoort er te zijn');
+  assert.ok(html.includes('id="puzzelLijstCsv"'), 'en de CSV-knop');
+  assert.ok(html.includes('href="/api/puzzels/lijst"'), 'met de route erin');
+  const script = await (await call('/puzzels.js?v=2')).text();
+  assert.ok(script.includes('werkLijstKoppen'), 'de koppen lopen mee met de filters');
+  assert.ok(script.includes('/api/puzzels/lijst.csv'), 'beide routes worden gezet');
 });

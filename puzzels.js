@@ -319,6 +319,141 @@ function createPuzzels({ db, mediaDir, fetchImpl = fetch, bronAan = true, nu = (
     };
   }
 
+  function filtersUit(url){
+    return {
+      zoekterm: leeg(url.searchParams.get('q') || '', 60),
+      merk: leeg(url.searchParams.get('merk') || '', 80),
+      stukken: leeg(url.searchParams.get('stukken') || '', 8),
+      status: leeg(url.searchParams.get('status') || '', 12),
+      locatie: leeg(url.searchParams.get('locatie') || '', 60),
+    };
+  }
+
+  // ---- Printbare lijst ---------------------------------------------------------
+  // Dezelfde verzameling als op de pagina, maar op papier: één regel per puzzel, de
+  // dozen geteld, en de filters die op dat moment aanstaan erbij vermeld. Via de knop
+  // (of Ctrl/Cmd + P) is dit ook als PDF te bewaren.
+  function veilig(tekst){
+    return String(tekst == null ? '' : tekst).replace(/[&<>"]/g, t => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[t]));
+  }
+
+  function vandaag(){
+    return nu().toLocaleDateString('nl-NL', {day: 'numeric', month: 'long', year: 'numeric'});
+  }
+
+  function filterTekst(filters){
+    const delen = [];
+    if (filters.zoekterm) delen.push(`zoekterm "${filters.zoekterm}"`);
+    if (filters.merk) delen.push(`merk ${filters.merk}`);
+    if (filters.stukken) delen.push(`${filters.stukken} stukken`);
+    if (filters.status) delen.push(`status ${STATUS_TEKST[filters.status] || filters.status}`);
+    if (filters.locatie) delen.push(`plek ${filters.locatie}`);
+    return delen.join(' · ');
+  }
+
+  function telPer(rijen, sleutelVan){
+    const map = new Map();
+    for (const p of rijen) {
+      const sleutel = sleutelVan(p);
+      if (!sleutel) continue;
+      const vorige = map.get(sleutel) || {naam: sleutel, dozen: 0, puzzels: 0};
+      vorige.dozen += Number(p.aantal) || 1;
+      vorige.puzzels += 1;
+      map.set(sleutel, vorige);
+    }
+    return [...map.values()].sort((a, b) => a.naam.localeCompare(b.naam, 'nl'));
+  }
+
+  function printHtml(filters){
+    // Dezelfde omzetting als naar de pagina (gezocht): anders staat de status hier als
+    // 'uitgeleend' in plaats van 'Uitgeleend' en ontbreekt het aantal.
+    const rijen = gezocht(zeef(filters));
+    const dozen = rijen.reduce((som, p) => som + (Number(p.aantal) || 1), 0);
+    const perPlek = telPer(rijen, p => p.locatie);
+    const perStatus = STATUSSEN.map(st => {
+      const van = rijen.filter(p => p.status === st);
+      return {naam: STATUS_TEKST[st], dozen: van.reduce((som, p) => som + (Number(p.aantal) || 1), 0), puzzels: van.length};
+    }).filter(r => r.puzzels);
+    const regel = (p) => `<tr>
+      <td>${veilig(p.titel)}${p.code ? `<br><span class="code">${veilig(p.code)}</span>` : ''}</td>
+      <td>${veilig(p.merk)}</td>
+      <td class="num">${p.stukken ? p.stukken : '—'}</td>
+      <td>${veilig(p.soort)}</td>
+      <td>${veilig(p.jaar)}</td>
+      <td>${veilig(p.formaat)}</td>
+      <td>${veilig(p.locatie)}</td>
+      <td class="num">${p.aantal}</td>
+      <td>${veilig(p.statusTekst)}${p.status === 'uitgeleend' && p.uitgeleend_aan ? `<br><span class="code">bij ${veilig(p.uitgeleend_aan)}${p.uitgeleend_op ? ` sinds ${veilig(p.uitgeleend_op)}` : ''}</span>` : ''}</td>
+      <td>${veilig(p.notitie)}</td>
+    </tr>`;
+    const somRegel = (naam, rij) => `<tr><th colspan="7">${veilig(naam)}</th><th class="num">${rij.dozen}</th><td colspan="2">${rij.puzzels} ${rij.puzzels === 1 ? 'puzzel' : 'puzzels'}</td></tr>`;
+    return `<!doctype html>
+<html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mijn puzzelverzameling</title>
+<style>
+  :root{color-scheme:light}
+  body{font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;color:#1c2822;background:#fff;margin:24px auto;max-width:1400px;padding:0 18px}
+  h1{font-size:22px;margin:0 0 6px}
+  p.meta{margin:0 0 4px;color:#43574b}
+  p.uitleg{margin:0 0 14px;color:#5d6b62;font-size:13px}
+  button{font:inherit;background:#173c32;color:#fff;border:0;border-radius:9px;padding:9px 14px;cursor:pointer}
+  a.csv{font:inherit;margin-left:10px;color:#173c32}
+  table{border-collapse:collapse;width:100%;margin-top:14px;font-size:12.5px}
+  th,td{border:1px solid #dbe7d7;padding:5px 7px;text-align:left;vertical-align:top}
+  thead th{background:#f3f7f1;white-space:nowrap}
+  tfoot th,tfoot td{background:#f3f7f1;font-weight:600}
+  td.num,th.num{text-align:right;white-space:nowrap}
+  .code{color:#5d6b62;font-size:11px}
+  @page{size:A4 landscape;margin:12mm}
+  .alleen-papier{display:none}
+  @media print{button,a.csv,.alleen-scherm{display:none} .alleen-papier{display:inline} body{margin:0;max-width:none} thead th{background:#eee}}
+</style></head>
+<body>
+<h1>Mijn puzzelverzameling</h1>
+<p class="meta">Opgesteld op ${veilig(vandaag())} · ${rijen.length} ${rijen.length === 1 ? 'puzzel' : 'puzzels'} · ${dozen} ${dozen === 1 ? 'doos' : 'dozen'}</p>
+${filterTekst(filters) ? `<p class="meta">Filter: ${veilig(filterTekst(filters))}</p>` : ''}
+<p class="uitleg"><span class="alleen-scherm">Afdrukken of bewaren als PDF: gebruik de knop hieronder of Ctrl/Cmd + P (het blad staat op A4 liggend). Dezelfde lijst is er ook als <a class="csv" href="/api/puzzels/lijst.csv${urlVan(filters)}">CSV-bestand</a> voor een spreadsheet.</span><span class="alleen-papier">Deze lijst is op A4 liggend gemaakt; bewaar hem als PDF via Ctrl/Cmd + P.</span></p>
+<button type="button" onclick="window.print()">🖨 Afdrukken of bewaar als PDF</button>
+<table>
+<thead><tr><th>Titel</th><th>Merk</th><th class="num">Stukken</th><th>Soort</th><th>Jaar</th><th>Formaat</th><th>Plek</th><th class="num">Aantal</th><th>Status</th><th>Notitie</th></tr></thead>
+<tbody>${rijen.map(regel).join('')}</tbody>
+<tfoot>
+<tr><th colspan="7">Totaal</th><th class="num">${dozen} ${dozen === 1 ? 'doos' : 'dozen'}</th><td colspan="2">${rijen.length} ${rijen.length === 1 ? 'puzzel' : 'puzzels'}</td></tr>
+${perStatus.length > 1 ? perStatus.map(r => somRegel(r.naam, r)).join('') : ''}
+${perPlek.length > 1 ? perPlek.map(r => somRegel('Plek: ' + r.naam, r)).join('') : ''}
+</tfoot>
+</table>
+</body></html>`;
+  }
+
+  function urlVan(filters){
+    const vraag = new URLSearchParams();
+    if (filters.zoekterm) vraag.set('q', filters.zoekterm);
+    if (filters.merk) vraag.set('merk', filters.merk);
+    if (filters.stukken) vraag.set('stukken', filters.stukken);
+    if (filters.status) vraag.set('status', filters.status);
+    if (filters.locatie) vraag.set('locatie', filters.locatie);
+    const tekst = vraag.toString();
+    return tekst ? `?${tekst}` : '';
+  }
+
+  // Dezelfde lijst als CSV, met een puntkomma als scheiding (zoals Excel in Nederland
+  // verwacht).
+  function printCsv(filters){
+    const veld = (waarde) => {
+      const tekst = String(waarde ?? '');
+      return /[";\n]/.test(tekst) ? `"${tekst.replace(/"/g, '""')}"` : tekst;
+    };
+    const kop = ['titel', 'code', 'merk', 'stukken', 'soort', 'jaar', 'formaat', 'plek', 'aantal', 'status', 'uitgeleend_aan', 'uitgeleend_op', 'notitie'];
+    const regels = [kop.join(';')];
+    for (const p of gezocht(zeef(filters))) {
+      regels.push([veld(p.titel), veld(p.code), veld(p.merk), p.stukken == null ? '' : p.stukken, veld(p.soort),
+        veld(p.jaar), veld(p.formaat), veld(p.locatie), p.aantal, veld(p.statusTekst), veld(p.uitgeleend_aan),
+        veld(p.uitgeleend_op), veld(p.notitie)].join(';'));
+    }
+    return regels.join('\n') + '\n';
+  }
+
   function overzicht(filters){
     const rijen = zeef(filters);
     const dozen = rijen.reduce((som, p) => som + (Number(p.aantal) || 1), 0);
@@ -335,14 +470,20 @@ function createPuzzels({ db, mediaDir, fetchImpl = fetch, bronAan = true, nu = (
   async function handle(req, res, url){
     const pad = url.pathname;
     if (pad === '/api/puzzels' && req.method === 'GET') {
-      const filters = {
-        zoekterm: leeg(url.searchParams.get('q') || '', 60),
-        merk: leeg(url.searchParams.get('merk') || '', 80),
-        stukken: leeg(url.searchParams.get('stukken') || '', 8),
-        status: leeg(url.searchParams.get('status') || '', 12),
-        locatie: leeg(url.searchParams.get('locatie') || '', 60),
-      };
-      return stuur(res, 200, overzicht(filters));
+      return stuur(res, 200, overzicht(filtersUit(url)));
+    }
+    if ((pad === '/api/puzzels/lijst' || pad === '/api/puzzels/lijst.csv') && req.method === 'GET') {
+      const filters = filtersUit(url);
+      if (pad.endsWith('.csv')) {
+        res.writeHead(200, {
+          'content-type': 'text/csv; charset=utf-8',
+          'content-disposition': `attachment; filename="puzzels-lijst-${nu().toISOString().slice(0, 10)}.csv"`,
+          'cache-control': 'no-store',
+        });
+        return res.end(printCsv(filters));
+      }
+      res.writeHead(200, {'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store'});
+      return res.end(printHtml(filters));
     }
     if (pad === '/api/puzzels/keuzelijsten' && req.method === 'GET') return stuur(res, 200, keuzelijsten());
 
@@ -403,7 +544,7 @@ function createPuzzels({ db, mediaDir, fetchImpl = fetch, bronAan = true, nu = (
     });
   }
 
-  return {handle, zoekCode, maak, wijzig, verwijder, bewaarFoto, overzicht, keuzelijsten, zoekBijBron, STATUSSEN, SOORTEN, normaliseerCode, stukkenUit};
+  return {handle, zoekCode, maak, wijzig, verwijder, bewaarFoto, overzicht, keuzelijsten, zoekBijBron, printHtml, printCsv, zeef, STATUSSEN, SOORTEN, normaliseerCode, stukkenUit};
 }
 
 module.exports = {createPuzzels, STATUSSEN, STATUS_TEKST, SOORTEN, normaliseerCode, stukkenUit};
