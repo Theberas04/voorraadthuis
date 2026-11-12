@@ -2,6 +2,14 @@
 
 VoorraadThuis is één app: voorraad, recepten, boodschappen, kalender én de garderobe (Kledingkast). Dit pakket installeert die app als een **unprivileged Debian LXC**, vergelijkbaar met BeatSync Studio. De app draait als systemd-service en **serveert HTTP op poort 80 en HTTPS op poort 443**; Docker en nginx zijn niet nodig. Standaard wordt DHCP gebruikt, met optioneel een vast IP.
 
+## Beheerknop in de app
+
+De app kan zichzelf bijwerken vanaf de tab **⚙ Beheer**: hij schrijft dan het vlagbestand
+`/var/lib/voorraadthuis/update-aanvraag`, waarop de padunit `voorraadthuis-update.path` als root
+`/usr/local/sbin/voorraadthuis-update` start (zie `../in-app-update.sh`). De installatie- en
+bijwerkscripts zetten die drie bestanden klaar; zonder deze inrichting zegt de pagina eerlijk dat
+bijwerken vanaf daar nog niet kan.
+
 ## Installeren vanaf GitHub met één commando
 
 Voer op de Proxmox-host als `root` uit:

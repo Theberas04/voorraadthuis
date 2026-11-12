@@ -84,7 +84,7 @@ test('dezelfde planning komt als losse onderdelen naar buiten, met dezelfde kenm
 
 test('de service worker kent de nieuwe bestanden en een nieuwe cachenaam', async () => {
   const sw = await (await call('/sw.js')).text();
-  assert.ok(sw.includes("'voorraadthuis-v17'"), 'de cachenaam hoort opgehoogd te zijn');
+  assert.ok(sw.includes("'voorraadthuis-v18'"), 'de cachenaam hoort opgehoogd te zijn');
   assert.ok(sw.includes("'/qr.js?v=1'"), 'en qr.js hoort in de lijst te staan');
   const html = await (await call('/')).text();
   assert.ok(!html.includes('platen.js?v=4'), 'oude versienummers horen niet meer in de pagina te staan');

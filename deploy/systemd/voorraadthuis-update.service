@@ -1,0 +1,15 @@
+[Unit]
+Description=VoorraadThuis bijwerken vanaf GitHub
+Documentation=https://github.com/Theberas04/voorraadthuis
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/voorraadthuis-update
+TimeoutStartSec=900
+# Het script ruimt zelf op; deze dienst is eenmalig en blijft niet draaien.
+RemainAfterExit=no
+
+[Install]
+WantedBy=multi-user.target

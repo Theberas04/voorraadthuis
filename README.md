@@ -169,6 +169,29 @@ Alles in één app: **voorraad en boodschappen**, **receptenboek met kookpot**, 
 
 **Rondleiding in beeld (23 seconden):** [`docs/img/voorraadthuis-eigen-recepten.mp4`](docs/img/voorraadthuis-eigen-recepten.mp4) — het receptenboek, een eigen recept met foto en dieetkeuze, het invulformulier en het dieetfilter op een rij.
 
+### Beheer: versie en bijwerken
+
+Achter de tab **⚙ Beheer** zit een klein beheerdersgedeelte met een eigen wachtwoord. Daar zie je:
+
+- **wat er nu draait** (versienummer, datum en de titel van die wijziging);
+- **wat er bij GitHub klaarstaat**, met een knop **Controleer op updates**;
+- de knop **Bijwerken**, die de nieuwe versie ophaalt, controleert, overzet en de app herstart — met de **vorige versie als terugvaloptie** en het **logboek** van de laatste keer erbij (zie `deploy/in-app-update.sh`).
+
+![Het beheergedeelte: versie, beschikbare update, bijwerken en het logboek](docs/img/beheer.jpg)
+
+De eerste keer stel je het wachtwoord zelf in; daarna vraagt de app erom:
+
+| Wachtwoord instellen (de eerste keer) | Inloggen |
+| --- | --- |
+| ![Beheerderswachtwoord instellen](docs/img/beheer-instellen.jpg) | ![Inloggen op het beheergedeelte](docs/img/beheer-inloggen.jpg) |
+
+**Hoe het bijwerken werkt zonder dat de app rechten krijgt.** De app draait onbevoorrecht (`User=voorraadthuis`, `NoNewPrivileges`, `ProtectSystem=strict`) en kan dus geen systeemdiensten herstarten. Daarom werkt de knop met een **vlagbestand**: de app schrijft `update-aanvraag` in zijn gegevensmap, de systemd-**padunit** `voorraadthuis-update.path` ziet dat en start als root `voorraadthuis-update.service` → `/usr/local/sbin/voorraadthuis-update`. Dat script haalt de nieuwe versie van GitHub, controleert `server.js`, zet de bestanden over, herstart de dienst en kijkt of de app gezond terugkomt; zo niet, dan zet het de vorige versie terug en schrijft dat in het logboek.
+
+- Staat die inrichting er nog niet, dan zegt de pagina dat eerlijk en geeft hij het opdracht voor de console erbij; de knop doet dan niets.
+- **Wachtwoord vergeten?** Zet `ADMIN_WACHTWOORD=…` als `Environment=` in `/etc/systemd/system/voorraadthuis.service` en herstart de dienst (dat wachtwoord werkt dan altijd), of verwijder de rij uit de tabel `beheer` en stel hier opnieuw in.
+- Het wachtwoord beschermt **alleen dit beheergedeelte**; de rest van de app heeft geen inlog, zoals voorheen. Wil je dat de hele app achter een wachtwoord komt, zeg het dan — dat is een aparte stap.
+- Wachtwoorden worden met **scrypt** bewaard (niet terug te lezen), sessies zijn 30 dagen geldig in een `HttpOnly`-koekje, na acht verkeerde pogingen zit er een kwartier pauze op, en elke wijziging moet met een eigen kop uit de app zelf komen (een andere pagina kan niet meeliften).
+
 ### Kalender en werkrooster
 
 - Maandkalender om per dag een recept en landkeuken te plannen.
@@ -450,6 +473,10 @@ npm start    # http://localhost:3000
 | --- | --- |
 | `server.js` | HTTP-server, SQLite-schema, API en de gecombineerde receptenlijst; verwijst de garderoberoutes door. |
 | `puzzels.js` | De puzzelverzameling: barcode opzoeken bij Open Products Facts, zelf invullen en onthouden per barcode, statussen (nieuw, mee bezig, gemaakt, uitgeleend), locaties en je eigen foto's. |
+| `beheer.js` | Beheerdersgedeelte: wachtwoord (scrypt), sessies, versienummer, controle bij GitHub en het aanvragen van een bijwerking via het vlagbestand. |
+| `public/beheer.js` | De beheerpagina: instellen, inloggen, versie tonen, bijwerken aanvragen en het logboek laten zien. |
+| `deploy/in-app-update.sh` | Het script dat als root de nieuwe versie ophaalt, overzet, herstart en zo nodig terugrolt (geïnstalleerd als `/usr/local/sbin/voorraadthuis-update`). |
+| `deploy/systemd/voorraadthuis-update.path`, `.service` | De padunit die op het vlagbestand let en de eenmalige dienst die het script start. |
 | `public/puzzels.js` | De puzzelpagina in de app: scannen, invullen, filteren en de kaarten met status. |
 | `public/qr.js` | Maakt de QR-code van het agenda-adres, helemaal in de browser (bytemodus, foutcorrectie M, versies 1–10); in de tests nagerekend tegen een andere uitvoering én teruggelezen met jsQR. |
 | `agenda.js` | Het agenda-bestand (.ics) van de maaltijd- en werkplanning: diensten als afspraken met tijd, het recept als hele-dag-item, met tijdzone en regelvouwing volgens RFC 5545. |
@@ -487,6 +514,10 @@ npm start    # http://localhost:3000
 | `GET/POST/DELETE /api/shift-templates` | Herbruikbare diensten. |
 | `GET /api/agenda.json?maand=` | Dezelfde planning als losse onderdelen (JSON) met een versienummer, voor de Android-app die de afspraken in de agenda van het toestel zet. |
 | `GET /api/agenda.ics?maand=` | De hele planning als agenda-bestand (.ics) voor je telefoon of computer: diensten met tijd en kleur, het recept als hele-dag-item. Zonder `maand` krijg je alles, met `maand=YYYY-MM` alleen die maand. |
+| `GET /api/beheer/status` | Versie, beschikbare update, of er een bijwerking loopt en het logboek. Zonder sessie alleen de kale status. |
+| `POST /api/beheer/wachtwoord` | Wachtwoord instellen (eerste keer) of wijzigen (met het huidige wachtwoord erbij). |
+| `POST /api/beheer/inloggen`, `POST /api/beheer/uitloggen` | Inloggen (met adempauze na acht verkeerde pogingen) en uitloggen. |
+| `POST /api/beheer/update` | Vraagt een bijwerking aan door het vlagbestand te schrijven; het script van de dienst doet de rest. |
 | `GET/POST /api/puzzels`, `GET/PATCH/PUT/DELETE /api/puzzels/<id>` | De puzzelverzameling: lezen (met `?q=`, `?merk=`, `?stukken=`, `?status=` en `?locatie=`), toevoegen, wijzigen en verwijderen. Het antwoord bevat ook de keuzelijsten en de dozen-teller. |
 | `GET /api/puzzels/zoek?code=<barcode>&ververs=1` | Een barcode opzoeken: eerst wat de app al weet (eigen verzameling of eerder opgezocht), anders Open Products Facts. `ververs=1` forceert een nieuwe opzoeking. |
 | `POST /api/puzzels/<id>/foto` | Je eigen foto van de doos (base64, JPEG/PNG/WebP, maximaal 4 MB). |

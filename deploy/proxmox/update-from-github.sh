@@ -23,8 +23,8 @@ if pct exec "$CTID" -- bash -c 'command -v nginx >/dev/null 2>&1' 2>/dev/null; t
   exit 1
 fi
 TMP=$(mktemp -d); trap 'rm -rf "$TMP"' EXIT
-ASSETS=(public/barcode-scan.js public/platen.js public/puzzels.js public/qr.js public/favicon.svg public/manifest.webmanifest public/sw.js public/icon-192.png public/icon-512.png public/icon-512-maskable.png public/apple-touch-icon.png public/social-card.png)
-FILES=(server.js wardrobe.js keuken.js weer.js barcodes.js profiles.js platen.js eigen-recepten.js agenda.js puzzels.js package.json "deploy/proxmox/fetch-discogs-catalog.sh" recipes-international.js recipes-open.js recipe-data/unitools-recipes.json "recipe-data/wikibooks-en-recipes.json" "recipe-data/wikibooks-es-recipes.json" "recipe-data/wikibooks-de-recipes.json" "recipe-data/wikibooks-nl-recipes.json" "recipe-data/wikibooks-fr-recipes.json" "recipe-data/wikibooks-it-recipes.json" "recipe-data/wikibooks-ca-recipes.json" "recipe-data/wikibooks-pt-recipes.json" "recipe-data/wikibooks-ja-recipes.json" "recipe-data/wikibooks-pl-recipes.json" "recipe-data/wikibooks-sv-recipes.json" "recipe-data/wikibooks-nb-recipes.json" "recipe-data/wikibooks-fi-recipes.json" "recipe-data/wikibooks-cocktails-recipes.json" "recipe-data/wikibooks-borrelhapjes-recipes.json" "recipe-data/translations-nl.json" product-data/nl-huismerken.json product-data/winkelprefixen.json product-data/lp-barcodes.json public/index.html "${ASSETS[@]}")
+ASSETS=(public/barcode-scan.js public/platen.js public/puzzels.js public/qr.js public/beheer.js public/favicon.svg public/manifest.webmanifest public/sw.js public/icon-192.png public/icon-512.png public/icon-512-maskable.png public/apple-touch-icon.png public/social-card.png)
+FILES=(server.js wardrobe.js keuken.js weer.js barcodes.js profiles.js platen.js eigen-recepten.js agenda.js puzzels.js beheer.js package.json deploy/in-app-update.sh deploy/systemd/voorraadthuis-update.service deploy/systemd/voorraadthuis-update.path "deploy/proxmox/fetch-discogs-catalog.sh" recipes-international.js recipes-open.js recipe-data/unitools-recipes.json "recipe-data/wikibooks-en-recipes.json" "recipe-data/wikibooks-es-recipes.json" "recipe-data/wikibooks-de-recipes.json" "recipe-data/wikibooks-nl-recipes.json" "recipe-data/wikibooks-fr-recipes.json" "recipe-data/wikibooks-it-recipes.json" "recipe-data/wikibooks-ca-recipes.json" "recipe-data/wikibooks-pt-recipes.json" "recipe-data/wikibooks-ja-recipes.json" "recipe-data/wikibooks-pl-recipes.json" "recipe-data/wikibooks-sv-recipes.json" "recipe-data/wikibooks-nb-recipes.json" "recipe-data/wikibooks-fi-recipes.json" "recipe-data/wikibooks-cocktails-recipes.json" "recipe-data/wikibooks-borrelhapjes-recipes.json" "recipe-data/translations-nl.json" product-data/nl-huismerken.json product-data/winkelprefixen.json product-data/lp-barcodes.json public/index.html "${ASSETS[@]}")
 for f in "${FILES[@]}"; do
   case "$f" in *" "*) echo "Interne fout: bestandsnaam met een spatie ($f). Meld dit; er is niets gewijzigd." >&2; exit 1;; esac
 done
@@ -71,7 +71,7 @@ rollback(){ echo 'Bijwerken mislukt; eerdere versie wordt teruggezet.' >&2; pct 
 # Eerst alles klaarzetten en controleren; de draaiende app blijft ondertussen in de lucht.
 pct exec "$CTID" -- rm -rf "$STAGE"
 pct exec "$CTID" -- install -d -o voorraadthuis -g voorraadthuis "$STAGE/public" "$STAGE/recipe-data" "${STAGE}/product-data"
-for f in server.js wardrobe.js keuken.js weer.js barcodes.js profiles.js platen.js eigen-recepten.js agenda.js puzzels.js package.json recipes-international.js recipes-open.js public/index.html "${ASSETS[@]}"; do pct push "$CTID" "$TMP/$f" "$STAGE/$f" --perms 644; done
+for f in server.js wardrobe.js keuken.js weer.js barcodes.js profiles.js platen.js eigen-recepten.js agenda.js puzzels.js beheer.js package.json recipes-international.js recipes-open.js public/index.html "${ASSETS[@]}"; do pct push "$CTID" "$TMP/$f" "$STAGE/$f" --perms 644; done
 for f in unitools-recipes.json "wikibooks-en-recipes.json" "wikibooks-es-recipes.json" "wikibooks-de-recipes.json" "wikibooks-nl-recipes.json" "wikibooks-fr-recipes.json" "wikibooks-it-recipes.json" "wikibooks-ca-recipes.json" "wikibooks-pt-recipes.json" "wikibooks-ja-recipes.json" "wikibooks-pl-recipes.json" "wikibooks-sv-recipes.json" "wikibooks-nb-recipes.json" "wikibooks-fi-recipes.json" "wikibooks-cocktails-recipes.json" "wikibooks-borrelhapjes-recipes.json" translations-nl.json; do pct push "$CTID" "$TMP/recipe-data/$f" "$STAGE/recipe-data/$f" --perms 644; done
 # Huismerktabel van Nederlandse supermarkten (open data uit Open Food Facts).
 for f in nl-huismerken.json winkelprefixen.json lp-barcodes.json; do pct push "$CTID" "$TMP/product-data/$f" "$STAGE/product-data/$f" --perms 644; done
@@ -132,6 +132,36 @@ if [ -n "$IP" ]; then
     fi
     echo 'De app draait nu de nieuwe versie.'
   fi
+  # Het beheergedeelte: een knop waarmee de app zichzelf kan bijwerken. De app draait
+  # onbevoorrecht en mag geen diensten herstarten; daarom schrijft hij een vlagbestand en
+  # start de padunit (als root) het bijwerkscript. Ontbreken deze bestanden, dan zegt de
+  # pagina eerlijk dat bijwerken vanaf daar nog niet is ingericht.
+  pct exec "$CTID" -- install -d -m 755 /usr/local/sbin
+  pct push "$CTID" "$TMP/deploy/in-app-update.sh" /usr/local/sbin/voorraadthuis-update --perms 755
+  pct push "$CTID" "$TMP/deploy/systemd/voorraadthuis-update.service" /etc/systemd/system/voorraadthuis-update.service --perms 644
+  pct push "$CTID" "$TMP/deploy/systemd/voorraadthuis-update.path" /etc/systemd/system/voorraadthuis-update.path --perms 644
+  pct exec "$CTID" -- systemctl daemon-reload
+  pct exec "$CTID" -- systemctl enable --now voorraadthuis-update.path >/dev/null 2>&1 || true
+  # Versienummer vastleggen, zodat de pagina kan laten zien wat er draait en of er iets
+  # nieuwers klaarstaat.
+  API_JSON=$(curl -fsSL --max-time 20 -H 'Accept: application/vnd.github+json' -H 'User-Agent: VoorraadThuis-bijwerk' "https://api.github.com/repos/$REPO/commits/$BRANCH" 2>/dev/null || true)
+  META=''
+  if [ -n "$API_JSON" ] && command -v python3 >/dev/null 2>&1; then
+    META=$(printf '%s' "$API_JSON" | python3 -c 'import json,sys
+try:
+    d = json.load(sys.stdin)
+except Exception:
+    raise SystemExit
+c = d.get("commit") or {}
+a = c.get("author") or {}
+regels = (c.get("message") or "").splitlines()
+print("%s\t%s\t%s" % (d.get("sha",""), a.get("date",""), regels[0] if regels else ""))' 2>/dev/null || true)
+  fi
+  IFS=$'\t' read -r V_SHA V_DATUM V_ONDERWERP <<< "${META:-}" || true
+  [ -n "${V_SHA:-}" ] || V_SHA='onbekend'
+  [ -n "${V_DATUM:-}" ] || V_DATUM="$(date -Is)"
+  printf '%s\n%s\n%s\n' "$V_SHA" "$V_DATUM" "${V_ONDERWERP:-}" > "$TMP/VERSIE"
+  pct push "$CTID" "$TMP/VERSIE" "$SITE/VERSIE" --perms 644
   pct exec "$CTID" -- rm -rf "$BACKUP"
   if proefTls "https://$IP/healthz" '^ok$'; then
     echo "VoorraadThuis bijgewerkt; controle: http://$IP/ en https://$IP/ (terugvaloptie verwijderd na geslaagde controle)"

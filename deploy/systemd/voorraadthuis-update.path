@@ -1,0 +1,15 @@
+[Unit]
+Description=Kijkt of de app om een update vraagt (VoorraadThuis)
+Documentation=https://github.com/Theberas04/voorraadthuis
+
+[Path]
+# De app draait onbevoorrecht en kan geen diensten herstarten. In plaats daarvan schrijft
+# hij dit vlagbestand in zijn eigen gegevensmap; deze padunit start dan als root het
+# bijwerkscript. PathExists vangt het aanmaken, PathChanged een nieuwe aanvraag terwijl
+# het bestand er nog staat.
+PathExists=/var/lib/voorraadthuis/update-aanvraag
+PathChanged=/var/lib/voorraadthuis/update-aanvraag
+Unit=voorraadthuis-update.service
+
+[Install]
+WantedBy=multi-user.target

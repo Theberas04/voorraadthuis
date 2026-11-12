@@ -12,6 +12,7 @@ const { createBarcodes } = require('./barcodes');
 const { createProfiles } = require('./profiles');
 const { createPlaten } = require('./platen');
 const { createPuzzels } = require('./puzzels');
+const { createBeheer } = require('./beheer');
 const { maakAgenda, maakItems, bestandsnaam } = require('./agenda');
 const { createEigenRecepten, DIETEN, isEigenId } = require('./eigen-recepten');
 // Rekenkern van de keuken: voorraad vergelijken met recepten, hoeveelheden
@@ -104,6 +105,9 @@ const platen = createPlaten({ db, mediaDir: MEDIA_DIR });
 // De puzzelverzameling zoekt een barcode op bij Open Products Facts; in de tests en op
 // een toestel zonder internet is dat met PUZZEL_BRON=0 uit te zetten.
 const puzzels = createPuzzels({ db, mediaDir: MEDIA_DIR, bronAan: process.env.PUZZEL_BRON !== '0' });
+// Beheer: versie, controle op updates en de bijwerk-knop. De map hieronder is de map
+// waarin de app zijn gegevens bewaart; daar komt ook de update-aanvraag te staan.
+const beheer = createBeheer({ db, appDir: __dirname, dataDir: process.env.BEHEER_DATA_DIR || path.dirname(DB_PATH) });
 // Eigen recepten: wat de gebruiker zelf toevoegt, met foto, voedingswaarde per
 // portie en dieetkeuzes. Ze staan tussen de meegeleverde recepten in het boek.
 const eigenRecepten = createEigenRecepten({ db, mediaDir: MEDIA_DIR });
@@ -159,6 +163,7 @@ const server=http.createServer(async(req,res)=>{let url;try{url=new URL((req.url
  if(url.pathname.startsWith('/api/kast/')||url.pathname.startsWith('/media/'))return wardrobe.handle(req,res,wardrobePath(url));
  if(url.pathname==='/api/platen'||url.pathname.startsWith('/api/platen/'))return platen.handle(req,res,url);
  if(url.pathname==='/api/puzzels'||url.pathname.startsWith('/api/puzzels/'))return puzzels.handle(req,res,url);
+ if(url.pathname==='/api/beheer'||url.pathname.startsWith('/api/beheer/'))return beheer.handle(req,res,url);
  if(url.pathname==='/api/products'&&req.method==='GET')return json(res,200,products());
  // Barcode opzoeken: /api/barcode/<code> (optioneel ?force=1 voor een nieuwe opzoeking).
  const barcodeMatch=url.pathname.match(/^\/api\/barcode\/([0-9A-Za-z]{4,20})$/);if(barcodeMatch&&req.method==='GET'){const uitkomst=await barcodes.lookup(barcodeMatch[1],{force:url.searchParams.get('force')==='1'});return json(res,200,uitkomst);}
