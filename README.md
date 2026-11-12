@@ -318,6 +318,23 @@ Met een OpenAI-compatibele dienst (OpenAI, Ollama, LocalAI) kan de app een kledi
 
 > Productgegevens komen van [Open Food Facts](https://world.openfoodfacts.org/), beschikbaar onder de [Open Database License (ODbL) 1.0](https://opendatacommons.org/licenses/odbl/1-0/). Camera-scannen werkt in browsers die `BarcodeDetector` ondersteunen (Chrome op Android, Edge) en doorgaans alleen via HTTPS; op iOS typ je de code — die wordt ook meteen herkend.
 
+### Puzzels (legpuzzels)
+
+Dezelfde aanpak als bij de platen, maar voor legpuzzels:
+
+- **Barcode scannen of typen**: de app zoekt de puzzel op in **Open Products Facts** (open data, [ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/)) en vult titel, merk en — als het er staat — het aantal stukken alvast in. Wat jij daarna zelf invult of verbetert is leidend, en dat wordt **per barcode onthouden**: een volgende scan van dezelfde doos is meteen raak, ook zonder internet.
+- **Wat je bijhoudt**: titel, merk, aantal stukken (met snelknoppen 100–3000), soort, jaar, formaat, waar de doos ligt, het aantal exemplaren, een notitie en de **status**: nieuw, mee bezig, gemaakt of uitgeleend.
+- **Uitlenen** houdt bij aan wie en sinds wanneer; staat de puzzel weer in de kast, dan zet je hem met één knop terug en verdwijnt die naam er weer af.
+- **Je eigen foto van de doos** per puzzel (JPEG, PNG of WebP, maximaal 4 MB). Foto's uit de databank nemen we bewust **niet** over; de kaart linkt wel naar de bronpagina.
+- **Zoeken en filteren** op merk, aantal stukken, status en plek, met keuzelijsten die zich vullen met wat je zelf al hebt ingevoerd, en een teller met het aantal dozen.
+- De barcode kan ook uit een eerdere bestelling of van de bon komen; typ hem gewoon in en de app zoekt hem alsnog op.
+
+![De puzzelpagina met het invulformulier en de verzameling](docs/img/puzzels.jpg)
+
+| De verzameling met statussen | Op de telefoon |
+| --- | --- |
+| ![Puzzelkaarten met status, aantal stukken, plek en je eigen foto](docs/img/puzzels-lijst.jpg) | ![De puzzelpagina op een smal scherm](docs/img/puzzels-mobiel.jpg) |
+
 ### Platen (lp-verzameling)
 
 Onder **Platen** houd je je eigen lp-verzameling bij. De barcode-opzoeking controleert eerst de lokale MusicBrainz-lijst; daarna kan hij de aparte, alleen-lezen Discogs-catalogus raadplegen. MusicBrainz-hoezen worden bij het [Cover Art Archive](https://coverartarchive.org/) opgehaald en één keer lokaal bewaard. Discogs-hoesafbeeldingen worden niet gebruikt.
@@ -432,6 +449,8 @@ npm start    # http://localhost:3000
 | Pad | Inhoud |
 | --- | --- |
 | `server.js` | HTTP-server, SQLite-schema, API en de gecombineerde receptenlijst; verwijst de garderoberoutes door. |
+| `puzzels.js` | De puzzelverzameling: barcode opzoeken bij Open Products Facts, zelf invullen en onthouden per barcode, statussen (nieuw, mee bezig, gemaakt, uitgeleend), locaties en je eigen foto's. |
+| `public/puzzels.js` | De puzzelpagina in de app: scannen, invullen, filteren en de kaarten met status. |
 | `public/qr.js` | Maakt de QR-code van het agenda-adres, helemaal in de browser (bytemodus, foutcorrectie M, versies 1–10); in de tests nagerekend tegen een andere uitvoering én teruggelezen met jsQR. |
 | `agenda.js` | Het agenda-bestand (.ics) van de maaltijd- en werkplanning: diensten als afspraken met tijd, het recept als hele-dag-item, met tijdzone en regelvouwing volgens RFC 5545. |
 | `wardrobe.js` | Het garderobe-onderdeel (Kledingkast): kledingkasten, kleding, was, setjes, draaghistorie en de adviesregels. |
@@ -468,6 +487,9 @@ npm start    # http://localhost:3000
 | `GET/POST/DELETE /api/shift-templates` | Herbruikbare diensten. |
 | `GET /api/agenda.json?maand=` | Dezelfde planning als losse onderdelen (JSON) met een versienummer, voor de Android-app die de afspraken in de agenda van het toestel zet. |
 | `GET /api/agenda.ics?maand=` | De hele planning als agenda-bestand (.ics) voor je telefoon of computer: diensten met tijd en kleur, het recept als hele-dag-item. Zonder `maand` krijg je alles, met `maand=YYYY-MM` alleen die maand. |
+| `GET/POST /api/puzzels`, `GET/PATCH/PUT/DELETE /api/puzzels/<id>` | De puzzelverzameling: lezen (met `?q=`, `?merk=`, `?stukken=`, `?status=` en `?locatie=`), toevoegen, wijzigen en verwijderen. Het antwoord bevat ook de keuzelijsten en de dozen-teller. |
+| `GET /api/puzzels/zoek?code=<barcode>&ververs=1` | Een barcode opzoeken: eerst wat de app al weet (eigen verzameling of eerder opgezocht), anders Open Products Facts. `ververs=1` forceert een nieuwe opzoeking. |
+| `POST /api/puzzels/<id>/foto` | Je eigen foto van de doos (base64, JPEG/PNG/WebP, maximaal 4 MB). |
 | `GET/POST /api/platen`, `PATCH/DELETE /api/platen/<id>` | De platenverzameling: lezen, toevoegen, verplaatsen of wijzigen en verwijderen. Lezen kan gefilterd met `?locatie=` (of `leeg`), `?genre=`, `?artiest=`, `?decennium=` (of `onbekend`), `?van=`/`?tot=` en `?q=`; het antwoord bevat ook `keuzelijsten` met de genres, artiesten, decennia en locaties met aantallen. |
 | `GET /api/platen/keuzelijsten` | Alleen de keuzelijsten om op te filteren. |
 | `GET /api/platen/zoek?code=<barcode>`, `GET /api/platen/locaties` | Een plaat opzoeken bij MusicBrainz (met hoes) en de locaties met aantallen. |
@@ -492,6 +514,8 @@ npm start    # http://localhost:3000
 De app is geschreven als persoonlijke thuisapp. De receptendata uit UniTools World Recipes en Wikibooks Cookbook vallen onder [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/); per recept staat de bron- en licentielink in de kaart (zie [`recipe-data/README.md`](recipe-data/README.md)).
 
 De productgegevens voor de barcodeherkenning komen van [Open Food Facts](https://world.openfoodfacts.org/) (en de zusterdatabanken Open Products Facts, Open Beauty Facts en Open Pet Food Facts), beschikbaar onder de [ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/). De huismerktabel in `product-data/` (45.623 producten) is een selectie daaruit; zie [`product-data/README.md`](product-data/README.md).
+
+- **Puzzelgegevens**: barcodes, namen en merken komen uit **Open Products Facts**, de zuster van Open Food Facts voor niet-voedingsproducten, onder **ODbL 1.0** met naamsvermelding. Foto's uit die databank nemen we niet over; de app bewaart alleen je eigen foto's en linkt naar de bronpagina. Met `PUZZEL_BRON=0` in de service-instellingen blijft de databank buiten beeld.
 
 Het garderobe-onderdeel begon als een zelfstandige app (Kledingkast, MIT) en is geïnspireerd op het idee achter [wardrowbee](https://github.com/Anyesh/wardrowbee) (MIT): een self-hosted garderobe-app met AI-tagging. De implementatie is eigen werk — Node.js + SQLite in plaats van FastAPI + PostgreSQL + Redis, één service, Nederlandse interface, en combineeradvies op eigen regels in plaats van een taalmodel. Er is geen code uit dat project overgenomen.
 

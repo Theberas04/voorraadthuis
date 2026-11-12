@@ -11,6 +11,7 @@ const { createWardrobe } = require('./wardrobe');
 const { createBarcodes } = require('./barcodes');
 const { createProfiles } = require('./profiles');
 const { createPlaten } = require('./platen');
+const { createPuzzels } = require('./puzzels');
 const { maakAgenda, maakItems, bestandsnaam } = require('./agenda');
 const { createEigenRecepten, DIETEN, isEigenId } = require('./eigen-recepten');
 // Rekenkern van de keuken: voorraad vergelijken met recepten, hoeveelheden
@@ -100,6 +101,9 @@ const barcodes = createBarcodes({ db });
 const profiles = createProfiles({ db });
 // Platen: de lp-collectie, met barcodeherkenning via MusicBrainz en het Cover Art Archive.
 const platen = createPlaten({ db, mediaDir: MEDIA_DIR });
+// De puzzelverzameling zoekt een barcode op bij Open Products Facts; in de tests en op
+// een toestel zonder internet is dat met PUZZEL_BRON=0 uit te zetten.
+const puzzels = createPuzzels({ db, mediaDir: MEDIA_DIR, bronAan: process.env.PUZZEL_BRON !== '0' });
 // Eigen recepten: wat de gebruiker zelf toevoegt, met foto, voedingswaarde per
 // portie en dieetkeuzes. Ze staan tussen de meegeleverde recepten in het boek.
 const eigenRecepten = createEigenRecepten({ db, mediaDir: MEDIA_DIR });
@@ -154,6 +158,7 @@ function bouwKookpot(){
 const server=http.createServer(async(req,res)=>{let url;try{url=new URL((req.url||'/').replace(/^\/{2,}/,'/'),'http://localhost');}catch{res.writeHead(400,{'content-type':'text/plain; charset=utf-8'});return res.end('Ongeldig verzoek\n');}try{
  if(url.pathname.startsWith('/api/kast/')||url.pathname.startsWith('/media/'))return wardrobe.handle(req,res,wardrobePath(url));
  if(url.pathname==='/api/platen'||url.pathname.startsWith('/api/platen/'))return platen.handle(req,res,url);
+ if(url.pathname==='/api/puzzels'||url.pathname.startsWith('/api/puzzels/'))return puzzels.handle(req,res,url);
  if(url.pathname==='/api/products'&&req.method==='GET')return json(res,200,products());
  // Barcode opzoeken: /api/barcode/<code> (optioneel ?force=1 voor een nieuwe opzoeking).
  const barcodeMatch=url.pathname.match(/^\/api\/barcode\/([0-9A-Za-z]{4,20})$/);if(barcodeMatch&&req.method==='GET'){const uitkomst=await barcodes.lookup(barcodeMatch[1],{force:url.searchParams.get('force')==='1'});return json(res,200,uitkomst);}
