@@ -2,8 +2,8 @@
 # Download and safely install the immutable, read-only Discogs vinyl catalogue.
 set -euo pipefail
 
-CATALOG_URL="${DISCOGS_CATALOG_URL:-https://github.com/Theberas04/voorraadthuis/releases/download/discogs-2026-10-01/discogs-vinyl-20261001.sqlite.gz}"
-CATALOG_SHA256="${DISCOGS_CATALOG_SHA256:-c1c76ede1e67e50a93b7b51ec89a0297d1bda466edbbccb734b4d77a6486b6d3}"
+CATALOG_URL="${DISCOGS_CATALOG_URL:-https://github.com/Theberas04/voorraadthuis/releases/download/discogs-2026-11-01/discogs-vinyl-20261101.sqlite.gz}"
+CATALOG_SHA256="${DISCOGS_CATALOG_SHA256:-1233cf6cb01ece401b02908eba08a6f4af36376a74f62d3bb9baece105dd1533}"
 CATALOG_DEST="${DISCOGS_CATALOG_DEST:-/var/lib/voorraadthuis/discogs-vinyl.sqlite}"
 
 fetch_catalog() {
